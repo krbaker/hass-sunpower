@@ -1,6 +1,6 @@
 """Config flow for sunpower integration."""
 import logging
-import sunpower
+from .sunpower import SunPowerMonitor, ConnectionException
 import voluptuous as vol
 
 from homeassistant import config_entries, core, exceptions
@@ -18,12 +18,12 @@ async def validate_input(hass: core.HomeAssistant, data):
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
 
-    spm = sunpower.SunPowerMonitor(data["host"])
+    spm = SunPowerMonitor(data["host"])
     name = "PVS {}".format(data["host"])
     try:
         response = await hass.async_add_executor_job(spm.network_status)
         _LOGGER.info("Got from %s %s", data["host"], response)
-    except sunpower.ConnectionException as error:
+    except ConnectionException as error:
         raise CannotConnect from error
 
     return {"title": name}

@@ -6,7 +6,7 @@ import time
 
 import voluptuous as vol
 
-import sunpower
+from .sunpower import SunPowerMonitor, ConnectionException
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -43,7 +43,7 @@ def sunpower_fetch(sunpower_monitor):
             else:
                 data[device["DEVICE_TYPE"]][device["SERIAL"]] = device
         return data
-    except sunpower.ConnectionException as error:
+    except ConnectionException as error:
         raise UpdateFailed from error
 
 
@@ -70,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     entry_id = entry.entry_id
 
     hass.data[DOMAIN].setdefault(entry_id, {})
-    sunpower_monitor = sunpower.SunPowerMonitor(entry.data[SUNPOWER_HOST])
+    sunpower_monitor = SunPowerMonitor(entry.data[SUNPOWER_HOST])
 
     async def async_update_data():
         """Fetch data from API endpoint, used by coordinator to get mass data updates"""
