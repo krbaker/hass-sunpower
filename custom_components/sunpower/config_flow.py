@@ -1,6 +1,6 @@
 """Config flow for sunpower integration."""
 import logging
-import homeassistant.components.sunpower.sunpower as sunpower
+import sunpower
 import voluptuous as vol
 
 from homeassistant import config_entries, core, exceptions

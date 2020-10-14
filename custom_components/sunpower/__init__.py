@@ -6,7 +6,7 @@ import time
 
 import voluptuous as vol
 
-from homeassistant.components.sunpower import sunpower
+import sunpower
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
