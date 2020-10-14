@@ -1,0 +1,8 @@
+{
+  "name": "HACS Sunpower Integration",
+  "country": "US",
+  "domains": ["binary_sensor", "sensor"],
+  "homeassistant": "0.114.4",
+  "iot_class": ["Local Poll"],
+  "render_readme": true
+}

@@ -1,0 +1,13 @@
+{
+  "domain": "sunpower",
+  "name": "sunpower",
+  "config_flow": true,
+  "documentation": "https://github.com/krbaker/hass-sunpower",
+  "requirements": ["requests"],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": [],
+  "codeowners": ["@krbaker"],
+  "issue_tracker": "https://github.com/krbaker/hass-sunpower/issues"
+}

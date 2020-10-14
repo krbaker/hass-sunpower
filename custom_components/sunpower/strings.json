@@ -1,0 +1,19 @@
+{
+  "title": "SunPower",
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "host": "host"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot Connect",
+      "unknown": "Unkown Error"
+    },
+    "abort": {
+      "already_configured": "Already Configured"
+    }
+  }
+}
