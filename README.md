@@ -3,11 +3,10 @@ Home Assistant SunPower Integration using the local installer ethernet interface
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
-[![License][license-shield]](LICENSE)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 ![Project Maintenance][maintenance-shield]
 
-_Component to integrate with [sunpower][sunpower-us] PVS 5/6 monitors
+## Component to integrate with [sunpower][sunpower-us] PVS 5/6 monitors
 
 **This component will set up the following platforms.**
 
@@ -16,16 +15,16 @@ Platform | Description
 `binary_sensor` | Working/Not Working status for each device.
 `sensor` | Most data available from the PVS system including per-panel data.
 
-{% if not installed %}
 ## Installation
 
 1. Click install.
 1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Sunpower".
 
-{% endif %}
 
 
-## Configuration is done in the UI, it will ask for a host (ip works) hint: most sunpower systems are at 172.27.153.1
+## Configuration is done in the UI
+ * it will ask for a host (ip works)
+ * hint: most sunpower systems are at 172.27.153.1
 
 <!---->
 
@@ -39,7 +38,7 @@ This integration requires connectivity to the management interface used for inst
 [commits]: https://github.com/krbaker/hass-sunpower/commits/master
 [hacs]: https://github.com/custom-components/hacs
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/badge/maintainer-Joakim%20Sørensen%20%40ludeeus-blue.svg?style=for-the-badge
+[maintenance-shield]: https://img.shields.io/badge/maintainer-Keith%20Baker%20%40krbaker-blue.svg?style=for-the-badge
 [releases-shield]: https://img.shields.io/github/release/custom-components/blueprint.svg?style=for-the-badge
-[releases]: https://github.com/custom-components/blueprint/releases
+[releases]: https://github.com/krbaker/hass-sunpower/releases
 [sunpower-us]: https://us.sunpower.com/products/solar-panels
