@@ -117,7 +117,7 @@ class SunPowerPVSBasic(SunPowerPVSEntity):
     @property
     def state(self):
         """Get the current value"""
-        return self._pvs_info[self._field]
+        return self.coordinator.data[PVS_DEVICE_TYPE][self.base_unique_id][self._field]
 
 
 class SunPowerMeterBasic(SunPowerMeterEntity):
@@ -154,7 +154,7 @@ class SunPowerMeterBasic(SunPowerMeterEntity):
     @property
     def state(self):
         """Get the current value"""
-        return self._meter_info[self._field]
+        return self.coordinator.data[METER_DEVICE_TYPE][self.base_unique_id][self._field]
 
 
 class SunPowerInverterBasic(SunPowerInverterEntity):
@@ -191,4 +191,4 @@ class SunPowerInverterBasic(SunPowerInverterEntity):
     @property
     def state(self):
         """Get the current value"""
-        return self._inverter_info[self._field]
+        return self.coordinator.data[INVERTER_DEVICE_TYPE][self.base_unique_id][self._field]
