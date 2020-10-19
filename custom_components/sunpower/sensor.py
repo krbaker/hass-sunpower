@@ -69,7 +69,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             for data in sunpower_data[INVERTER_DEVICE_TYPE].values():
                 for sensor in INVERTER_SENSORS:
                     entities.append(
-                        SunPowerMeterBasic(
+                        SunPowerInverterBasic(
                             coordinator,
                             data,
                             pvs,
