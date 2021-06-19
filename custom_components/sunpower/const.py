@@ -46,6 +46,15 @@ METER_SENSORS = {
     "METER_VAR": ["q_3phsum_kvar", "KVA Reactive", ELECTRICAL_VOLT_AMPERE, "mdi:flash"],
     "METER_VA": ["s_3phsum_kva", "KVA Apparent", ELECTRICAL_VOLT_AMPERE, "mdi:flash"],
     "METER_POWER_FACTOR": ["tot_pf_rto", "Power Factor", PERCENTAGE, "mdi:flash"],
+    "METER_L1_A": ["i1_a", "Leg 1 Amps", ELECTRICAL_VOLT_AMPERE, "mdi:flash"],
+    "METER_L2_A": ["i2_a", "Leg 2 Amps", ELECTRICAL_VOLT_AMPERE, "mdi:flash"],
+    "METER_L1_KW": ["p1_kw", "Leg 1 KW", POWER_KILO_WATT, "mdi:flash"],
+    "METER_L2_KW": ["p2_kw", "Leg 2 KW", POWER_KILO_WATT, "mdi:flash"],
+    "METER_L1_V": ["v1n_v", "Leg 1 Volts", VOLT, "mdi:flash"],
+    "METER_L2_V": ["v2n_v", "Leg 2 Volts", VOLT, "mdi:flash"],
+    "METER_L12_V": ["v12_v", "Supply Volts", VOLT, "mdi:flash"],
+    "METER_TO_GRID": ["neg_ltea_3phsum_kwh", "KWH To Grid", ENERGY_KILO_WATT_HOUR, "mdi:flash"],
+    "METER_TO_HOME": ["pos_ltea_3phsum_kwh", "KWH To Home", ENERGY_KILO_WATT_HOUR, "mdi:flash"]
 }
 
 INVERTER_SENSORS = {
@@ -59,6 +68,7 @@ INVERTER_SENSORS = {
     "INVERTER_VOLTS": ["vln_3phavg_v", "Voltage", VOLT, "mdi:flash"],
     "INVERTER_AMPS": ["i_3phsum_a", "Amps", ELECTRICAL_VOLT_AMPERE, "mdi:flash"],
     "INVERTER_MPPT_KW": ["p_mpptsum_kw", "MPPT KW", POWER_KILO_WATT, "mdi:flash"],
+    "INVERTER_MPPT1_KW": ["p_mppt1_kw", "MPPT KW", POWER_KILO_WATT, "mdi:flash"],
     "INVERTER_MPPT_V": ["v_mppt1_v", "MPPT Volts", VOLT, "mdi:flash"],
     "INVERTER_MPPT_A": ["i_mppt1_a", "MPPT Amps", ELECTRICAL_VOLT_AMPERE, "mdi:flash"],
     "INVERTER_TEMPERATURE": [

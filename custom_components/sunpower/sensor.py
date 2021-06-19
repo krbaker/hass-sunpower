@@ -35,50 +35,59 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         entities = []
         for sensor in PVS_SENSORS:
-            entities.append(
-                SunPowerPVSBasic(
-                    coordinator,
-                    pvs,
-                    PVS_SENSORS[sensor][0],
-                    PVS_SENSORS[sensor][1],
-                    PVS_SENSORS[sensor][2],
-                    PVS_SENSORS[sensor][3],
-                )
+            spb = SunPowerPVSBasic(
+                coordinator,
+                pvs,
+                PVS_SENSORS[sensor][0],
+                PVS_SENSORS[sensor][1],
+                PVS_SENSORS[sensor][2],
+                PVS_SENSORS[sensor][3],
             )
+            try:
+                spb.state
+                entities.append(spb)
+            except KeyError:
+                pass
 
         if METER_DEVICE_TYPE not in sunpower_data:
             _LOGGER.error("Cannot find any power meters")
         else:
             for data in sunpower_data[METER_DEVICE_TYPE].values():
                 for sensor in METER_SENSORS:
-                    entities.append(
-                        SunPowerMeterBasic(
-                            coordinator,
-                            data,
-                            pvs,
-                            METER_SENSORS[sensor][0],
-                            METER_SENSORS[sensor][1],
-                            METER_SENSORS[sensor][2],
-                            METER_SENSORS[sensor][3],
-                        )
+                    smb = SunPowerMeterBasic(
+                        coordinator,
+                        data,
+                        pvs,
+                        METER_SENSORS[sensor][0],
+                        METER_SENSORS[sensor][1],
+                        METER_SENSORS[sensor][2],
+                        METER_SENSORS[sensor][3],
                     )
+                    try:
+                        smb.state
+                        entities.append(smb)
+                    except KeyError:
+                        pass
 
         if INVERTER_DEVICE_TYPE not in sunpower_data:
             _LOGGER.error("Cannot find any power inverters")
         else:
             for data in sunpower_data[INVERTER_DEVICE_TYPE].values():
                 for sensor in INVERTER_SENSORS:
-                    entities.append(
-                        SunPowerInverterBasic(
-                            coordinator,
-                            data,
-                            pvs,
-                            INVERTER_SENSORS[sensor][0],
-                            INVERTER_SENSORS[sensor][1],
-                            INVERTER_SENSORS[sensor][2],
-                            INVERTER_SENSORS[sensor][3],
-                        )
+                    sib = SunPowerInverterBasic(
+                        coordinator,
+                        data,
+                        pvs,
+                        INVERTER_SENSORS[sensor][0],
+                        INVERTER_SENSORS[sensor][1],
+                        INVERTER_SENSORS[sensor][2],
+                        INVERTER_SENSORS[sensor][3],
                     )
+                    try:
+                        sib.state
+                        entities.append(sib)
+                    except KeyError:
+                        pass
 
     async_add_entities(entities, True)
 
@@ -93,7 +102,7 @@ class SunPowerPVSBasic(SunPowerPVSEntity):
         self._field = field
         self._unit = unit
         self._icon = icon
-
+        
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
