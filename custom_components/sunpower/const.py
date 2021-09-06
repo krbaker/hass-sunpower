@@ -74,7 +74,7 @@ INVERTER_SENSORS = {
         "t_htsnk_degc",
         "Temperature",
         TEMP_CELSIUS,
-        "mdi:temperature-celsius",
+        "mdi:thermometer",
     ],
     "INVERTER_FREQUENCY": ["freq_hz", "Frequency", FREQUENCY_HERTZ, "mdi:flash"],
 }
