@@ -6,8 +6,6 @@ from homeassistant.const import DEVICE_CLASS_POWER
 from .const import (
     DOMAIN,
     SUNPOWER_COORDINATOR,
-    #    SUNPOWER_DATA,
-    #    SUNPOWER_OBJECT,
     PVS_DEVICE_TYPE,
     INVERTER_DEVICE_TYPE,
     METER_DEVICE_TYPE,

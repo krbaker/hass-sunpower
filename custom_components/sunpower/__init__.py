@@ -10,7 +10,6 @@ from .sunpower import SunPowerMonitor, ConnectionException
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -20,7 +19,6 @@ from .const import (
     SUNPOWER_COORDINATOR,
     SUNPOWER_HOST,
     SETUP_TIMEOUT_MIN,
-    PVS_DEVICE_TYPE,
 )
 
 _LOGGER = logging.getLogger(__name__)

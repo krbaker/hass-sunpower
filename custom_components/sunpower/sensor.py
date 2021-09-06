@@ -6,8 +6,6 @@ import logging
 from .const import (
     DOMAIN,
     SUNPOWER_COORDINATOR,
-    #    SUNPOWER_DATA,
-    #    SUNPOWER_OBJECT,
     PVS_DEVICE_TYPE,
     INVERTER_DEVICE_TYPE,
     METER_DEVICE_TYPE,
@@ -102,7 +100,7 @@ class SunPowerPVSBasic(SunPowerPVSEntity):
         self._field = field
         self._unit = unit
         self._icon = icon
-        
+
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
