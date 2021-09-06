@@ -41,17 +41,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             _LOGGER.error("Cannot find any power meters")
         else:
             for data in sunpower_data[METER_DEVICE_TYPE].values():
-                entities.append(
-                    SunPowerMeterState(coordinator, data, pvs, do_descriptive_names)
-                )
+                entities.append(SunPowerMeterState(coordinator, data, pvs, do_descriptive_names))
 
         if INVERTER_DEVICE_TYPE not in sunpower_data:
             _LOGGER.error("Cannot find any power inverters")
         else:
             for data in sunpower_data[INVERTER_DEVICE_TYPE].values():
-                entities.append(
-                    SunPowerInverterState(coordinator, data, pvs, do_descriptive_names)
-                )
+                entities.append(SunPowerInverterState(coordinator, data, pvs, do_descriptive_names))
 
     async_add_entities(entities, True)
 
@@ -120,9 +116,7 @@ class SunPowerMeterState(SunPowerMeterEntity):
     @property
     def state(self):
         """Get the current value"""
-        return self.coordinator.data[METER_DEVICE_TYPE][self.base_unique_id][
-            METER_STATE
-        ]
+        return self.coordinator.data[METER_DEVICE_TYPE][self.base_unique_id][METER_STATE]
 
     @property
     def is_on(self):
@@ -158,9 +152,7 @@ class SunPowerInverterState(SunPowerInverterEntity):
     @property
     def state(self):
         """Get the current value"""
-        return self.coordinator.data[INVERTER_DEVICE_TYPE][self.base_unique_id][
-            INVERTER_STATE
-        ]
+        return self.coordinator.data[INVERTER_DEVICE_TYPE][self.base_unique_id][INVERTER_STATE]
 
     @property
     def is_on(self):
