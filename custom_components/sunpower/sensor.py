@@ -22,7 +22,8 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Sunpower sensors."""
     sunpower_state = hass.data[DOMAIN][config_entry.entry_id]
-    _LOGGER.error("Sunpower_state: %s", sunpower_state)
+    _LOGGER.debug("Sunpower_state: %s", sunpower_state)
+
     do_descriptive_names = config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES]
 
     coordinator = sunpower_state[SUNPOWER_COORDINATOR]

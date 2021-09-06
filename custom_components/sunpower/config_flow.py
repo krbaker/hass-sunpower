@@ -28,7 +28,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     name = "PVS {}".format(data["host"])
     try:
         response = await hass.async_add_executor_job(spm.network_status)
-        _LOGGER.info("Got from %s %s", data["host"], response)
+        _LOGGER.debug("Got from %s %s", data["host"], response)
     except ConnectionException as error:
         raise CannotConnect from error
 
