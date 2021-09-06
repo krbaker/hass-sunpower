@@ -6,6 +6,7 @@ import logging
 from .const import (
     DOMAIN,
     SUNPOWER_COORDINATOR,
+    SUNPOWER_DESCRIPTIVE_NAMES,
     PVS_DEVICE_TYPE,
     INVERTER_DEVICE_TYPE,
     METER_DEVICE_TYPE,
@@ -22,6 +23,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Sunpower sensors."""
     sunpower_state = hass.data[DOMAIN][config_entry.entry_id]
     _LOGGER.error("Sunpower_state: %s", sunpower_state)
+    do_descriptive_names = config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES]
 
     coordinator = sunpower_state[SUNPOWER_COORDINATOR]
     sunpower_data = coordinator.data
@@ -33,11 +35,15 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         entities = []
         for sensor in PVS_SENSORS:
+            if do_descriptive_names:
+                title = f"{pvs['DEVICE_TYPE']} {PVS_SENSORS[sensor][1]}"
+            else:
+                title = PVS_SENSORS[sensor][1]
             spb = SunPowerPVSBasic(
                 coordinator,
                 pvs,
                 PVS_SENSORS[sensor][0],
-                PVS_SENSORS[sensor][1],
+                title,
                 PVS_SENSORS[sensor][2],
                 PVS_SENSORS[sensor][3],
             )
@@ -52,12 +58,16 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         else:
             for data in sunpower_data[METER_DEVICE_TYPE].values():
                 for sensor in METER_SENSORS:
+                    if do_descriptive_names:
+                        title = f"{data['DESCR']} {METER_SENSORS[sensor][1]}"
+                    else:
+                        title = METER_SENSORS[sensor][1]
                     smb = SunPowerMeterBasic(
                         coordinator,
                         data,
                         pvs,
                         METER_SENSORS[sensor][0],
-                        METER_SENSORS[sensor][1],
+                        title,
                         METER_SENSORS[sensor][2],
                         METER_SENSORS[sensor][3],
                     )
@@ -72,12 +82,16 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         else:
             for data in sunpower_data[INVERTER_DEVICE_TYPE].values():
                 for sensor in INVERTER_SENSORS:
+                    if do_descriptive_names:
+                        title = f"{data['DESCR']} {INVERTER_SENSORS[sensor][1]}"
+                    else:
+                        title = INVERTER_SENSORS[sensor][1]
                     sib = SunPowerInverterBasic(
                         coordinator,
                         data,
                         pvs,
                         INVERTER_SENSORS[sensor][0],
-                        INVERTER_SENSORS[sensor][1],
+                        title,
                         INVERTER_SENSORS[sensor][2],
                         INVERTER_SENSORS[sensor][3],
                     )
