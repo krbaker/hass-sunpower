@@ -16,17 +16,15 @@ Platform | Description
 `sensor` | Most data available from the PVS system including per-panel data.
 
 ## Installation
-
 1. Click install.
-1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Sunpower".
-
-
+2. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Sunpower".
 
 ## Configuration is done in the UI
  * it will ask for a host (ip works)
  * hint: most sunpower systems are at 172.27.153.1
 
-<!---->
+## Use descriptive entity names
+When selected during installation, entities added for each device will have the device descriptor added onto the front of their name. The device descriptor is a combination of device type (e.g., Inverter) and serial number. This guarantees unique entity IDs and names at the expense of making said names very long.
 
 ## Network Setup
 This integration requires connectivity to the management interface used for installing the system.  The PVS systems have a second lan interface in the box.  *DO NOT PLUG THIS INTO YOUR LAN!!!* it is running its own DHCP server which will cause all sorts of IP addressing issues.  I run a Linux router with a spare ethernet port and route to the sunpower interface and allow my home assistant system to connect directly to the PVS.  Also note that the command used to dump data 'device list' is very slow and sometimes times out.  I've built in some retry logic so setup passes pretty reliably.  Sometimes you may see data go blank if the fetch times out.

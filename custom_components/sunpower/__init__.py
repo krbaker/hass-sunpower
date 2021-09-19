@@ -10,7 +10,6 @@ from .sunpower import SunPowerMonitor, ConnectionException
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -20,7 +19,6 @@ from .const import (
     SUNPOWER_COORDINATOR,
     SUNPOWER_HOST,
     SETUP_TIMEOUT_MIN,
-    PVS_DEVICE_TYPE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -34,7 +32,7 @@ def sunpower_fetch(sunpower_monitor):
     """Basic data fetch routine to get and reformat sunpower data to a dict of device type and serial #"""
     try:
         sunpower_data = sunpower_monitor.device_list()
-        _LOGGER.info("got data %s", sunpower_data)
+        _LOGGER.debug("got data %s", sunpower_data)
         data = {}
         # Convert data into indexable format data[device_type][serial]
         for device in sunpower_data["devices"]:
@@ -74,13 +72,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     async def async_update_data():
         """Fetch data from API endpoint, used by coordinator to get mass data updates"""
-        _LOGGER.info("Updating all sunpower data")
+        _LOGGER.debug("Updating SunPower data")
         return await hass.async_add_executor_job(sunpower_fetch, sunpower_monitor)
 
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="Sunpower PVS",
+        name="SunPower PVS",
         update_method=async_update_data,
         update_interval=timedelta(seconds=UPDATE_INTERVAL),
     )
@@ -93,7 +91,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     start = time.time()
     # Need to make sure this data loads on setup, be aggressive about retries
     while not coordinator.data:
-        _LOGGER.info("Config Update Attempt")
+        _LOGGER.debug("Config Update Attempt")
         await coordinator.async_refresh()
         if (time.time() - start) > (SETUP_TIMEOUT_MIN * 60):
             _LOGGER.error("Failed to update data")

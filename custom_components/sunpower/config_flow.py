@@ -4,12 +4,18 @@ from .sunpower import SunPowerMonitor, ConnectionException
 import voluptuous as vol
 
 from homeassistant import config_entries, core, exceptions
+from homeassistant.const import CONF_HOST
 
-from .const import DOMAIN, SUNPOWER_HOST  # pylint:disable=unused-import
+from .const import DOMAIN, SUNPOWER_HOST, SUNPOWER_DESCRIPTIVE_NAMES
 
 _LOGGER = logging.getLogger(__name__)
 
-DATA_SCHEMA = vol.Schema({"host": str})
+DATA_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_HOST): str,
+        vol.Required(SUNPOWER_DESCRIPTIVE_NAMES, default=False): bool,
+    }
+)
 
 
 async def validate_input(hass: core.HomeAssistant, data):
@@ -22,7 +28,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     name = "PVS {}".format(data["host"])
     try:
         response = await hass.async_add_executor_job(spm.network_status)
-        _LOGGER.info("Got from %s %s", data["host"], response)
+        _LOGGER.debug("Got from %s %s", data["host"], response)
     except ConnectionException as error:
         raise CannotConnect from error
 

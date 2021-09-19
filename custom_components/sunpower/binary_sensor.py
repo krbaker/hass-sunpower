@@ -6,8 +6,7 @@ from homeassistant.const import DEVICE_CLASS_POWER
 from .const import (
     DOMAIN,
     SUNPOWER_COORDINATOR,
-    #    SUNPOWER_DATA,
-    #    SUNPOWER_OBJECT,
+    SUNPOWER_DESCRIPTIVE_NAMES,
     PVS_DEVICE_TYPE,
     INVERTER_DEVICE_TYPE,
     METER_DEVICE_TYPE,
@@ -24,7 +23,9 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Sunpower sensors."""
     sunpower_state = hass.data[DOMAIN][config_entry.entry_id]
-    _LOGGER.error("Sunpower_state: %s", sunpower_state)
+    _LOGGER.debug("Sunpower_state: %s", sunpower_state)
+
+    do_descriptive_names = config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES]
 
     coordinator = sunpower_state[SUNPOWER_COORDINATOR]
     sunpower_data = coordinator.data
@@ -34,19 +35,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     else:
         pvs = next(iter(sunpower_data[PVS_DEVICE_TYPE].values()))
 
-        entities = [SunPowerPVSState(coordinator, pvs)]
+        entities = [SunPowerPVSState(coordinator, pvs, do_descriptive_names)]
 
         if METER_DEVICE_TYPE not in sunpower_data:
             _LOGGER.error("Cannot find any power meters")
         else:
             for data in sunpower_data[METER_DEVICE_TYPE].values():
-                entities.append(SunPowerMeterState(coordinator, data, pvs))
+                entities.append(SunPowerMeterState(coordinator, data, pvs, do_descriptive_names))
 
         if INVERTER_DEVICE_TYPE not in sunpower_data:
             _LOGGER.error("Cannot find any power inverters")
         else:
             for data in sunpower_data[INVERTER_DEVICE_TYPE].values():
-                entities.append(SunPowerInverterState(coordinator, data, pvs))
+                entities.append(SunPowerInverterState(coordinator, data, pvs, do_descriptive_names))
 
     async_add_entities(entities, True)
 
@@ -54,10 +55,17 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class SunPowerPVSState(SunPowerPVSEntity):
     """Representation of SunPower PVS Working State"""
 
+    def __init__(self, coordinator, pvs_info, do_descriptive_names):
+        super().__init__(coordinator, pvs_info)
+        self._do_descriptive_names = do_descriptive_names
+
     @property
     def name(self):
         """Device Name."""
-        return "System State"
+        if self._do_descriptive_names:
+            return "PVS System State"
+        else:
+            return "System State"
 
     @property
     def device_class(self):
@@ -83,10 +91,17 @@ class SunPowerPVSState(SunPowerPVSEntity):
 class SunPowerMeterState(SunPowerMeterEntity):
     """Representation of SunPower Meter Working State"""
 
+    def __init__(self, coordinator, meter_info, pvs_info, do_descriptive_names):
+        super().__init__(coordinator, meter_info, pvs_info)
+        self._do_descriptive_names = do_descriptive_names
+
     @property
     def name(self):
         """Device Name."""
-        return "System State"
+        if self._do_descriptive_names:
+            return f"{self._meter_info['DESCR']} System State"
+        else:
+            return "System State"
 
     @property
     def device_class(self):
@@ -112,10 +127,17 @@ class SunPowerMeterState(SunPowerMeterEntity):
 class SunPowerInverterState(SunPowerInverterEntity):
     """Representation of SunPower Inverter Working State"""
 
+    def __init__(self, coordinator, inverter_info, pvs_info, do_descriptive_names):
+        super().__init__(coordinator, inverter_info, pvs_info)
+        self._do_descriptive_names = do_descriptive_names
+
     @property
     def name(self):
         """Device Name."""
-        return "System State"
+        if self._do_descriptive_names:
+            return f"{self._inverter_info['DESCR']} System State"
+        else:
+            return "System State"
 
     @property
     def device_class(self):
