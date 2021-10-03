@@ -2,6 +2,7 @@
 import logging
 
 from homeassistant.const import DEVICE_CLASS_POWER
+from homeassistant.components.binary_sensor import BinarySensorEntity
 
 from .const import (
     DOMAIN,
@@ -25,6 +26,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     sunpower_state = hass.data[DOMAIN][config_entry.entry_id]
     _LOGGER.debug("Sunpower_state: %s", sunpower_state)
 
+    if not SUNPOWER_DESCRIPTIVE_NAMES in config_entry.data:
+        config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES] = False
     do_descriptive_names = config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES]
 
     coordinator = sunpower_state[SUNPOWER_COORDINATOR]
@@ -52,7 +55,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(entities, True)
 
 
-class SunPowerPVSState(SunPowerPVSEntity):
+class SunPowerPVSState(SunPowerPVSEntity, BinarySensorEntity):
     """Representation of SunPower PVS Working State"""
 
     def __init__(self, coordinator, pvs_info, do_descriptive_names):
@@ -88,7 +91,7 @@ class SunPowerPVSState(SunPowerPVSEntity):
         return self.state == WORKING_STATE
 
 
-class SunPowerMeterState(SunPowerMeterEntity):
+class SunPowerMeterState(SunPowerMeterEntity, BinarySensorEntity):
     """Representation of SunPower Meter Working State"""
 
     def __init__(self, coordinator, meter_info, pvs_info, do_descriptive_names):
@@ -124,7 +127,7 @@ class SunPowerMeterState(SunPowerMeterEntity):
         return self.state == WORKING_STATE
 
 
-class SunPowerInverterState(SunPowerInverterEntity):
+class SunPowerInverterState(SunPowerInverterEntity, BinarySensorEntity):
     """Representation of SunPower Inverter Working State"""
 
     def __init__(self, coordinator, inverter_info, pvs_info, do_descriptive_names):
