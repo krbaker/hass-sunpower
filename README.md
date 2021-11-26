@@ -46,7 +46,7 @@ Entity | Units | Description
 `System Load` | Load Avg | Load average like number, unclear over what time period.  Average number of tasks in run queue average over time. 
 `System State` | String | Pass through from the API, sometimes goes unknown if the API times out (the local API is horribly slow and takes > 1 min sometimes)
 `Untransmitted Data` | Bytes | How much data is in PVS buffers not sent to Sunpower cloud.
-'Uptime' | Seconds | How long the system has been running, appears to restart on its own fairly frequently (firmware ups?).
+`Uptime` | Seconds | How long the system has been running, appears to restart on its own fairly frequently (firmware ups?).
 
 ### Power Meter
 This is the power meter built into the PVS.  The serial number is used for the device ID to avoid colissions.  All systems I have seen have two meters one ends in 'p' for production (from panels) and 'c' for consumption (use by household).
