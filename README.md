@@ -29,8 +29,58 @@ When selected during installation, entities added for each device will have the 
 ## Network Setup
 This integration requires connectivity to the management interface used for installing the system.  The PVS systems have a second lan interface in the box.  *DO NOT PLUG THIS INTO YOUR LAN!!!* it is running its own DHCP server which will cause all sorts of IP addressing issues.  I run a Linux router with a spare ethernet port and route to the sunpower interface and allow my home assistant system to connect directly to the PVS.  Also note that the command used to dump data 'device list' is very slow and sometimes times out.  I've built in some retry logic so setup passes pretty reliably.  Sometimes you may see data go blank if the fetch times out.
 
+## Devices
+Depending on the version of PVS you may not see all of these devices/attributes.  I'm guessing on a number of these attributes based on what I've observed.  Updates welcome!
+
+### PV Supervisor
+This is the integrated computer that monitors your panels.  Currently this supports the PVS 5 and PVS 6.  The serial number is used for the device ID to avoid colissions.  
+
+Entity | Units | Description
+-- | -- | --
+`Memory Used` | Bytes | How much memory is consumed on the PVS.
+`Flash Available` | Bytes | How much flash space is left.
+`Error Count` | Bytes | Internal error count (never seen more than 0 here).
+`Communication Errors` | Bytes | Number of failures talking to panels? (this goes up and down which doesn't seem right).
+`Scan Time` | Bytes | How long it took to poll the pannels
+`Skipped Scans` | Count | How many times the system has skipped polling the panels for data 
+`System Load` | Load Avg | Load average like number, unclear over what time period.  Average number of tasks in run queue average over time. 
+`System State` | String | Pass through from the API, sometimes goes unknown if the API times out (the local API is horribly slow and takes > 1 min sometimes)
+`Untransmitted Data` | Bytes | How much data is in PVS buffers not sent to Sunpower cloud.
+`Uptime` | Seconds | How long the system has been running, appears to restart on its own fairly frequently (firmware ups?).
+
+### Power Meter
+This is the power meter built into the PVS.  The serial number is used for the device ID to avoid colissions.  All systems I have seen have two meters one ends in 'p' for production (from panels) and 'c' for consumption (use by household).
+
+Entity | Units | Description
+-- | -- | --
+`System State` | String | Pass through from the API, sometimes goes unknown if the API times out (the local API is horribly slow and takes > 1 min sometimes)
+`Frequency` | Hz | Observed AC Frequency.  Resolution appears to be .1hz.  My powerwall shifts the frequency to shutdown my panels when charged 100% stays within +- .1hz.
+`Lifetime Power` | kwh | Net power through this meter.  Note that this *will* 'spin backwards' and make home assistant log errors if you draw anything here.
+`Power` | kw | Current power through this meter.
+`Power Factor` | Percent | [Power Factor][power-factor] is better explained by Wikipedia.
+`KVA Apparent` | VA | See above
+`KVA Reactive` | VA | See above
+
+### Inverter
+This is the data from each Micro Inverter.  Each inverter optimizes the power generation using [MPPT][mppt] all of the panel side power data is reported from each inverter.  You should see one of these for every panel you have, they are listed by serial number.
+
+Entity | Units | Description
+-- | -- | --
+`System State` | String | Pass through from the API, sometimes goes unknown if the API times out, returns 'error' on my system more than I would expect.
+`Frequency` | Hz | Observed AC Frequency.  Resolution appears to be .01hz.  My powerwall shifts the frequency to shutdown my panels when charged 100% stays within +- .1hz.
+`Lifetime Power` | kwh | Lifetime produced power from this panel / inverter
+`Power` | kw | Current power from this panel / inverter
+`Voltage` | Volts | Power this panel is seeing (wired across both phases so seeing 240+-)
+`Temperature` | F | Temperature of this inverter, can get fairly warn on a sunny day developing full power 
+`Amps` | Amps | Power this inverter is producing on the AC side
+`MPPT Volts` | Volts | [MPPT][mppt] optimized panel voltage.  This is the actual voltage the panel is driven by inverter to develop currently.
+`MPPT Amps` | Amps | [MPPT][mppt] optimized panel amperage.  This is the actual amperage the panel is driven by inverter to develop currently.
+`MPPT KW` | KW | [MPPT][mppt] optimized panel output in kw.  This is the actual power the panel developing currently.
+
 ***
 
+[mppt]: https://en.wikipedia.org/wiki/Maximum_power_point_tracking
+[power-factor]: https://en.wikipedia.org/wiki/Power_factor
 [sunpower]: https://github.com/krbaker/hass-sunpower
 [commits-shield]: https://img.shields.io/github/commit-activity/y/custom-components/blueprint.svg?style=for-the-badge
 [commits]: https://github.com/krbaker/hass-sunpower/commits/master
