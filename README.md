@@ -55,11 +55,11 @@ Entity | Units | Description
 -- | -- | --
 `System State` | String | Pass through from the API, sometimes goes unknown if the API times out (the local API is horribly slow and takes > 1 min sometimes)
 `Frequency` | Hz | Observed AC Frequency.  Resolution appears to be .1hz.  My powerwall shifts the frequency to shutdown my panels when charged 100% stays within +- .1hz.
-'Lifetime Power' | kwh | Net power through this meter.  Note that this *will* 'spin backwards' and make home assistant log errors if you draw anything here.
-'Power' | kw | Current power through this meter.
+`Lifetime Power` | kwh | Net power through this meter.  Note that this *will* 'spin backwards' and make home assistant log errors if you draw anything here.
+`Power` | kw | Current power through this meter.
 `Power Factor` | Percent | [Power Factor][power-factor] is better explained by Wikipedia.
 `KVA Apparent` | VA | See above
-'KVA Reactive' | VA | See above
+`KVA Reactive` | VA | See above
 
 ### Inverter
 This is the data from each Micro Inverter.  Each inverter optimizes the power generation using [MPPT][mppt] all of the panel side power data is reported from each inverter.  You should see one of these for every panel you have, they are listed by serial number.
@@ -68,14 +68,14 @@ Entity | Units | Description
 -- | -- | --
 `System State` | String | Pass through from the API, sometimes goes unknown if the API times out, returns 'error' on my system more than I would expect.
 `Frequency` | Hz | Observed AC Frequency.  Resolution appears to be .01hz.  My powerwall shifts the frequency to shutdown my panels when charged 100% stays within +- .1hz.
-'Lifetime Power' | kwh | Lifetime produced power from this panel / inverter
-'Power' | kw | Current power from this panel / inverter
+`Lifetime Power` | kwh | Lifetime produced power from this panel / inverter
+`Power` | kw | Current power from this panel / inverter
 `Voltage` | Volts | Power this panel is seeing (wired across both phases so seeing 240+-)
 `Temperature` | F | Temperature of this inverter, can get fairly warn on a sunny day developing full power 
-'Amps' | Amps | Power this inverter is producing on the AC side
+`Amps` | Amps | Power this inverter is producing on the AC side
 `MPPT Volts` | Volts | [MPPT][mppt] optimized panel voltage.  This is the actual voltage the panel is driven by inverter to develop currently.
 `MPPT Amps` | Amps | [MPPT][mppt] optimized panel amperage.  This is the actual amperage the panel is driven by inverter to develop currently.
-'MPPT KW' | KW | [MPPT][mppt] optimized panel output in kw.  This is the actual power the panel developing currently.
+`MPPT KW` | KW | [MPPT][mppt] optimized panel output in kw.  This is the actual power the panel developing currently.
 
 ***
 
