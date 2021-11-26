@@ -17,11 +17,14 @@ Platform | Description
 
 ## Installation
 1. Click install.
-2. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Sunpower".
-
-## Configuration is done in the UI
- * it will ask for a host (ip works)
- * hint: most sunpower systems are at 172.27.153.1
+3. Install HACS
+4. Add this Repo to HACS
+5. Install this integration in HACS
+6. Restart Home Assistant
+8. In the Home Assistant UI go to "Configuration" -> "Integrations" click "+" and search for "Sunpower".
+   * The main configuration is IP/Hostname. If setup with a NAT as described below the IP will be 172.27.153.1. Note the network setup is for most people the challenging setup of this integration.
+   * Requires that the management LAN interface is plugged in, your installer uses this for setup but doesn't plug it into your lan
+   * This network interface has a DHCP server running on it. If you plug it straight into your home network it will make probably other systems stop working as they will DHCP to the wrong address.
 
 ## Use descriptive entity names
 When selected during installation, entities added for each device will have the device descriptor added onto the front of their name. The device descriptor is a combination of device type (e.g., Inverter) and serial number. This guarantees unique entity IDs and names at the expense of making said names very long.
