@@ -32,6 +32,8 @@ When selected during installation, entities added for each device will have the 
 ## Network Setup
 This integration requires connectivity to the management interface used for installing the system.  The PVS systems have a second lan interface in the box.  *DO NOT PLUG THIS INTO YOUR LAN!!!* it is running its own DHCP server which will cause all sorts of IP addressing issues.  I run a Linux router with a spare ethernet port and route to the sunpower interface and allow my home assistant system to connect directly to the PVS.  Also note that the command used to dump data 'device list' is very slow and sometimes times out.  I've built in some retry logic so setup passes pretty reliably.  Sometimes you may see data go blank if the fetch times out.
 
+A detailed setup using a Raspberry Pi which fits into the PVS is [available here][pi_setup].
+
 ## Devices
 Depending on the version of PVS you may not see all of these devices/attributes.  I'm guessing on a number of these attributes based on what I've observed.  Updates welcome!
 
@@ -93,3 +95,4 @@ Entity | Units | Description
 [releases-shield]: https://img.shields.io/github/release/krbaker/hass-sunpower.svg?style=for-the-badge
 [releases]: https://github.com/krbaker/hass-sunpower/releases
 [sunpower-us]: https://us.sunpower.com/products/solar-panels
+[pi_setup]: https://starreveld.com/PVS6%20Access%20and%20API.pdf
