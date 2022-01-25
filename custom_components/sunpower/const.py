@@ -20,6 +20,7 @@ from homeassistant.const import (
 
 from homeassistant.components.sensor import (
     STATE_CLASS_MEASUREMENT,
+    STATE_CLASS_TOTAL,
     STATE_CLASS_TOTAL_INCREASING
 )
 
@@ -132,7 +133,7 @@ PVS_SENSORS = {
         "",
         "mdi:alert-circle",
         None,
-        STATE_CLASS_TOTAL_INCREASING
+        STATE_CLASS_TOTAL
         ],
     "PVS_COMMUNICATION_ERRORS": [
         "dl_comm_err",
