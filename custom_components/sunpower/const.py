@@ -141,7 +141,7 @@ PVS_SENSORS = {
         "",
         "mdi:network-off",
         None,
-        STATE_CLASS_TOTAL_INCREASING
+        STATE_CLASS_TOTAL
         ],
     "PVS_SKIPPED_SCANS": [
         "dl_skipped_scans",
