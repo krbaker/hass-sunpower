@@ -82,8 +82,11 @@ Entity | Units | Description
 `MPPT Amps` | Amps | [MPPT][mppt] optimized panel amperage.  This is the actual amperage the panel is driven by inverter to develop currently.
 `MPPT KW` | KW | [MPPT][mppt] optimized panel output in kw.  This is the actual power the panel developing currently.
 
-***
+### Debugging
+If you file a bug one of the most useful things to include is the output of 
+    curl http://172.27.153.1/cgi-bin/dl_cgi?Command=DeviceList
 
+***
 [mppt]: https://en.wikipedia.org/wiki/Maximum_power_point_tracking
 [power-factor]: https://en.wikipedia.org/wiki/Power_factor
 [sunpower]: https://github.com/krbaker/hass-sunpower
