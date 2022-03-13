@@ -6,7 +6,7 @@ import time
 
 import voluptuous as vol
 
-from .sunpower import SunPowerMonitor, ConnectionException
+from .sunpower import SunPowerMonitor, ConnectionException, ParseException
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -42,6 +42,8 @@ def sunpower_fetch(sunpower_monitor):
                 data[device["DEVICE_TYPE"]][device["SERIAL"]] = device
         return data
     except ConnectionException as error:
+        raise UpdateFailed from error
+    except ParseException as error:
         raise UpdateFailed from error
 
 
