@@ -18,7 +18,7 @@ Platform | Description
 ## Installation
 1. Click install.
 3. Install HACS
-4. Add this Repo to HACS
+4. Add this Repo to HACS by going to the 3 dots on the right ...-> Custom repositories -> Rpository: krbaker/hass-sunpower Category: integration
 5. Install this integration in HACS
 6. Restart Home Assistant
 8. In the Home Assistant UI go to "Configuration" -> "Integrations" click "+" and search for "Sunpower".
