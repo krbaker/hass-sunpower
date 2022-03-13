@@ -84,7 +84,7 @@ Entity | Units | Description
 
 ### Debugging
 If you file a bug one of the most useful things to include is the output of 
-    curl http://172.27.153.1/cgi-bin/dl_cgi?Command=DeviceList
+> curl http://172.27.153.1/cgi-bin/dl_cgi?Command=DeviceList
 
 ***
 [mppt]: https://en.wikipedia.org/wiki/Maximum_power_point_tracking
