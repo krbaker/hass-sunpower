@@ -114,4 +114,4 @@ def parse_device_info(device_info_result: str) -> Dict[str, str]:
         device_type = METER_DEVICE_TYPE
     device_detail = auto_format_field_names(data, device_type)
     device_detail.update({"DEVICE_TYPE": device_type})
-    return {device_type: device_detail}
+    return device_detail
