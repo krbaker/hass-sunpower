@@ -13,11 +13,20 @@ from .const import (
     PVS_SENSORS,
     METER_SENSORS,
     INVERTER_SENSORS,
+    SensorConfig,
 )
 from .entity import SunPowerPVSEntity, SunPowerMeterEntity, SunPowerInverterEntity
 
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def validate_sensor(sensor: SensorEntity) -> bool:
+    try:
+        sensor.native_value
+        return True
+    except KeyError:
+        return False
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -34,82 +43,58 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     if PVS_DEVICE_TYPE not in sunpower_data:
         _LOGGER.error("Cannot find PVS Entry")
-    else:
-        pvs = next(iter(sunpower_data[PVS_DEVICE_TYPE].values()))
+        return
 
-        entities = []
-        for sensor in PVS_SENSORS:
-            if do_descriptive_names:
-                title = f"{pvs['DEVICE_TYPE']} {PVS_SENSORS[sensor][1]}"
-            else:
-                title = PVS_SENSORS[sensor][1]
-            spb = SunPowerPVSBasic(
+    if INVERTER_DEVICE_TYPE not in sunpower_data:
+        _LOGGER.error("Cannot find any power inverters")
+    if METER_DEVICE_TYPE not in sunpower_data:
+        _LOGGER.warn("Cannot find any power meters")
+
+    pvs = next(iter(sunpower_data[PVS_DEVICE_TYPE].values()))
+
+    entities = []
+    entities += filter(
+        validate_sensor,
+        [
+            SunPowerPVSBasic(
                 coordinator,
                 pvs,
-                PVS_SENSORS[sensor][0],
-                title,
-                PVS_SENSORS[sensor][2],
-                PVS_SENSORS[sensor][3],
-                PVS_SENSORS[sensor][4],
-                PVS_SENSORS[sensor][5],
+                f"{pvs['DEVICE_TYPE']} " if do_descriptive_names else "",
+                sensor_config,
             )
-            try:
-                spb.native_value
-                entities.append(spb)
-            except KeyError:
-                pass
+            for sensor_config in PVS_SENSORS.values()
+        ],
+    )
 
-        if METER_DEVICE_TYPE not in sunpower_data:
-            _LOGGER.error("Cannot find any power meters")
-        else:
-            for data in sunpower_data[METER_DEVICE_TYPE].values():
-                for sensor in METER_SENSORS:
-                    if do_descriptive_names:
-                        title = f"{data['DESCR']} {METER_SENSORS[sensor][1]}"
-                    else:
-                        title = METER_SENSORS[sensor][1]
-                    smb = SunPowerMeterBasic(
-                        coordinator,
-                        data,
-                        pvs,
-                        METER_SENSORS[sensor][0],
-                        title,
-                        METER_SENSORS[sensor][2],
-                        METER_SENSORS[sensor][3],
-                        METER_SENSORS[sensor][4],
-                        METER_SENSORS[sensor][5],
-                    )
-                    try:
-                        smb.native_value
-                        entities.append(smb)
-                    except KeyError:
-                        pass
+    entities += filter(
+        validate_sensor,
+        [
+            SunPowerMeterBasic(
+                coordinator,
+                meter_data,
+                pvs,
+                f"{meter_data['DESCR']} " if do_descriptive_names else "",
+                sensor_config,
+            )
+            for meter_data in sunpower_data.get(METER_DEVICE_TYPE, {}).values()
+            for sensor_config in METER_SENSORS.values()
+        ],
+    )
 
-        if INVERTER_DEVICE_TYPE not in sunpower_data:
-            _LOGGER.error("Cannot find any power inverters")
-        else:
-            for data in sunpower_data[INVERTER_DEVICE_TYPE].values():
-                for sensor in INVERTER_SENSORS:
-                    if do_descriptive_names:
-                        title = f"{data['DESCR']} {INVERTER_SENSORS[sensor][1]}"
-                    else:
-                        title = INVERTER_SENSORS[sensor][1]
-                    sib = SunPowerInverterBasic(
-                        coordinator,
-                        data,
-                        pvs,
-                        INVERTER_SENSORS[sensor][0],
-                        title,
-                        INVERTER_SENSORS[sensor][2],
-                        INVERTER_SENSORS[sensor][3],
-                        INVERTER_SENSORS[sensor][4],
-                        INVERTER_SENSORS[sensor][5]
-                    )
-                    try:
-                        sib.native_value
-                        entities.append(sib)
-                    except KeyError:
-                        pass
+    entities += filter(
+        validate_sensor,
+        [
+            SunPowerInverterBasic(
+                coordinator,
+                inverter_data,
+                pvs,
+                f"{inverter_data['DESCR']} " if do_descriptive_names else "",
+                sensor_config,
+            )
+            for inverter_data in sunpower_data.get(INVERTER_DEVICE_TYPE, {}).values()
+            for sensor_config in INVERTER_SENSORS
+        ],
+    )
 
     async_add_entities(entities, True)
 
@@ -117,147 +102,133 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class SunPowerPVSBasic(SunPowerPVSEntity, SensorEntity):
     """Representation of SunPower PVS Stat"""
 
-    def __init__(self, coordinator, pvs_info, field, title, unit, icon, device_class, state_class):
+    def __init__(self, coordinator, pvs_info, title_prefix, sensor_config):
         """Initialize the sensor."""
         super().__init__(coordinator, pvs_info)
-        self._title = title
-        self._field = field
-        self._unit = unit
-        self._icon = icon
-        self._my_device_class = device_class
-        self._my_state_class = state_class
+        self._title_prefix = title_prefix
+        self._config = sensor_config
 
     @property
     def native_unit_of_measurement(self):
         """Return the unit of measurement."""
-        return self._unit
+        return self._config.unit
 
     @property
     def device_class(self):
         """Return device class."""
-        return self._my_device_class
+        return self._config.my_device_class
 
     @property
     def state_class(self):
         """Return state class."""
-        return self._my_state_class
+        return self._config.state_class
 
     @property
     def icon(self):
         """Icon to use in the frontend, if any."""
-        return self._icon
+        return self._config.icon
 
     @property
     def name(self):
         """Device Name."""
-        return self._title
+        return f"{self._title_prefix}{self._config.title}"
 
     @property
     def unique_id(self):
         """Device Uniqueid."""
-        return f"{self.base_unique_id}_pvs_{self._field}"
+        return f"{self.base_unique_id}_pvs_{self._config.field}"
 
     @property
     def native_value(self):
         """Get the current value"""
-        return self.coordinator.data[PVS_DEVICE_TYPE][self.base_unique_id][self._field]
+        return self.coordinator.data[PVS_DEVICE_TYPE][self.base_unique_id][self._config.field]
 
 
 class SunPowerMeterBasic(SunPowerMeterEntity, SensorEntity):
     """Representation of SunPower Meter Stat"""
 
-    def __init__(self, coordinator, meter_info, pvs_info, field, title, unit, icon,
-                 device_class, state_class):
+    def __init__(self, coordinator, meter_info, pvs_info, title_prefix: str, sensor_config: SensorConfig):
         """Initialize the sensor."""
         super().__init__(coordinator, meter_info, pvs_info)
-        self._title = title
-        self._field = field
-        self._unit = unit
-        self._icon = icon
-        self._my_device_class = device_class
-        self._my_state_class = state_class
+        self._title_prefix = title_prefix
+        self._config = sensor_config
 
     @property
     def native_unit_of_measurement(self):
         """Return the unit of measurement."""
-        return self._unit
+        return self._config.unit
 
     @property
     def device_class(self):
         """Return device class."""
-        return self._my_device_class
+        return self._config.device_class
 
     @property
     def state_class(self):
         """Return state class."""
-        return self._my_state_class
+        return self._config.state_class
 
     @property
     def icon(self):
         """Icon to use in the frontend, if any."""
-        return self._icon
+        return self._config.icon
 
     @property
     def name(self):
         """Device Name."""
-        return self._title
+        return f"{self._title_prefix}{self._config.title}"
 
     @property
     def unique_id(self):
         """Device Uniqueid."""
-        return f"{self.base_unique_id}_pvs_{self._field}"
+        return f"{self.base_unique_id}_pvs_{self._config.field}"
 
     @property
     def native_value(self):
         """Get the current value"""
-        return self.coordinator.data[METER_DEVICE_TYPE][self.base_unique_id][self._field]
+        return self.coordinator.data[METER_DEVICE_TYPE][self.base_unique_id][self._config.field]
 
 
 class SunPowerInverterBasic(SunPowerInverterEntity, SensorEntity):
     """Representation of SunPower Meter Stat"""
 
-    def __init__(self, coordinator, inverter_info, pvs_info, field, title, unit, icon,
-                 device_class, state_class):
+    def __init__(self, coordinator, inverter_info, pvs_info, title_prefix: str, config: SensorConfig):
         """Initialize the sensor."""
         super().__init__(coordinator, inverter_info, pvs_info)
-        self._title = title
-        self._field = field
-        self._unit = unit
-        self._icon = icon
-        self._my_device_class = device_class
-        self._my_state_class = state_class
+        self._title_prefix = title_prefix
+        self._config = config
 
     @property
     def native_unit_of_measurement(self):
         """Return the unit of measurement."""
-        return self._unit
+        return self._config.unit
 
     @property
     def device_class(self):
         """Return device class."""
-        return self._my_device_class
+        return self._config.device_class
 
     @property
     def state_class(self):
         """Return state class."""
-        return self._my_state_class
+        return self._config.state_class
 
     @property
     def icon(self):
         """Icon to use in the frontend, if any."""
-        return self._icon
+        return self._config.icon
 
     @property
     def name(self):
         """Device Name."""
-        return self._title
+        return f"{self._title_prefix}{self._config.title}"
 
     @property
     def unique_id(self):
         """Device Uniqueid."""
-        return f"{self.base_unique_id}_pvs_{self._field}"
+        return f"{self.base_unique_id}_pvs_{self._config.field}"
 
     @property
     def native_value(self):
         """Get the current value"""
-        return self.coordinator.data[INVERTER_DEVICE_TYPE][self.base_unique_id][self._field]
+        return self.coordinator.data[INVERTER_DEVICE_TYPE][self.base_unique_id][self._config.field]

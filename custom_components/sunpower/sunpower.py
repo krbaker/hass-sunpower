@@ -1,6 +1,8 @@
 """ Basic Sunpower PVS Tool """
 import requests
 
+from .sunpower_version_adaptor import parse_device_list, parse_device_info
+
 
 class ConnectionException(Exception):
     """Any failure to connect to sunpower PVS"""
@@ -20,14 +22,56 @@ class SunPowerMonitor:
         """All 'commands' to the PVS module use this url pattern and return json
         The PVS system can take a very long time to respond so timeout is at 2 minutes"""
         try:
-            return requests.get(self.command_url + command, timeout=120).json()
+            response = requests.get(self.command_url + command, timeout=120)
         except requests.exceptions.RequestException as error:
             raise ConnectionException from error
 
+        try:
+            result = response.json()
+        except requests.exceptions.JSONDecodeError:
+            # SW Version 2.x.x of Sunpower PVS return data embedded in http.  Return the raw
+            # string for processing via regular expressions.
+            result = response.text
+        return result
+
+    def command_with_arguments(self, command, **kwargs):
+        arguments = ""
+        for key, value in kwargs.items():
+            arguments += f"&{key}={value}"
+
+        try:
+            response = requests.get(self.command_url + command + arguments)
+        except requests.exceptions.RequestException as error:
+            raise ConnectionException from error
+
+        try:
+            result = response.json()
+        except requests.exceptions.JSONDecodeError:
+            # SW Version 2.x.x of Sunpower PVS return data embedded in http.  Return the raw
+            # string for processing via regular expressions.
+            result = response.text
+        return result
+
     def device_list(self):
         """Get a list of all devices connected to the PVS"""
-        return self.generic_command("DeviceList")
+        command_result = self.generic_command("DeviceList")
+
+        # If the api did not return a json, the raw string is returned, and must be parsed manually
+        if isinstance(command_result, str):
+            device_list_raw = parse_device_list(command_result)
+            device_list = {}
+            for device in device_list_raw:
+                device_info_result = self.command_with_arguments("DeviceDetails", SerialNumber=device.serial)
+                device_list.update(parse_device_info(device_info_result))
+
+        # For the case of api that does return json, the results can just be passed along directly
+        else:
+            device_list = command_result
+
+        return device_list
 
     def network_status(self):
         """Get a list of network interfaces on the PVS"""
-        return self.generic_command("Get_Comm")
+        command_result = self.generic_command("Get_Comm")
+        if isinstance(command_result, dict):
+            return command_result
