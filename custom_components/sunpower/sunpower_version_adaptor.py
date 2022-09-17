@@ -7,12 +7,12 @@ import re
 
 logger = logging.getLogger(__name__)
 
-device_list_item = namedtuple("device_list_item", "serial x type y z error working name info link")
+device_list_item = namedtuple("device_list_item", "serial x type y z status error working name info link")
 key_value_tup = namedtuple("key_value_tup", "key value")
 
 
 device_list_item_re = re.compile(
-    r"<div class='accordionItem'><h2 id='([A-Z0-9]+)'( type='([a-zA-Z0-9\-]+)')*><img\/><span class='(working)?(error)?'>([a-zA-Z0-9 ]+)<\/span><img\/>(<span class='error'>Error</span>)?(<span class='working'>Working<\/span>)?<span class='info'>([ a-zA-Z,0-9\.]+)<\/span><span class='link'>([a-zA-Z0-9\-]*)<\/span><\/h2><div><\/div><\/div>"
+    r"<div class='accordionItem'><h2 id='([A-Z0-9]+)'( type='([a-zA-Z0-9\-]+)')*><img\/><span class='((working)?(error)?)'>([a-zA-Z0-9 ]+)<\/span><img\/>(<span class='error'>Error</span>)?(<span class='working'>Working<\/span>)?<span class='info'>([ a-zA-Z,0-9\.]+)<\/span><span class='link'>([a-zA-Z0-9\-]*)<\/span><\/h2><div><\/div><\/div>"
 )
 dev_detail_re = re.compile(r"<div class='accordionItem'>(.*)<\/h2><div><table>(.*)<\/table><\/div><\/div>")
 date_re = re.compile(r"<span class='DateClass'>([0-9]{4},[0-9]{2},[0-9]{2},[0-9]{2},[0-9]{2},[0-9]{2})<\/span>")
@@ -84,8 +84,8 @@ def parse_device_info(device_info_result: str) -> Dict[str, str]:
         raise RuntimeError("Unsupported Version of Sunpower PVS")
 
     # extract the detail section
-    _, detail = search_result[0]
-
+    summary, detail = search_result[0]
+    device_summary = device_list_item(*device_list_item_re.findall(summary)[0])
     # Make the string easier to work with
     stripped = (
         detail.replace("</tr>", "").replace("<b>", "").replace("</b>", "").replace("&nbsp;", "").replace("</td>", "")
@@ -113,14 +113,15 @@ def parse_device_info(device_info_result: str) -> Dict[str, str]:
     elif "Avg Heat Sink Temperature" in data:
         additional_data = {
             "DEVICE_TYPE": INVERTER_DEVICE_TYPE,
-            "TYPE": INVERTER_DEVICE_TYPE,
-            "DESCR": INVERTER_DEVICE_TYPE,
+            "TYPE": device_summary.type,
+            "DESCR": device_summary.info,
         }
     else:
         additional_data = {
             "DEVICE_TYPE": METER_DEVICE_TYPE,
-            "TYPE": METER_DEVICE_TYPE,
+            "TYPE": device_summary.type,
         }
     device_detail = auto_format_field_names(data, additional_data["DEVICE_TYPE"])
     device_detail.update(additional_data)
+    device_detail.update({"STATE": device_summary.status})
     return device_detail
