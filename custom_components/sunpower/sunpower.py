@@ -59,10 +59,10 @@ class SunPowerMonitor:
         # If the api did not return a json, the raw string is returned, and must be parsed manually
         if isinstance(command_result, str):
             device_list_raw = parse_device_list(command_result)
-            device_list = {"devices": {}}
+            device_list = {"devices": []}
             for device in device_list_raw:
                 device_info_result = self.command_with_arguments("DeviceDetails", SerialNumber=device.serial)
-                device_list["devices"].update(parse_device_info(device_info_result))
+                device_list["devices"].append(parse_device_info(device_info_result))
 
         # For the case of api that does return json, the results can just be passed along directly
         else:
