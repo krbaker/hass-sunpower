@@ -85,7 +85,8 @@ def parse_device_info(device_info_result: str) -> Dict[str, str]:
 
     # extract the detail section
     summary, detail = search_result[0]
-    device_summary = device_list_item(*device_list_item_re.findall(summary)[0])
+    logger.warn(summary)
+    device_summary = device_list_item(*(device_list_item_re.findall(summary)[0]))
     # Make the string easier to work with
     stripped = (
         detail.replace("</tr>", "").replace("<b>", "").replace("</b>", "").replace("&nbsp;", "").replace("</td>", "")
