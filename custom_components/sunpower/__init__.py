@@ -36,7 +36,9 @@ def sunpower_fetch(sunpower_monitor):
         data = {}
         # Convert data into indexable format data[device_type][serial]
         for device in sunpower_data["devices"]:
+            _LOGGER.warn(device)
             if device["DEVICE_TYPE"] not in data:
+                _LOGGER.warn(device["SERIAL"])
                 data[device["DEVICE_TYPE"]] = {device["SERIAL"]: device}
             else:
                 data[device["DEVICE_TYPE"]][device["SERIAL"]] = device
@@ -98,9 +100,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             break
 
     for component in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+        hass.async_create_task(hass.config_entries.async_forward_entry_setup(entry, component))
 
     return True
 
@@ -109,10 +109,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
     unload_ok = all(
         await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in PLATFORMS
-            ]
+            *[hass.config_entries.async_forward_entry_unload(entry, component) for component in PLATFORMS]
         )
     )
     if unload_ok:
