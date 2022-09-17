@@ -201,6 +201,9 @@ FIELD_ADAPTORS = {
         "dl_mem_used": {"Memory Used": "2.2.3"},
         "dl_flash_avail": {"Flash Space Available": "2.2.3"},
         "SERIAL": {"Serial Number": "2.2.3"},
+        "SWVER": {"Software Version": "2.2.3"},
+        "HWVER": {"Hardware Version": "2.2.3"},
+        "MODEL": {"Model": "2.2.3"},
     },
     INVERTER_DEVICE_TYPE: {
         "ltea_3phsum_kwh": {"Total Lifetime Energy": "2.2.3"},
@@ -214,6 +217,10 @@ FIELD_ADAPTORS = {
         "t_htsnk_degc": {"Avg Heat Sink Temperature": "2.2.3"},
         "freq_hz": {"Avg AC Frequency": "2.2.3"},
         "SERIAL": {"Serial Number": "2.2.3"},
+        "DESCR": {"": "2.2.3"},
+        "TYPE": {"": "2.2.3"},
+        "MODEL": {"Model": "2.2.3"},
+        "SWVER": {"Software Version": "2.2.3"},
     },
     METER_DEVICE_TYPE: {
         "freq_hz": {"Avg AC Frequency": "2.2.3"},  # Frequency
@@ -232,5 +239,8 @@ FIELD_ADAPTORS = {
         "neg_ltea_3phsum_kwh": {},  # "KWH To Grid"
         "pos_ltea_3phsum_kwh": {},  # "KWH To Home"
         "SERIAL": {"Serial Number": "2.2.3"},
+        "DESCR": {"": "2.2.3"},
+        "MODEL": {"Model": "2.2.3"},
+        "SWVER": {"Software Version": "2.2.3"},
     },
 }

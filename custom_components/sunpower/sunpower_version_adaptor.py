@@ -107,11 +107,20 @@ def parse_device_info(device_info_result: str) -> Dict[str, str]:
 
     # Infer the device type
     if "Avg CPU Load" in data:
-        device_type = PVS_DEVICE_TYPE
+        additional_data = {
+            "DEVICE_TYPE": PVS_DEVICE_TYPE,
+        }
     elif "Avg Heat Sink Temperature" in data:
-        device_type = INVERTER_DEVICE_TYPE
+        additional_data = {
+            "DEVICE_TYPE": INVERTER_DEVICE_TYPE,
+            "TYPE": INVERTER_DEVICE_TYPE,
+            "DESCR": INVERTER_DEVICE_TYPE,
+        }
     else:
-        device_type = METER_DEVICE_TYPE
-    device_detail = auto_format_field_names(data, device_type)
-    device_detail.update({"DEVICE_TYPE": device_type})
+        additional_data = {
+            "DEVICE_TYPE": METER_DEVICE_TYPE,
+            "TYPE": METER_DEVICE_TYPE,
+        }
+    device_detail = auto_format_field_names(data, additional_data["DEVICE_TYPE"])
+    device_detail.update(additional_data)
     return device_detail
