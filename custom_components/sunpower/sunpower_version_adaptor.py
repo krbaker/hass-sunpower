@@ -76,7 +76,7 @@ def auto_format_field_names(data_obj: dict[str, Any], device_type: str):
     return result
 
 
-def parse_device_info(device_info_result: str) -> Dict[str, str]:
+def parse_device_info(device_info_result: str, device_summary: device_list_item) -> Dict[str, str]:
     search_result = dev_detail_re.findall(device_info_result)
 
     # validate the result
@@ -84,9 +84,7 @@ def parse_device_info(device_info_result: str) -> Dict[str, str]:
         raise RuntimeError("Unsupported Version of Sunpower PVS")
 
     # extract the detail section
-    summary, detail = search_result[0]
-    logger.warn(summary)
-    device_summary = device_list_item(*(device_list_item_re.findall(summary)[0]))
+    _, detail = search_result[0]
     # Make the string easier to work with
     stripped = (
         detail.replace("</tr>", "").replace("<b>", "").replace("</b>", "").replace("&nbsp;", "").replace("</td>", "")

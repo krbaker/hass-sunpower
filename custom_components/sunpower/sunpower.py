@@ -62,7 +62,7 @@ class SunPowerMonitor:
             device_list = {"devices": []}
             for device in device_list_raw:
                 device_info_result = self.command_with_arguments("DeviceDetails", SerialNumber=device.serial)
-                device_list["devices"].append(parse_device_info(device_info_result))
+                device_list["devices"].append(parse_device_info(device_info_result, device))
 
         # For the case of api that does return json, the results can just be passed along directly
         else:
