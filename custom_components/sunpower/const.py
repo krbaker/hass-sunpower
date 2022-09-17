@@ -200,6 +200,7 @@ FIELD_ADAPTORS = {
         "dl_uptime": {"Time Since Powerup": "2.2.3"},
         "dl_mem_used": {"Memory Used": "2.2.3"},
         "dl_flash_avail": {"Flash Space Available": "2.2.3"},
+        "SERIAL": {"Serial Number": "2.2.3"},
     },
     INVERTER_DEVICE_TYPE: {
         "ltea_3phsum_kwh": {"Total Lifetime Energy": "2.2.3"},
@@ -212,6 +213,7 @@ FIELD_ADAPTORS = {
         "i_mppt1_a": {},  # MPPT Current
         "t_htsnk_degc": {"Avg Heat Sink Temperature": "2.2.3"},
         "freq_hz": {"Avg AC Frequency": "2.2.3"},
+        "SERIAL": {"Serial Number": "2.2.3"},
     },
     METER_DEVICE_TYPE: {
         "freq_hz": {"Avg AC Frequency": "2.2.3"},  # Frequency
@@ -229,5 +231,6 @@ FIELD_ADAPTORS = {
         "v12_v": {},  # "Supply Volts"
         "neg_ltea_3phsum_kwh": {},  # "KWH To Grid"
         "pos_ltea_3phsum_kwh": {},  # "KWH To Home"
+        "SERIAL": {"Serial Number": "2.2.3"},
     },
 }
