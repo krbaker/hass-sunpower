@@ -113,12 +113,13 @@ def parse_device_info(device_info_result: str, device_summary: device_list_item)
         additional_data = {
             "DEVICE_TYPE": INVERTER_DEVICE_TYPE,
             "TYPE": device_summary.type,
-            "DESCR": device_summary.info,
+            "DESCR": device_summary.name,
         }
     else:
         additional_data = {
             "DEVICE_TYPE": METER_DEVICE_TYPE,
             "TYPE": device_summary.type,
+            "DESCR": device_summary.name,
         }
     device_detail = auto_format_field_names(data, additional_data["DEVICE_TYPE"])
     device_detail.update(additional_data)
