@@ -66,35 +66,35 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         ],
     )
 
-    entities += filter(
-        validate_sensor,
-        [
-            SunPowerMeterBasic(
-                coordinator,
-                meter_data,
-                pvs,
-                f"{meter_data['DESCR']} " if do_descriptive_names else "",
-                sensor_config,
-            )
-            for meter_data in sunpower_data.get(METER_DEVICE_TYPE, {}).values()
-            for sensor_config in METER_SENSORS.values()
-        ],
-    )
+    for sensor_config in METER_SENSORS.values():
+        entities += filter(
+            validate_sensor,
+            [
+                SunPowerMeterBasic(
+                    coordinator,
+                    meter_data,
+                    pvs,
+                    f"{meter_data['DESCR']} " if do_descriptive_names else "",
+                    sensor_config,
+                )
+                for meter_data in sunpower_data.get(METER_DEVICE_TYPE, {}).values()
+            ],
+        )
 
-    entities += filter(
-        validate_sensor,
-        [
-            SunPowerInverterBasic(
-                coordinator,
-                inverter_data,
-                pvs,
-                f"{inverter_data['DESCR']} " if do_descriptive_names else "",
-                sensor_config,
-            )
-            for inverter_data in sunpower_data.get(INVERTER_DEVICE_TYPE, {}).values()
-            for sensor_config in INVERTER_SENSORS.values()
-        ],
-    )
+    for sensor_config in INVERTER_SENSORS.values():
+        entities += filter(
+            validate_sensor,
+            [
+                SunPowerInverterBasic(
+                    coordinator,
+                    inverter_data,
+                    pvs,
+                    f"{inverter_data['DESCR']} " if do_descriptive_names else "",
+                    sensor_config,
+                )
+                for inverter_data in sunpower_data.get(INVERTER_DEVICE_TYPE, {}).values()
+            ],
+        )
 
     async_add_entities(entities, True)
 
