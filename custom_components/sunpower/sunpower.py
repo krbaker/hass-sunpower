@@ -9,20 +9,19 @@ class ConnectionException(Exception):
 
 
 class SunPowerMonitor:
-    """Basic Class to talk to sunpower pvs 5/6 via the management interface 'API'.  This is not a public API so it might fail at any time.
+    """Basic Class to talk to sunpower pvs 2/5/6 via the management interface 'API'.  This is not a public API so it might fail at any time.
     if you find this usefull please complain to sunpower and your sunpower dealer that they
     do not have a public API"""
 
-    def __init__(self, host):
+    def __init__(self, host: str):
         """Initialize."""
-        self.host = host
-        self.command_url = "http://{0}/cgi-bin/dl_cgi?Command=".format(host)
+        self._host = host
 
     def generic_command(self, command):
         """All 'commands' to the PVS module use this url pattern and return json
         The PVS system can take a very long time to respond so timeout is at 2 minutes"""
         try:
-            response = requests.get(self.command_url + command, timeout=120)
+            response = requests.get(f"http://{self._host}/cgi-bin/dl_cgi?Command={command}", timeout=120)
         except requests.exceptions.RequestException as error:
             raise ConnectionException from error
 
@@ -35,12 +34,10 @@ class SunPowerMonitor:
         return result
 
     def command_with_arguments(self, command, **kwargs):
-        arguments = ""
-        for key, value in kwargs.items():
-            arguments += f"&{key}={value}"
+        args = "".join([f"&{key}={value}" for key, value in kwargs.items()])
 
         try:
-            response = requests.get(self.command_url + command + arguments)
+            response = requests.get(f"http://{self._host}/cgi-bin/dl_cgi?Command={command}{args}", timeout=120)
         except requests.exceptions.RequestException as error:
             raise ConnectionException from error
 
@@ -67,6 +64,9 @@ class SunPowerMonitor:
         # For the case of api that does return json, the results can just be passed along directly
         else:
             device_list = command_result
+
+        for device in device_list["devices"].values:
+            device["STATE"] = "active" if device["STATE"].lower() == "working" else "inactive"
 
         return device_list
 
