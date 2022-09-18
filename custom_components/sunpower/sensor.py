@@ -116,7 +116,7 @@ class SunPowerPVSBasic(SunPowerPVSEntity, SensorEntity):
     @property
     def device_class(self):
         """Return device class."""
-        return self._config.my_device_class
+        return self._config.device_class
 
     @property
     def state_class(self):
