@@ -92,7 +92,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 sensor_config,
             )
             for inverter_data in sunpower_data.get(INVERTER_DEVICE_TYPE, {}).values()
-            for sensor_config in INVERTER_SENSORS
+            for sensor_config in INVERTER_SENSORS.values()
         ],
     )
 
