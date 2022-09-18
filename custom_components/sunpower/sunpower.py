@@ -65,7 +65,7 @@ class SunPowerMonitor:
         else:
             device_list = command_result
 
-        for device in device_list["devices"].values:
+        for device in device_list["devices"]:
             device["STATE"] = "active" if device["STATE"].lower() == "working" else "inactive"
 
         return device_list
