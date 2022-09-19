@@ -1,6 +1,5 @@
 {
   "name": "SunPower",
-  "country": "US",
   "domains": ["binary_sensor", "sensor"],
   "homeassistant": "2021.9.0",
   "iot_class": ["Local Poll"],
