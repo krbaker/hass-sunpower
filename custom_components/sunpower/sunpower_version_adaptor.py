@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List, Any
 
-from .const_noha import PVS_DEVICE_TYPE, INVERTER_DEVICE_TYPE, METER_DEVICE_TYPE, FIELD_ADAPTORS, SENSOR_CONFIGS
+from .const import PVS_DEVICE_TYPE, INVERTER_DEVICE_TYPE, METER_DEVICE_TYPE, FIELD_ADAPTORS, SENSOR_CONFIGS
 from collections import namedtuple
 import re
 
