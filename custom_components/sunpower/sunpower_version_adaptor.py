@@ -1,21 +1,28 @@
 import logging
 from typing import Dict, List, Any
 
-from .const import PVS_DEVICE_TYPE, INVERTER_DEVICE_TYPE, METER_DEVICE_TYPE, FIELD_ADAPTORS, SENSOR_CONFIGS
+from .const_noha import PVS_DEVICE_TYPE, INVERTER_DEVICE_TYPE, METER_DEVICE_TYPE, FIELD_ADAPTORS, SENSOR_CONFIGS
 from collections import namedtuple
 import re
 
 logger = logging.getLogger(__name__)
 
-device_list_item = namedtuple("device_list_item", "serial x type y z status error working name info link")
-key_value_tup = namedtuple("key_value_tup", "key value")
+KeyValueTup = namedtuple("KeyValueTup", "key value")
+
+DeviceInfo = namedtuple("DeviceInfo", "serial type status name info")
 
 
-device_list_item_re = re.compile(
-    r"<div class='accordionItem'><h2 id='([A-Z0-9]+)'( type='([a-zA-Z0-9\-]+)')*><img\/><span class='((working)?(error)?)'>([a-zA-Z0-9 ]+)<\/span><img\/>(<span class='error'>Error</span>)?(<span class='working'>Working<\/span>)?<span class='info'>([ a-zA-Z,0-9\.]+)<\/span><span class='link'>([a-zA-Z0-9\-]*)<\/span><\/h2><div><\/div><\/div>"
-)
+device_serial_type_re = re.compile(r"<h2 id='(\w+)'( type='([\w\-]+)')?")
+device_name_re = re.compile(r"<img ?\/><span class='\w*'>([\w;& ]+)<\/span><img ?\/>")
+device_status_re = re.compile(r"<span class='\w*'>(\w*)<\/span>")
+device_info_re = re.compile(r"<span class='info'>([\w ,\.:]+)<\/span>")
+
 dev_detail_re = re.compile(r"<div class='accordionItem'>(.*)<\/h2><div><table>(.*)<\/table><\/div><\/div>")
 date_re = re.compile(r"<span class='DateClass'>([0-9]{4},[0-9]{2},[0-9]{2},[0-9]{2},[0-9]{2},[0-9]{2})<\/span>")
+
+
+def normalize_html(value: str) -> Any:
+    return value.replace("&nbsp;", " ")
 
 
 def format_value(value: str) -> Any:
@@ -34,11 +41,6 @@ def format_value(value: str) -> Any:
         if value[-6:] == "&#176C":
             value = value[:-6]
     return value
-
-
-def parse_device_list(command_result: str) -> List[device_list_item]:
-    devices = device_list_item_re.findall(command_result)
-    return [device_list_item(*device_tuple) for device_tuple in devices]
 
 
 # Lookup map used for auto_format_field_names
@@ -76,7 +78,35 @@ def auto_format_field_names(data_obj: dict[str, Any], device_type: str):
     return result
 
 
-def parse_device_info(device_info_result: str, device_summary: device_list_item) -> Dict[str, str]:
+def parse_device_list(device_list_result: str):
+    device_list = []
+    device_str_split = device_list_result.split("<div class='accordionItem'>")[1:]
+    for device_html in device_str_split:
+        res = device_serial_type_re.findall(device_html)
+        if len(res) <= 0:
+            raise RuntimeError(f"Unable to parse {device_html} with {device_serial_type_re} for serial & type.")
+        serial, _, dev_type = res[0]
+
+        res = device_name_re.findall(device_html)
+        if len(res) <= 0:
+            raise RuntimeError(f"Unable to parse {device_html} with {device_name_re} for name.")
+        name = res[0]
+
+        res = device_status_re.findall(device_html)
+        if len(res) <= 0:
+            raise RuntimeError(f"Unable to parse {device_html} with {device_status_re} for status.")
+        status = res[0]
+
+        res = device_info_re.findall(device_html)
+        if len(res) <= 0:
+            raise RuntimeError(f"Unable to parse {device_html} with {device_info_re} for status.")
+        info = res[0]
+        device = DeviceInfo(*[normalize_html(arg) for arg in [serial, dev_type, status, name, info]])
+        device_list.append(device)
+    return device_list
+
+
+def parse_device_info(device_info_result: str, device_summary: DeviceInfo) -> Dict[str, str]:
     search_result = dev_detail_re.findall(device_info_result)
 
     # validate the result
@@ -93,7 +123,7 @@ def parse_device_info(device_info_result: str, device_summary: device_list_item)
     # generate pairs of data. Most data will be ready to use, but some, like dates, are still
     # going to need further refining after this step.
     data_pairs = [
-        key_value_tup(*key_value)
+        KeyValueTup(*key_value)
         for key_value in [
             val.replace(" class='working'>", "").replace(" class='info'>", "").replace(" class='error'", "").split(":")
             for tr in stripped.split("<tr>")[1:]
