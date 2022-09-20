@@ -44,8 +44,11 @@ def format_value(value: str) -> Any:
         if value[-2:] in ["kB", "kW", "Hz"]:
             value = value[:-2]
     if len(value) >= 3 and is_number(value[:-3]):
-        if value[-3:] in ["kWh", "sec"]:
+        if value[-3:] in ["kWh", "sec", "kVA"]:
             value = value[:-3]
+    if len(value) >= 4 and is_number(value[:-4]):
+        if value[-4:] in ["kVAR"]:
+            value = value[:-4]
     if len(value) >= 6 and is_number(value[:-6]):
         if value[-6:] == "&#176C":
             value = value[:-6]
@@ -126,7 +129,7 @@ def parse_device_info(device_info_result: str, device_summary: DeviceInfo) -> Di
     _, detail = search_result[0]
     # Make the string easier to work with
     stripped = (
-        detail.replace("</tr>", "").replace("<b>", "").replace("</b>", "").replace("&nbsp;", "").replace("</td>", "")
+        detail.replace("</tr>", "").replace("<b>", "").replace("</b>", "").replace("&nbsp;", " ").replace("</td>", "")
     )
 
     # generate pairs of data. Most data will be ready to use, but some, like dates, are still
