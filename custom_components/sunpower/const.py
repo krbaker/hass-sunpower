@@ -191,127 +191,44 @@ SENSOR_CONFIGS = {
 
 FIELD_ADAPTORS = {
     PVS_DEVICE_TYPE: {
-        "dl_cpu_load": {
-            "Avg CPU Load": "2.2.3",
-            "AvgCPULoad": "2.2.2",
-        },
-        "dl_err_count": {
-            "Error Count": "2.2.3",
-            "ErrorCount": "2.2.2",
-        },
-        "dl_comm_err": {
-            "Communication Error Count": "2.2.3",
-            "CommunicationErrorCount": "2.2.2",
-        },
-        "dl_skipped_scans": {
-            "Skipped Scans": "2.2.3",
-            "SkippedScans": "2.2.2",
-        },
-        "dl_scan_time": {
-            "Scan Time": "2.2.3",
-            "ScanTime": "2.2.2",
-        },
-        "dl_untransmitted": {
-            "Untransmitted Data Points": "2.2.3",
-            "UntransmittedDataPoints": "2.2.2",
-        },
-        "dl_uptime": {
-            "Time Since Powerup": "2.2.3",
-            "TimeSincePowerup": "2.2.2",
-        },
-        "dl_mem_used": {
-            "Memory Used": "2.2.3",
-            "MemoryUsed": "2.2.2",
-        },
-        "dl_flash_avail": {
-            "Flash Space Available": "2.2.3",
-            "FlashSpaceAvailable": "2.2.2",
-        },
-        "SERIAL": {
-            "Serial Number": "2.2.3",
-            "SerialNumber": "2.2.2",
-        },
-        "SWVER": {
-            "Software Version": "2.2.3",
-            "SoftwareVersion": "2.2.2",
-        },
-        "HWVER": {
-            "Hardware Version": "2.2.3",
-            "HardwareVersion": "2.2.2",
-        },
-        "MODEL": {
-            "Model": "2.2.3",
-            "Model": "2.2.2",
-        },
+        "dl_cpu_load": {"Avg CPU Load": "2.2.3", "AvgCPULoad": "2.2.2"},
+        "dl_err_count": {"Error Count": "2.2.3"},
+        "dl_comm_err": {"Communication Error Count": "2.2.3"},
+        "dl_skipped_scans": {"Skipped Scans": "2.2.3"},
+        "dl_scan_time": {"Scan Time": "2.2.3"},
+        "dl_untransmitted": {"Untransmitted Data Points": "2.2.3"},
+        "dl_uptime": {"Time Since Powerup": "2.2.3"},
+        "dl_mem_used": {"Memory Used": "2.2.3"},
+        "dl_flash_avail": {"Flash Space Available": "2.2.3"},
+        "SERIAL": {"Serial Number": "2.2.3"},
+        "SWVER": {"Software Version": "2.2.3"},
+        "HWVER": {"Hardware Version": "2.2.3"},
+        "MODEL": {"Model": "2.2.3"},
     },
     INVERTER_DEVICE_TYPE: {
-        "ltea_3phsum_kwh": {
-            "Total Lifetime Energy": "2.2.3",
-            "TotalLifetimeEnergy": "2.2.2",
-        },
-        "p_3phsum_kw": {
-            "Avg DC Power": "2.2.3",
-            "AvgDCPower": "2.2.2",
-        },
-        "vln_3phavg_v": {
-            "Avg DC Voltage": "2.2.3",
-            "AvgDCVoltage": "2.2.2",
-        },
-        "i_3phsum_a": {
-            "Avg DC Amps": "2.2.3",
-            "AvgDCAmps": "2.2.2",
-        },
+        "ltea_3phsum_kwh": {"Total Lifetime Energy": "2.2.3"},
+        "p_3phsum_kw": {"Avg DC Power": "2.2.3"},
+        "vln_3phavg_v": {"Avg DC Voltage": "2.2.3"},
+        "i_3phsum_a": {"Avg DC Amps": "2.2.3"},
         "p_mpptsum_kw": {},  # MPPT Cumulative kW
         "p_mppt1_kw": {},  # MPPT kW
         "v_mppt1_v": {},  # MPPT Voltage
         "i_mppt1_a": {},  # MPPT Current
-        "t_htsnk_degc": {
-            "Avg Heat Sink Temperature": "2.2.3",
-            "AvgHeatSinkTemperature": "2.2.2",
-        },
-        "freq_hz": {
-            "Avg AC Frequency": "2.2.3",
-            "AvgACFrequency": "2.2.2",
-        },
-        "SERIAL": {
-            "Serial Number": "2.2.3",
-            "SerialNumber": "2.2.2",
-        },
-        "DESCR": {},
-        "TYPE": {},
-        "MODEL": {
-            "Model": "2.2.3",
-        },
-        "SWVER": {
-            "Software Version": "2.2.3",
-            "SoftwareVersion": "2.2.2",
-        },
+        "t_htsnk_degc": {"Avg Heat Sink Temperature": "2.2.3"},
+        "freq_hz": {"Avg AC Frequency": "2.2.3"},
+        "SERIAL": {"Serial Number": "2.2.3"},
+        "DESCR": {"": "2.2.3"},
+        "TYPE": {"": "2.2.3"},
+        "MODEL": {"Model": "2.2.3"},
+        "SWVER": {"Software Version": "2.2.3"},
     },
     METER_DEVICE_TYPE: {
-        "freq_hz": {
-            "Avg AC Frequency": "2.2.3",
-            "AvgACFrequency": "2.2.2",
-        },  # Frequency
-        "net_ltea_3phsum_kwh": {
-            "Total Lifetime Energy": "2.2.3",
-            "TotalLifetimeEnergy": "2.2.2",
-        },  # Lifetime Energy
-        "p_3phsum_kw": {
-            "Avg Real Power": "2.2.3",
-            "AvgRealPower": "2.2.2",
-        },  # "Power"
-        "q_3phsum_kvar": {
-            "Avg Reactive Power": "2.2.3",
-            "AvgReactivePower": "2.2.2",
-        },  # "KVA Reactive"
-        "s_3phsum_kva": {
-            "Avg Apparent Power": "2.2.3",
-            "AvgApparentPower": "2.2.2",
-        },  # "KVA Apparent"
-        "tot_pf_rto": {
-            "Avg Power Factor": "2.2.3",
-            "AvgPowerFactor": "2.2.2",
-        },  # "Power Factor"
+        "freq_hz": {"Avg AC Frequency": "2.2.3"},  # Frequency
+        "net_ltea_3phsum_kwh": {"Total Lifetime Energy": "2.2.3"},  # Lifetime Energy
+        "p_3phsum_kw": {"Avg Real Power": "2.2.3"},  # "Power"
+        "q_3phsum_kvar": {"Avg Reactive Power": "2.2.3"},  # "KVA Reactive"
+        "s_3phsum_kva": {"Avg Apparent Power": "2.2.3"},  # "KVA Apparent"
+        "tot_pf_rto": {"Avg Power Factor": "2.2.3"},  # "Power Factor"
         "i1_a": {},  # "Leg 1 Amps"
         "i2_a": {},  # "Leg 2 Amps"
         "p1_kw": {},  # "Leg 1 KW"
@@ -321,17 +238,9 @@ FIELD_ADAPTORS = {
         "v12_v": {},  # "Supply Volts"
         "neg_ltea_3phsum_kwh": {},  # "KWH To Grid"
         "pos_ltea_3phsum_kwh": {},  # "KWH To Home"
-        "SERIAL": {
-            "Serial Number": "2.2.3",
-            "SerialNumber": "2.2.2",
-        },
-        "DESCR": {},
-        "MODEL": {
-            "Model": "2.2.3",
-        },
-        "SWVER": {
-            "Software Version": "2.2.3",
-            "SoftwareVersion": "2.2.2",
-        },
+        "SERIAL": {"Serial Number": "2.2.3"},
+        "DESCR": {"": "2.2.3"},
+        "MODEL": {"Model": "2.2.3"},
+        "SWVER": {"Software Version": "2.2.3"},
     },
 }
