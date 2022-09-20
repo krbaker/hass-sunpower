@@ -25,23 +25,31 @@ def normalize_html(value: str) -> Any:
     return value.replace("&nbsp;", " ")
 
 
+def is_number(value: str) -> bool:
+    try:
+        float(value.strip())
+        return True
+    except:
+        return False
+
+
 def format_value(value: str) -> Any:
     value = normalize_html(value)
     if "DateClass" in value:
         value = date_re.findall(value)[0]
-    if len(value) >= 1 and str.isdecimal(value[:-1].replace(".", "")):
+    if len(value) >= 1 and is_number(value[:-1]):
         if value[-1] == "V":
             value = value[:-1]
-    if len(value) >= 2 and str.isdecimal(value[:-2].replace(".", "")):
+    if len(value) >= 2 and is_number(value[:-2]):
         if value[-2:] in ["kB", "kW", "Hz"]:
             value = value[:-2]
-    if len(value) >= 3 and str.isdecimal(value[:-3].replace(".", "")):
+    if len(value) >= 3 and is_number(value[:-3]):
         if value[-3:] in ["kWh", "sec"]:
             value = value[:-3]
-    if len(value) >= 6 and str.isdecimal(value[:-6].replace(".", "")):
+    if len(value) >= 6 and is_number(value[:-6]):
         if value[-6:] == "&#176C":
             value = value[:-6]
-    return value
+    return value.strip()
 
 
 # Lookup map used for auto_format_field_names
