@@ -26,6 +26,7 @@ def normalize_html(value: str) -> Any:
 
 
 def format_value(value: str) -> Any:
+    value = normalize_html(value)
     if "DateClass" in value:
         value = date_re.findall(value)[0]
     if len(value) >= 1 and str.isdecimal(value[:-1].replace(".", "")):
@@ -132,7 +133,7 @@ def parse_device_info(device_info_result: str, device_summary: DeviceInfo) -> Di
         if len(key_value) == 2
     ]
     # Convert to a dictionary
-    data = {data.key: format_value(data.value) for data in data_pairs}
+    data = {normalize_html(data.key): format_value(data.value) for data in data_pairs}
 
     # Infer the device type
     if "Avg CPU Load" in data:
