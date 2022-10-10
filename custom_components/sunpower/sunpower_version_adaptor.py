@@ -166,6 +166,6 @@ def parse_device_info(device_info_result: str, device_summary: DeviceInfo) -> Di
     device_detail = auto_format_field_names(data, additional_data["DEVICE_TYPE"])
     device_detail.update(additional_data)
     device_detail.update({"STATE": device_summary.status})
-    if "p_3phsum_kw" not in device_detail:
-        device_detail["p_3phsum_kw"] = float(device_detail["vln_3phavg_v"]) * float(device_detail["avg_dc_current"])
+    # if "p_3phsum_kw" not in device_detail:
+    #     device_detail["p_3phsum_kw"] = float(device_detail["vln_3phavg_v"]) * float(device_detail["avg_dc_current"])
     return device_detail
