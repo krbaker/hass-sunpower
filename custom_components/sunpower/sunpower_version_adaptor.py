@@ -81,7 +81,7 @@ def auto_format_field_names(data_obj: dict[str, Any], device_type: str):
             versions.append(FIELD_LOOKUP_MAP[device_type][given_field].version)
             result[FIELD_LOOKUP_MAP[device_type][given_field].field] = value
         else:
-            logger.warn(f"No field mapping found for {given_field}")
+            logger.debug(f"No field mapping found for {given_field}")
 
     version_estimates = ", ".join(
         [f"{version}: {len([v for v in versions if v == version])*100 / len(versions):.1f}%" for version in versions]
@@ -166,4 +166,6 @@ def parse_device_info(device_info_result: str, device_summary: DeviceInfo) -> Di
     device_detail = auto_format_field_names(data, additional_data["DEVICE_TYPE"])
     device_detail.update(additional_data)
     device_detail.update({"STATE": device_summary.status})
+    if "p_3phsum_kw" not in device_detail:
+        device_detail["p_3phsum_kw"] = float(device_detail["vln_3phavg_v"]) * float(device_detail["avg_dc_current"])
     return device_detail
