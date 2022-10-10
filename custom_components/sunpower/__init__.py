@@ -36,9 +36,9 @@ def sunpower_fetch(sunpower_monitor):
         data = {}
         # Convert data into indexable format data[device_type][serial]
         for device in sunpower_data["devices"]:
-            _LOGGER.warn(device)
+            _LOGGER.debug(device)
             if device["DEVICE_TYPE"] not in data:
-                _LOGGER.warn(device["SERIAL"])
+                _LOGGER.debug(device["SERIAL"])
                 data[device["DEVICE_TYPE"]] = {device["SERIAL"]: device}
             else:
                 data[device["DEVICE_TYPE"]][device["SERIAL"]] = device
