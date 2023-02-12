@@ -53,7 +53,7 @@ METER_SENSORS = {
         "Lifetime Power",
         ENERGY_KILO_WATT_HOUR,
         "mdi:flash",
-        DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL_INCREASING,
+        DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL,
     ],
     "METER_KW": ["p_3phsum_kw", "Power", POWER_KILO_WATT, "mdi:flash",
                  DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT],
