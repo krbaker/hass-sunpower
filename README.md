@@ -1,3 +1,5 @@
+# This is a Fork for Personal Experimental Development of the Project
+-----------
 # hass-sunpower
 Home Assistant SunPower Integration using the local installer ethernet interface.
 
