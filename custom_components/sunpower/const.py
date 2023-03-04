@@ -104,7 +104,7 @@ INVERTER_SENSORS = {
                           DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT],
     "INVERTER_MPPT_V": ["v_mppt1_v", "MPPT Volts", ELECTRIC_POTENTIAL_VOLT, "mdi:flash",
                         DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT],
-    "INVERTER_MPPT_A": ["i_mppt1_a", "MPPT Amps", POWER_VOLT_AMPERE, "mdi:flash",
+    "INVERTER_MPPT_A": ["i_mppt1_a", "MPPT Amps", ELECTRIC_CURRENT_AMPERE, "mdi:flash",
                         DEVICE_CLASS_CURRENT, STATE_CLASS_MEASUREMENT],
     "INVERTER_TEMPERATURE": [
         "t_htsnk_degc",
