@@ -1,8 +1,11 @@
 """ Basic Sunpower PVS Tool """
 import requests
-
+import simplejson
 
 class ConnectionException(Exception):
+    """Any failure to connect to sunpower PVS"""
+
+class ParseException(Exception):
     """Any failure to connect to sunpower PVS"""
 
 
@@ -23,7 +26,9 @@ class SunPowerMonitor:
             return requests.get(self.command_url + command, timeout=120).json()
         except requests.exceptions.RequestException as error:
             raise ConnectionException from error
-
+        except simplejson.errors.JSONDecodeError as error:
+            raise ParseException from error
+        
     def device_list(self):
         """Get a list of all devices connected to the PVS"""
         return self.generic_command("DeviceList")
