@@ -53,7 +53,7 @@ METER_SENSORS = {
         "Lifetime Power",
         ENERGY_KILO_WATT_HOUR,
         "mdi:flash",
-        DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL_INCREASING,
+        DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL,
     ],
     "METER_KW": ["p_3phsum_kw", "Power", POWER_KILO_WATT, "mdi:flash",
                  DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT],
@@ -78,7 +78,7 @@ METER_SENSORS = {
     "METER_L12_V": ["v12_v", "Supply Volts", ELECTRIC_POTENTIAL_VOLT, "mdi:flash",
                     DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT],
     "METER_TO_GRID": ["neg_ltea_3phsum_kwh", "KWH To Grid", ENERGY_KILO_WATT_HOUR, "mdi:flash",
-                      DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL_INCREASING],
+                      DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL],
     "METER_TO_HOME": ["pos_ltea_3phsum_kwh", "KWH To Home", ENERGY_KILO_WATT_HOUR, "mdi:flash",
                       DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL_INCREASING]
 }
