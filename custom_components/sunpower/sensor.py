@@ -54,7 +54,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 PVS_SENSORS[sensor][5],
             )
             try:
-                spb.native_value() # ensure we can pull a value here, otherwise throw out this value
+                spb.native_value # ensure we can pull a value here, otherwise throw out this value
                 entities.append(spb)
             except KeyError:
                 pass
@@ -80,7 +80,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         METER_SENSORS[sensor][5],
                     )
                     try:
-                        smb.native_value() # ensure we can pull a value here, otherwise throw out this value
+                        smb.native_value # ensure we can pull a value here, otherwise throw out this value
                         entities.append(smb)
                     except KeyError:
                         pass
@@ -106,7 +106,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         INVERTER_SENSORS[sensor][5]
                     )
                     try:
-                        sib.native_value() # ensure we can pull a value here, otherwise throw out this value
+                        sib.native_value # ensure we can pull a value here, otherwise throw out this value
                         entities.append(sib)
                     except KeyError:
                         pass
