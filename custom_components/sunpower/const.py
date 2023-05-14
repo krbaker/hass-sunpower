@@ -64,6 +64,8 @@ METER_SENSORS = {
                            DEVICE_CLASS_POWER_FACTOR, STATE_CLASS_MEASUREMENT],
     "METER_L1_A": ["i1_a", "Leg 1 Amps", ELECTRIC_CURRENT_AMPERE, "mdi:flash",
                    DEVICE_CLASS_CURRENT, STATE_CLASS_MEASUREMENT],
+    "METER_L1_A": ["i_a", "Amps", ELECTRIC_CURRENT_AMPERE, "mdi:flash",
+                   DEVICE_CLASS_CURRENT, STATE_CLASS_MEASUREMENT],
     "METER_L2_A": ["i2_a", "Leg 2 Amps", ELECTRIC_CURRENT_AMPERE, "mdi:flash",
                    DEVICE_CLASS_CURRENT, STATE_CLASS_MEASUREMENT],
     "METER_L1_KW": ["p1_kw", "Leg 1 KW", POWER_KILO_WATT, "mdi:flash",
