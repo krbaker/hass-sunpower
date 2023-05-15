@@ -53,11 +53,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 PVS_SENSORS[sensor][4],
                 PVS_SENSORS[sensor][5],
             )
-            try:
-                spb.native_value
+            if spb.native_value is not None: # ensure we can pull a value here, otherwise throw out this value
                 entities.append(spb)
-            except KeyError:
-                pass
 
         if METER_DEVICE_TYPE not in sunpower_data:
             _LOGGER.error("Cannot find any power meters")
@@ -79,11 +76,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         METER_SENSORS[sensor][4],
                         METER_SENSORS[sensor][5],
                     )
-                    try:
-                        smb.native_value
+                    if smb.native_value is not None: # ensure we can pull a value here, otherwise throw out this value
                         entities.append(smb)
-                    except KeyError:
-                        pass
 
         if INVERTER_DEVICE_TYPE not in sunpower_data:
             _LOGGER.error("Cannot find any power inverters")
@@ -105,11 +99,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         INVERTER_SENSORS[sensor][4],
                         INVERTER_SENSORS[sensor][5]
                     )
-                    try:
-                        sib.native_value
+                    if sib.native_value is not None: # ensure we can pull a value here, otherwise throw out this value
                         entities.append(sib)
-                    except KeyError:
-                        pass
 
     async_add_entities(entities, True)
 
@@ -160,7 +151,7 @@ class SunPowerPVSBasic(SunPowerPVSEntity, SensorEntity):
     @property
     def native_value(self):
         """Get the current value"""
-        return self.coordinator.data[PVS_DEVICE_TYPE][self.base_unique_id][self._field]
+        return self.coordinator.data[PVS_DEVICE_TYPE][self.base_unique_id].get(self._field, None)
 
 
 class SunPowerMeterBasic(SunPowerMeterEntity, SensorEntity):
@@ -210,7 +201,7 @@ class SunPowerMeterBasic(SunPowerMeterEntity, SensorEntity):
     @property
     def native_value(self):
         """Get the current value"""
-        return self.coordinator.data[METER_DEVICE_TYPE][self.base_unique_id][self._field]
+        return self.coordinator.data[METER_DEVICE_TYPE][self.base_unique_id].get(self._field, None)
 
 
 class SunPowerInverterBasic(SunPowerInverterEntity, SensorEntity):
@@ -260,4 +251,4 @@ class SunPowerInverterBasic(SunPowerInverterEntity, SensorEntity):
     @property
     def native_value(self):
         """Get the current value"""
-        return self.coordinator.data[INVERTER_DEVICE_TYPE][self.base_unique_id][self._field]
+        return self.coordinator.data[INVERTER_DEVICE_TYPE][self.base_unique_id].get(self._field, None)
