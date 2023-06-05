@@ -104,6 +104,9 @@ Check your Sunpower app.  If its not there this integaration will not solve it.
   * Its possible your PVS just needs a reboot (see missing solar production entry)
   * If your consumption is just wrong (the most common failure is seeing the solar production count as consumption) then the PVS is configured wrong [Sunpower Training](https://us.sunpower.com/sites/default/files/sunpower-training-tuesday-consumption-junction_0.pdf) is what they should follow to resolve this.
 
+### Installed through HACS but I can't find it in the integrations list
+Some people seem to have a browser caching / refresh issue it seems to be solved by completely clearing caches or using another browser.  See [Issue-15](https://github.com/krbaker/hass-sunpower/issues/15)
+
 ***
 [mppt]: https://en.wikipedia.org/wiki/Maximum_power_point_tracking
 [power-factor]: https://en.wikipedia.org/wiki/Power_factor
