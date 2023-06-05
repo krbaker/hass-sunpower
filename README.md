@@ -82,7 +82,13 @@ Entity | Units | Description
 `MPPT Amps` | Amps | [MPPT][mppt] optimized panel amperage.  This is the actual amperage the panel is driven by inverter to develop currently.
 `MPPT KW` | KW | [MPPT][mppt] optimized panel output in kw.  This is the actual power the panel developing currently.
 
-### Debugging
+## Energy Monitoring
+This intergration should support the Energy dashboard for Home Assistant.  Once you install the integration and configure it allow it to run for a few hours so that the statistics entries are generated.  Then go to the energy dashboard configuration and add the measurements you want.  Some people use the main consumption and production meters, others use each panel.
+
+![Image of configuration screen w/ energy](energy_config.jpg)
+![Solar Production](solar_production.png)
+
+## Debugging
 If you file a bug one of the most useful things to include is the output of 
 > curl http://172.27.153.1/cgi-bin/dl_cgi?Command=DeviceList
 
