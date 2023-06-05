@@ -92,6 +92,18 @@ This intergration should support the Energy dashboard for Home Assistant.  Once 
 If you file a bug one of the most useful things to include is the output of 
 > curl http://172.27.153.1/cgi-bin/dl_cgi?Command=DeviceList
 
+### Missing solar production. Appears that the Sunpower meter has disappeared from the device list
+Run the debugging command and look for the METER entries.
+> curl http://172.27.153.1/cgi-bin/dl_cgi?Command=DeviceList
+If one is missing reboot the PVS
+
+### Missing Consumption or Consumption is wrong
+Check your Sunpower app.  If its not there this integaration will not solve it.
+
+  * Your install may not have installed the current clamps needed.  Sometimes the installer is being cheap, sometimes you just don't have the space in your panel.
+  * Its possible your PVS just needs a reboot (see missing solar production entry)
+  * If your consumption is just wrong (the most common failure is seeing the solar production count as consumption) then the PVS is configured wrong [Sunpower Training](https://us.sunpower.com/sites/default/files/sunpower-training-tuesday-consumption-junction_0.pdf) is what they should follow to resolve this.
+
 ***
 [mppt]: https://en.wikipedia.org/wiki/Maximum_power_point_tracking
 [power-factor]: https://en.wikipedia.org/wiki/Power_factor
