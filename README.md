@@ -85,7 +85,7 @@ Entity | Units | Description
 ## Energy Monitoring
 This intergration should support the Energy dashboard for Home Assistant.  Once you install the integration and configure it allow it to run for a few hours so that the statistics entries are generated.  Then go to the energy dashboard configuration and add the measurements you want.  Some people use the main consumption and production meters, others use each panel.
 
-![Image of configuration screen w/ energy](energy_config.jpg)
+![Image of configuration screen w/ energy](energy_config.jpeg)
 ![Solar Production](solar_production.png)
 
 ## Debugging
