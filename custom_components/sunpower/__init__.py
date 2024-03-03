@@ -14,7 +14,8 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     DOMAIN,
-    UPDATE_INTERVAL,
+    SUNPOWER_UPDATE_INTERVAL,
+    SUNVAULT_UPDATE_INTERVAL,
     SUNPOWER_OBJECT,
     SUNPOWER_COORDINATOR,
     SUNPOWER_HOST,
@@ -32,19 +33,29 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 PLATFORMS = ["sensor", "binary_sensor"]
 
+PREVIOUS_DEVICE_LIST_SAMPLE_TIME = 0
+PREVIOUS_DEVICE_LIST = { }
+
 
 def sunpower_fetch(sunpower_monitor, use_ess):
     """Basic data fetch routine to get and reformat sunpower data to a dict of device type and serial #"""
+    global PREVIOUS_DEVICE_LIST_SAMPLE_TIME
+    global PREVIOUS_DEVICE_LIST
+
     try:
-        sunpower_data = sunpower_monitor.device_list()
-        _LOGGER.debug("got data %s", sunpower_data)
-        data = {}
-        # Convert data into indexable format data[device_type][serial]
-        for device in sunpower_data["devices"]:
-            if device["DEVICE_TYPE"] not in data:
-                data[device["DEVICE_TYPE"]] = {device["SERIAL"]: device}
-            else:
-                data[device["DEVICE_TYPE"]][device["SERIAL"]] = device
+        sunpower_data = PREVIOUS_DEVICE_LIST
+        if (time.time() - PREVIOUS_DEVICE_LIST_SAMPLE_TIME) >= SUNPOWER_UPDATE_INTERVAL:
+            PREVIOUS_DEVICE_LIST_SAMPLE_TIME = time.time()
+            sunpower_data = sunpower_monitor.device_list()
+            PREVIOUS_DEVICE_LIST = sunpower_data
+            _LOGGER.debug("got data %s", sunpower_data)
+            data = {}
+            # Convert data into indexable format data[device_type][serial]
+            for device in sunpower_data["devices"]:
+                if device["DEVICE_TYPE"] not in data:
+                    data[device["DEVICE_TYPE"]] = {device["SERIAL"]: device}
+                else:
+                    data[device["DEVICE_TYPE"]][device["SERIAL"]] = device
 
         if use_ess:
             # Integrate ESS data from its unique data source into the PVS data
@@ -164,7 +175,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER,
         name="SunPower PVS",
         update_method=async_update_data,
-        update_interval=timedelta(seconds=UPDATE_INTERVAL),
+        update_interval=timedelta(seconds=SUNVAULT_UPDATE_INTERVAL),
     )
 
     hass.data[DOMAIN][entry.entry_id] = {
