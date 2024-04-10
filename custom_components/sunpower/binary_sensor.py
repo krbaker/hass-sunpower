@@ -1,7 +1,7 @@
 """Support for Sunpower binary sensors."""
 import logging
 
-from homeassistant.const import DEVICE_CLASS_POWER
+from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorEntity
 
 from .const import (
@@ -73,7 +73,7 @@ class SunPowerPVSState(SunPowerPVSEntity, BinarySensorEntity):
     @property
     def device_class(self):
         """Device Class."""
-        return DEVICE_CLASS_POWER
+        return SensorDeviceClass.POWER
 
     @property
     def unique_id(self):
@@ -109,7 +109,7 @@ class SunPowerMeterState(SunPowerMeterEntity, BinarySensorEntity):
     @property
     def device_class(self):
         """Device Class."""
-        return DEVICE_CLASS_POWER
+        return SensorDeviceClass.POWER
 
     @property
     def unique_id(self):
@@ -145,7 +145,7 @@ class SunPowerInverterState(SunPowerInverterEntity, BinarySensorEntity):
     @property
     def device_class(self):
         """Device Class."""
-        return DEVICE_CLASS_POWER
+        return SensorDeviceClass.POWER
 
     @property
     def unique_id(self):
