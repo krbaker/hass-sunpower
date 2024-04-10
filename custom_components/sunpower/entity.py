@@ -48,7 +48,7 @@ class SunPowerMeterEntity(CoordinatorEntity):
             "manufacturer": "SunPower",
             "model": self._meter_info["MODEL"],
             "sw_version": self._meter_info["SWVER"],
-            "via_device": self._pvs_info["SERIAL"],
+            "via_device": (DOMAIN, self._pvs_info["SERIAL"]),
         }
         return device_info
 
@@ -72,6 +72,6 @@ class SunPowerInverterEntity(CoordinatorEntity):
             "manufacturer": self._inverter_info["TYPE"],
             "model": self._inverter_info["MODEL"],
             "sw_version": self._inverter_info["SWVER"],
-            "via_device": self._pvs_info["SERIAL"],
+            "via_device": (DOMAIN, self._pvs_info["SERIAL"]),
         }
         return device_info
