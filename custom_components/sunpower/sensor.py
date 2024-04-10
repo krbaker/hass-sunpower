@@ -1,7 +1,7 @@
 """Support for Sunpower sensors."""
 import logging
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 
 from .const import (
     DOMAIN,
@@ -151,6 +151,11 @@ class SunPowerPVSBasic(SunPowerPVSEntity, SensorEntity):
     @property
     def native_value(self):
         """Get the current value"""
+        if self._my_device_class == SensorDeviceClass.POWER_FACTOR:
+            try:
+                return float(self.coordinator.data[PVS_DEVICE_TYPE][self.base_unique_id].get(self._field, None)) * 100.0
+            except ValueError:
+                pass #sometimes this value might be something like 'unavailable'
         return self.coordinator.data[PVS_DEVICE_TYPE][self.base_unique_id].get(self._field, None)
 
 
@@ -201,6 +206,11 @@ class SunPowerMeterBasic(SunPowerMeterEntity, SensorEntity):
     @property
     def native_value(self):
         """Get the current value"""
+        if self._my_device_class == SensorDeviceClass.POWER_FACTOR:
+            try:
+                return float(self.coordinator.data[METER_DEVICE_TYPE][self.base_unique_id].get(self._field, None)) * 100.0
+            except ValueError:
+                pass #sometimes this value might be something like 'unavailable'
         return self.coordinator.data[METER_DEVICE_TYPE][self.base_unique_id].get(self._field, None)
 
 
@@ -251,4 +261,9 @@ class SunPowerInverterBasic(SunPowerInverterEntity, SensorEntity):
     @property
     def native_value(self):
         """Get the current value"""
+        if self._my_device_class == SensorDeviceClass.POWER_FACTOR:
+            try:
+                return float(self.coordinator.data[INVERTER_DEVICE_TYPE][self.base_unique_id].get(self._field, None)) * 100.0
+            except ValueError:
+                pass #sometimes this value might be something like 'unavailable'
         return self.coordinator.data[INVERTER_DEVICE_TYPE][self.base_unique_id].get(self._field, None)
