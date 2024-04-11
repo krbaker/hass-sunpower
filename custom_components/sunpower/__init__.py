@@ -33,34 +33,44 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 PLATFORMS = ["sensor", "binary_sensor"]
 
-PREVIOUS_DEVICE_LIST_SAMPLE_TIME = 0
-PREVIOUS_DEVICE_LIST = { }
-
+PREVIOUS_PVS_SAMPLE_TIME = 0
+PREVIOUS_PVS_SAMPLE = {]
+PREVIOUS_ESS_SAMPLE_TIME = 0
+PREVIOUS_ESS_SAMPLE = {]
 
 def sunpower_fetch(sunpower_monitor, use_ess):
     """Basic data fetch routine to get and reformat sunpower data to a dict of device type and serial #"""
-    global PREVIOUS_DEVICE_LIST_SAMPLE_TIME
-    global PREVIOUS_DEVICE_LIST
+    global PREVIOUS_PVS_SAMPLE_TIME
+    global PREVIOUS_PVS_SAMPLE
+    global PREVIOUS_ESS_SAMPLE_TIME
+    global PREVIOUS_ESS_SAMPLE
 
     try:
-        sunpower_data = PREVIOUS_DEVICE_LIST
-        if (time.time() - PREVIOUS_DEVICE_LIST_SAMPLE_TIME) >= SUNPOWER_UPDATE_INTERVAL:
-            PREVIOUS_DEVICE_LIST_SAMPLE_TIME = time.time()
+        sunpower_data = PREVIOUS_PVS_SAMPLE
+        ess_data = PREVIOUS_ESS_SAMPLE
+        data = {}
+            
+        if (time.time() - PREVIOUS_PVS_SAMPLE_TIME) >= SUNPOWER_UPDATE_INTERVAL:
+            PREVIOUS_PVS_SAMPLE_TIME = time.time()
             sunpower_data = sunpower_monitor.device_list()
-            PREVIOUS_DEVICE_LIST = sunpower_data
-            _LOGGER.debug("got data %s", sunpower_data)
-            data = {}
-            # Convert data into indexable format data[device_type][serial]
-            for device in sunpower_data["devices"]:
-                if device["DEVICE_TYPE"] not in data:
-                    data[device["DEVICE_TYPE"]] = {device["SERIAL"]: device}
-                else:
-                    data[device["DEVICE_TYPE"]][device["SERIAL"]] = device
+            PREVIOUS_PVS_SAMPLE = sunpower_data
+            _LOGGER.debug("got PVS data %s", sunpower_data)
+
+        if use_ess and (time.time() - PREVIOUS_ESS_SAMPLE_TIME) >= SUNVAULT_UPDATE_INTERVAL:
+            PREVIOUS_ESS_SAMPLE_TIME = time.time()
+            ess_data = sunpower_monitor.energy_storage_system_status()
+            PREVIOUS_ESS_SAMPLE = sunpower_data
+            _LOGGER.debug("got ESS data %s", ess_data)
+            
+        # Convert PVS data into indexable format data[device_type][serial]
+        for device in sunpower_data["devices"]:
+            if device["DEVICE_TYPE"] not in data:
+                data[device["DEVICE_TYPE"]] = {device["SERIAL"]: device}
+            else:
+                data[device["DEVICE_TYPE"]][device["SERIAL"]] = device
 
         if use_ess:
             # Integrate ESS data from its unique data source into the PVS data
-            sunpower_data = sunpower_monitor.energy_storage_system_status()
-            _LOGGER.debug("got data %s", sunpower_data)
             sunvault_amperages = []
             sunvault_voltages = []
             sunvault_temperatures = []
@@ -70,7 +80,7 @@ def sunpower_fetch(sunpower_monitor, use_ess):
             sunvault_power_inputs = []
             sunvault_power_outputs = []
             sunvault_state = "working"
-            for device in sunpower_data["ess_report"]["battery_status"]:
+            for device in ess_data["ess_report"]["battery_status"]:
                 data[BATTERY_DEVICE_TYPE][device["serial_number"]]["battery_amperage"] = device["battery_amperage"]["value"]
                 data[BATTERY_DEVICE_TYPE][device["serial_number"]]["battery_voltage"] = device["battery_voltage"]["value"]
                 data[BATTERY_DEVICE_TYPE][device["serial_number"]]["customer_state_of_charge"] = device["customer_state_of_charge"]["value"]
@@ -93,7 +103,7 @@ def sunpower_fetch(sunpower_monitor, use_ess):
                 else:
                     sunvault_power_inputs.append(0)
                     sunvault_power_outputs.append(0)
-            for device in sunpower_data["ess_report"]["ess_status"]:
+            for device in ess_data["ess_report"]["ess_status"]:
                 data[ESS_DEVICE_TYPE][device["serial_number"]]["enclosure_humidity"] = device["enclosure_humidity"]["value"]
                 data[ESS_DEVICE_TYPE][device["serial_number"]]["enclosure_temperature"] = device["enclosure_temperature"]["value"]
                 data[ESS_DEVICE_TYPE][device["serial_number"]]["agg_power"] = device["ess_meter_reading"]["agg_power"]["value"]
@@ -104,7 +114,7 @@ def sunpower_fetch(sunpower_monitor, use_ess):
                 data[ESS_DEVICE_TYPE][device["serial_number"]]["meter_b_power"] = device["ess_meter_reading"]["meter_b"]["reading"]["power"]["value"]
                 data[ESS_DEVICE_TYPE][device["serial_number"]]["meter_b_voltage"] = device["ess_meter_reading"]["meter_b"]["reading"]["voltage"]["value"]
             if True:
-                device = sunpower_data["ess_report"]["hub_plus_status"]
+                device = ess_data["ess_report"]["hub_plus_status"]
                 data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["contactor_position"] = device["contactor_position"]
                 data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["grid_frequency_state"] = device["grid_frequency_state"]
                 data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["grid_phase1_voltage"] = device["grid_phase1_voltage"]["value"]
@@ -170,12 +180,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.debug("Updating SunPower data")
         return await hass.async_add_executor_job(sunpower_fetch, sunpower_monitor, use_ess)
 
+    coordinator_interval = SUNVAULT_UPDATE_INTERVAL if SUNVAULT_UPDATE_INTERVAL < SUNPOWER_UPDATE_INTERVAL else SUNPOWER_UPDATE_INTERVAL
+    
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
         name="SunPower PVS",
         update_method=async_update_data,
-        update_interval=timedelta(seconds=SUNVAULT_UPDATE_INTERVAL),
+        update_interval=timedelta(seconds=coordinator_interval),
     )
 
     hass.data[DOMAIN][entry.entry_id] = {
