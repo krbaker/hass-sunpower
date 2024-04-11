@@ -6,7 +6,7 @@ import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import CONF_HOST
 
-from .const import DOMAIN, SUNPOWER_HOST, SUNPOWER_DESCRIPTIVE_NAMES
+from .const import DOMAIN, SUNPOWER_HOST, SUNPOWER_DESCRIPTIVE_NAMES, SUNPOWER_ESS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -14,6 +14,7 @@ DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
         vol.Required(SUNPOWER_DESCRIPTIVE_NAMES, default=False): bool,
+        vol.Required(SUNPOWER_ESS, default=False): bool,
     }
 )
 

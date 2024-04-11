@@ -4,6 +4,27 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 
+class SunPowerEntity(CoordinatorEntity):
+    def __init__(self, coordinator, my_info, parent_info):
+        """Initialize the sensor."""
+        super().__init__(coordinator)
+        self._my_info = my_info
+        self._parent_info = parent_info
+        self.base_unique_id = self._my_info.get("SERIAL", "")
+    
+    @property
+    def device_info(self):
+        device_info = {
+            "identifiers": {(DOMAIN, self.base_unique_id)},
+            "name": f"{self._my_info.get('DESCR', f"{self._my_info.get('MODEL', 'UnknownModel')} {self._my_info.get('SERIAL', 'UnknownSerial')}")}",
+            "manufacturer": "SunPower",
+            "model": f"{self._my_info.get('MODEL', 'UnknownModel')}",
+            "sw_version": f"{self._my_info.get('SWVER', 'UnknownVersion')}",
+        }
+        if self._parent_info is not None:
+            device_info["via_device"] = f"{self._parent_info.get('SERIAL', 'UnknownParent')}"
+        return device_info
+
 
 class SunPowerPVSEntity(CoordinatorEntity):
     """Base class for sunpower pvs entities."""

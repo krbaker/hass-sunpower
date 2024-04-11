@@ -11,7 +11,8 @@
             "user": {
                 "data": {
                     "host": "Host",
-                    "use_descriptive_names": "Use descriptive entity names"
+                    "use_descriptive_names": "Use descriptive entity names",
+                    "use_ess": "Use energy storage system"
                 },
                 "description": "If 'Use descriptive entity names' is selected, device names\nwill be prepended on all entity names."
             }

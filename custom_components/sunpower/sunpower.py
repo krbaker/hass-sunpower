@@ -33,6 +33,15 @@ class SunPowerMonitor:
         """Get a list of all devices connected to the PVS"""
         return self.generic_command("DeviceList")
 
+    def energy_storage_system_status(self):
+        """Get the status of the energy storage system"""
+        try:
+            return requests.get("http://{0}/cgi-bin/dl_cgi/energy-storage-system/status".format(self.host), timeout=120).json()
+        except requests.exceptions.RequestException as error:
+            raise ConnectionException from error
+        except simplejson.errors.JSONDecodeError as error:
+            raise ParseException from error
+
     def network_status(self):
         """Get a list of network interfaces on the PVS"""
         return self.generic_command("Get_Comm")
