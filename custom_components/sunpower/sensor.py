@@ -1,19 +1,22 @@
 """Support for Sunpower sensors."""
+
 import logging
 
-from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+)
 
 from .const import (
     DOMAIN,
+    PVS_DEVICE_TYPE,
     SUNPOWER_COORDINATOR,
     SUNPOWER_DESCRIPTIVE_NAMES,
     SUNPOWER_ESS,
-    PVS_DEVICE_TYPE,
     SUNPOWER_SENSORS,
     SUNVAULT_SENSORS,
 )
 from .entity import SunPowerEntity
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,7 +26,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     sunpower_state = hass.data[DOMAIN][config_entry.entry_id]
     _LOGGER.debug("Sunpower_state: %s", sunpower_state)
 
-    if not SUNPOWER_DESCRIPTIVE_NAMES in config_entry.data:
+    if SUNPOWER_DESCRIPTIVE_NAMES not in config_entry.data:
         config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES] = False
     do_descriptive_names = config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES]
     do_ess = config_entry.data[SUNPOWER_ESS]
@@ -51,8 +54,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             for index, sensor_data in enumerate(sunpower_data[device_type].values()):
                 for sensor_name in sensors:
                     sensor = sensors[sensor_name]
-                    sensor_type = "" if not do_descriptive_names else f"{sensor_data.get('TYPE', '')} "
-                    sensor_description = "" if not do_descriptive_names else f"{sensor_data.get('DESCR', '')} "
+                    sensor_type = (
+                        "" if not do_descriptive_names else f"{sensor_data.get('TYPE', '')} "
+                    )
+                    sensor_description = (
+                        "" if not do_descriptive_names else f"{sensor_data.get('DESCR', '')} "
+                    )
                     text_sunpower = "" if not do_descriptive_names else "SunPower "
                     text_sunvault = "" if not do_descriptive_names else "SunVault "
                     text_pvs = "" if not do_descriptive_names else "PVS "
@@ -64,18 +71,40 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         id_code=unique_id,
                         device_type=device_type,
                         field=sensor["field"],
-                        title=sensor["title"].format(index=sensor_index, TYPE=sensor_type, DESCR=sensor_description, SUN_POWER=text_sunpower, SUN_VAULT=text_sunvault, PVS=text_pvs),
+                        title=sensor["title"].format(
+                            index=sensor_index,
+                            TYPE=sensor_type,
+                            DESCR=sensor_description,
+                            SUN_POWER=text_sunpower,
+                            SUN_VAULT=text_sunvault,
+                            PVS=text_pvs,
+                        ),
                         unit=sensor["unit"],
                         icon=sensor["icon"],
                         device_class=sensor["device"],
-                        state_class=sensor["state"])
+                        state_class=sensor["state"],
+                    )
                     if sunpower_sensor.native_value is not None:
                         entities.append(sunpower_sensor)
 
     async_add_entities(entities, True)
 
+
 class SunPowerSensor(SunPowerEntity, SensorEntity):
-    def __init__(self, coordinator, my_info, parent_info, id_code, device_type, field, title, unit, icon, device_class, state_class):
+    def __init__(
+        self,
+        coordinator,
+        my_info,
+        parent_info,
+        id_code,
+        device_type,
+        field,
+        title,
+        unit,
+        icon,
+        device_class,
+        state_class,
+    ):
         """Initialize the sensor."""
         super().__init__(coordinator, my_info, parent_info)
         self._id_code = id_code
@@ -86,7 +115,7 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
         self._icon = icon
         self._my_device_class = device_class
         self._my_state_class = state_class
-    
+
     @property
     def native_unit_of_measurement(self):
         """Return the unit of measurement."""
@@ -122,9 +151,13 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
         """Get the current value"""
         if self._my_device_class == SensorDeviceClass.POWER_FACTOR:
             try:
-                return float(self.coordinator.data[self._device_type][self.base_unique_id].get(self._field, None)) * 100.0
+                value = float(
+                    self.coordinator.data[self._device_type][self.base_unique_id].get(
+                        self._field,
+                        None,
+                    ),
+                )
+                return value * 100.0
             except ValueError:
-                pass #sometimes this value might be something like 'unavailable'
+                pass  # sometimes this value might be something like 'unavailable'
         return self.coordinator.data[self._device_type][self.base_unique_id].get(self._field, None)
-
-
