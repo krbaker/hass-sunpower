@@ -13,7 +13,7 @@
     },
     "error": {
       "cannot_connect": "Cannot Connect",
-      "unknown": "Unkown Error"
+      "unknown": "Unknown Error"
     },
     "abort": {
       "already_configured": "Already Configured"
