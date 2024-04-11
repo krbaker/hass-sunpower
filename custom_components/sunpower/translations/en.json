@@ -12,7 +12,9 @@
                 "data": {
                     "host": "Host",
                     "use_descriptive_names": "Use descriptive entity names",
-                    "use_ess": "Use energy storage system"
+		    "use_ess": "Use energy storage system",
+		    "PVS_UPDATE_INTERVAL": "Solar data update interval",
+		    "ESS_UPDATE_INTERCAL": "Energy storage update interval"
                 },
                 "description": "If 'Use descriptive entity names' is selected, device names\nwill be prepended on all entity names."
             }

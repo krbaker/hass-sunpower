@@ -6,7 +6,16 @@ import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import CONF_HOST
 
-from .const import DOMAIN, SUNPOWER_HOST, SUNPOWER_DESCRIPTIVE_NAMES, SUNPOWER_ESS
+from .const import (
+    DOMAIN,
+    SUNPOWER_HOST,
+    SUNPOWER_DESCRIPTIVE_NAMES,
+    SUNPOWER_ESS,
+    SUNPOWER_UPDATE_INTERVAL,
+    SUNVAULT_UPDATE_INTERVAL,
+    DEFAULT_SUNPOWER_UPDATE_INTERVAL,
+    DEFAULT_SUNVAULT_UPDATE_INTERVAL
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -15,6 +24,8 @@ DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_HOST): str,
         vol.Required(SUNPOWER_DESCRIPTIVE_NAMES, default=False): bool,
         vol.Required(SUNPOWER_ESS, default=False): bool,
+        vol.Required(SUNPOWER_UPDATE_INTERVAL, default=DEFAULT_SUNPOWER_UPDATE_INTERVAL): int,
+        vol.Required(SUNVAULT_UPDATE_INTERVAL, default=DEFAULT_SUNVAULT_UPDATE_INTERVAL): int,
     }
 )
 

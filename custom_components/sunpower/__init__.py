@@ -13,6 +13,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
+    DEFAULT_SUNPOWER_UPDATE_INTERVAL,
+    DEFAULT_SUNVAULT_UPDATE_INTERVAL,
     DOMAIN,
     SUNPOWER_UPDATE_INTERVAL,
     SUNVAULT_UPDATE_INTERVAL,
@@ -34,11 +36,11 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 PLATFORMS = ["sensor", "binary_sensor"]
 
 PREVIOUS_PVS_SAMPLE_TIME = 0
-PREVIOUS_PVS_SAMPLE = {]
+PREVIOUS_PVS_SAMPLE = {}
 PREVIOUS_ESS_SAMPLE_TIME = 0
-PREVIOUS_ESS_SAMPLE = {]
+PREVIOUS_ESS_SAMPLE = {}
 
-def sunpower_fetch(sunpower_monitor, use_ess):
+def sunpower_fetch(sunpower_monitor, use_ess, sunpower_update_invertal, sunvault_update_invertal):
     """Basic data fetch routine to get and reformat sunpower data to a dict of device type and serial #"""
     global PREVIOUS_PVS_SAMPLE_TIME
     global PREVIOUS_PVS_SAMPLE
@@ -50,13 +52,13 @@ def sunpower_fetch(sunpower_monitor, use_ess):
         ess_data = PREVIOUS_ESS_SAMPLE
         data = {}
             
-        if (time.time() - PREVIOUS_PVS_SAMPLE_TIME) >= SUNPOWER_UPDATE_INTERVAL:
+        if (time.time() - PREVIOUS_PVS_SAMPLE_TIME) >= sunpower_update_invertal:
             PREVIOUS_PVS_SAMPLE_TIME = time.time()
             sunpower_data = sunpower_monitor.device_list()
             PREVIOUS_PVS_SAMPLE = sunpower_data
             _LOGGER.debug("got PVS data %s", sunpower_data)
 
-        if use_ess and (time.time() - PREVIOUS_ESS_SAMPLE_TIME) >= SUNVAULT_UPDATE_INTERVAL:
+        if use_ess and (time.time() - PREVIOUS_ESS_SAMPLE_TIME) >= sunvault_update_invertal:
             PREVIOUS_ESS_SAMPLE_TIME = time.time()
             ess_data = sunpower_monitor.energy_storage_system_status()
             PREVIOUS_ESS_SAMPLE = sunpower_data
@@ -173,15 +175,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     hass.data[DOMAIN].setdefault(entry_id, {})
     sunpower_monitor = SunPowerMonitor(entry.data[SUNPOWER_HOST])
-    use_ess = entry.data[SUNPOWER_ESS]
+    use_ess = entry.data.get(SUNPOWER_ESS, False)
+    sunpower_update_invertal = entry.data.get(SUNPOWER_UPDATE_INTERVAL, DEFAULT_SUNPOWER_UPDATE_INTERVAL)
+    sunvault_update_invertal = entry.data.get(SUNVAULT_UPDATE_INTERVAL, DEFAULT_SUNVAULT_UPDATE_INTERVAL)
 
+    
     async def async_update_data():
         """Fetch data from API endpoint, used by coordinator to get mass data updates"""
         _LOGGER.debug("Updating SunPower data")
-        return await hass.async_add_executor_job(sunpower_fetch, sunpower_monitor, use_ess)
+        return await hass.async_add_executor_job(sunpower_fetch,
+                                                 sunpower_monitor,
+                                                 use_ess,
+                                                 sunpower_update_invertal,
+                                                 sunvault_update_invertal)
 
     #This could be better, taking the shortest time interval as the coordinator update is fine if the long interval is an even multiple of the short or *much* smaller
-    coordinator_interval = SUNVAULT_UPDATE_INTERVAL if SUNVAULT_UPDATE_INTERVAL < SUNPOWER_UPDATE_INTERVAL and use_ess else SUNPOWER_UPDATE_INTERVAL
+    coordinator_interval = sunvault_update_invertal if sunvault_update_invertal < sunpower_update_invertal and use_ess else sunpower_update_invertal
     
     coordinator = DataUpdateCoordinator(
         hass,
