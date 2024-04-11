@@ -1,15 +1,16 @@
 """Support for Sunpower binary sensors."""
+
 import logging
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 
 from .const import (
     DOMAIN,
+    PVS_DEVICE_TYPE,
+    SUNPOWER_BINARY_SENSORS,
     SUNPOWER_COORDINATOR,
     SUNPOWER_DESCRIPTIVE_NAMES,
     SUNPOWER_ESS,
-    PVS_DEVICE_TYPE,
-    SUNPOWER_BINARY_SENSORS,
     SUNVAULT_BINARY_SENSORS,
 )
 from .entity import SunPowerEntity
@@ -22,7 +23,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     sunpower_state = hass.data[DOMAIN][config_entry.entry_id]
     _LOGGER.debug("Sunpower_state: %s", sunpower_state)
 
-    if not SUNPOWER_DESCRIPTIVE_NAMES in config_entry.data:
+    if SUNPOWER_DESCRIPTIVE_NAMES not in config_entry.data:
         config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES] = False
     do_descriptive_names = config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES]
     do_ess = config_entry.data[SUNPOWER_ESS]
@@ -40,7 +41,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         BINARY_SENSORS = SUNPOWER_BINARY_SENSORS
         if do_ess:
             BINARY_SENSORS.update(SUNVAULT_BINARY_SENSORS)
-        
+
         for device_type in BINARY_SENSORS:
             if device_type not in sunpower_data:
                 _LOGGER.error(f"Cannot find any {device_type}")
@@ -50,8 +51,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             for index, sensor_data in enumerate(sunpower_data[device_type].values()):
                 for sensor_name in sensors:
                     sensor = sensors[sensor_name]
-                    sensor_type = "" if not do_descriptive_names else f"{sensor_data.get('TYPE', '')} "
-                    sensor_description = "" if not do_descriptive_names else f"{sensor_data.get('DESCR', '')} "
+                    sensor_type = (
+                        "" if not do_descriptive_names else f"{sensor_data.get('TYPE', '')} "
+                    )
+                    sensor_description = (
+                        "" if not do_descriptive_names else f"{sensor_data.get('DESCR', '')} "
+                    )
                     text_sunpower = "" if not do_descriptive_names else "SunPower "
                     text_sunvault = "" if not do_descriptive_names else "SunVault "
                     text_pvs = "" if not do_descriptive_names else "PVS "
@@ -63,17 +68,37 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         id_code=unique_id,
                         device_type=device_type,
                         field=sensor["field"],
-                        title=sensor["title"].format(index=sensor_index, TYPE=sensor_type, DESCR=sensor_description, SUN_POWER=text_sunpower, SUN_VAULT=text_sunvault, PVS=text_pvs),
+                        title=sensor["title"].format(
+                            index=sensor_index,
+                            TYPE=sensor_type,
+                            DESCR=sensor_description,
+                            SUN_POWER=text_sunpower,
+                            SUN_VAULT=text_sunvault,
+                            PVS=text_pvs,
+                        ),
                         device_class=sensor["device"],
-                        on_value=sensor["on_value"])
+                        on_value=sensor["on_value"],
+                    )
                     entities.append(sunpower_sensor)
 
     async_add_entities(entities, True)
 
+
 class SunPowerState(SunPowerEntity, BinarySensorEntity):
     """Representation of SunPower Meter Working State"""
 
-    def __init__(self, coordinator, my_info, parent_info, id_code, device_type, field, title, device_class, on_value):
+    def __init__(
+        self,
+        coordinator,
+        my_info,
+        parent_info,
+        id_code,
+        device_type,
+        field,
+        title,
+        device_class,
+        on_value,
+    ):
         super().__init__(coordinator, my_info, parent_info)
         self._id_code = id_code
         self._device_type = device_type
@@ -106,4 +131,3 @@ class SunPowerState(SunPowerEntity, BinarySensorEntity):
     def is_on(self):
         """Return true if the binary sensor is on."""
         return self.state == self._on_value
-
