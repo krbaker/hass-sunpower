@@ -180,7 +180,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.debug("Updating SunPower data")
         return await hass.async_add_executor_job(sunpower_fetch, sunpower_monitor, use_ess)
 
-    coordinator_interval = SUNVAULT_UPDATE_INTERVAL if SUNVAULT_UPDATE_INTERVAL < SUNPOWER_UPDATE_INTERVAL else SUNPOWER_UPDATE_INTERVAL
+    #This could be better, taking the shortest time interval as the coordinator update is fine if the long interval is an even multiple of the short or *much* smaller
+    coordinator_interval = SUNVAULT_UPDATE_INTERVAL if SUNVAULT_UPDATE_INTERVAL < SUNPOWER_UPDATE_INTERVAL and use_ess else SUNPOWER_UPDATE_INTERVAL
     
     coordinator = DataUpdateCoordinator(
         hass,
