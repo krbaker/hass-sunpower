@@ -28,6 +28,7 @@ from .const import (
     SUNPOWER_ESS,
     SUNPOWER_HOST,
     SUNPOWER_OBJECT,
+    PVS_DEVICE_TYPE,
     SUNPOWER_UPDATE_INTERVAL,
     SUNVAULT_DEVICE_TYPE,
     SUNVAULT_UPDATE_INTERVAL,
@@ -197,34 +198,38 @@ def sunpower_fetch(sunpower_monitor, use_ess, sunpower_update_invertal, sunvault
                     "main_voltage"
                 ]["value"]
             if True:
-                data[SUNVAULT_DEVICE_TYPE] = {"SunVault": {}}
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["sunvault_amperage"] = sum(
+                # Generate a usable serial number for this virtual device, use PVS serial as base
+                # since we must be talking through one and it has a serial
+                pvs_serial = next(iter(data[PVS_DEVICE_TYPE]))) # only one PVS
+                sunvault_serial = f"sunvault_{pvs_serial}"
+                data[SUNVAULT_DEVICE_TYPE] = {sunvault_serial: {}}
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["sunvault_amperage"] = sum(
                     sunvault_amperages,
                 )
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["sunvault_voltage"] = sum(
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["sunvault_voltage"] = sum(
                     sunvault_voltages,
                 ) / len(sunvault_voltages)
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["sunvault_temperature"] = sum(
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["sunvault_temperature"] = sum(
                     sunvault_temperatures,
                 ) / len(sunvault_temperatures)
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["sunvault_customer_state_of_charge"] = sum(
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["sunvault_customer_state_of_charge"] = sum(
                     sunvault_customer_state_of_charges,
                 ) / len(sunvault_customer_state_of_charges)
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["sunvault_system_state_of_charge"] = sum(
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["sunvault_system_state_of_charge"] = sum(
                     sunvault_system_state_of_charges,
                 ) / len(sunvault_system_state_of_charges)
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["sunvault_power_input"] = sum(
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["sunvault_power_input"] = sum(
                     sunvault_power_inputs,
                 )
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["sunvault_power_output"] = sum(
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["sunvault_power_output"] = sum(
                     sunvault_power_outputs,
                 )
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["sunvault_power"] = sum(sunvault_power)
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["STATE"] = sunvault_state
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["SERIAL"] = "SunVault"
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["SWVER"] = "1.0"
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["DESCR"] = "SunVault"
-                data[SUNVAULT_DEVICE_TYPE]["SunVault"]["MODEL"] = "SunVault"
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["sunvault_power"] = sum(sunvault_power)
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["STATE"] = sunvault_state
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["SERIAL"] = sunvault_serial
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["SWVER"] = "1.0"
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["DESCR"] = "Virtual SunVault"
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["MODEL"] = "Virtual SunVault"
         return data
     except ConnectionException as error:
         raise UpdateFailed from error
