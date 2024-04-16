@@ -228,6 +228,7 @@ def sunpower_fetch(sunpower_monitor, use_ess, sunpower_update_invertal, sunvault
                 data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["STATE"] = sunvault_state
                 data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["SERIAL"] = sunvault_serial
                 data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["SWVER"] = "1.0"
+                data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["HWVER"] = "Virtual"
                 data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["DESCR"] = "Virtual SunVault"
                 data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["MODEL"] = "Virtual SunVault"
         return data
