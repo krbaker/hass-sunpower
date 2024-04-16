@@ -63,13 +63,13 @@ def sunpower_fetch(sunpower_monitor, use_ess, sunpower_update_invertal, sunvault
         ess_data = PREVIOUS_ESS_SAMPLE
         data = {}
 
-        if (time.time() - PREVIOUS_PVS_SAMPLE_TIME) >= sunpower_update_invertal:
+        if (time.time() - PREVIOUS_PVS_SAMPLE_TIME) >= (sunpower_update_invertal -1):
             PREVIOUS_PVS_SAMPLE_TIME = time.time()
             sunpower_data = sunpower_monitor.device_list()
             PREVIOUS_PVS_SAMPLE = sunpower_data
             _LOGGER.debug("got PVS data %s", sunpower_data)
 
-        if use_ess and (time.time() - PREVIOUS_ESS_SAMPLE_TIME) >= sunvault_update_invertal:
+        if use_ess and (time.time() - PREVIOUS_ESS_SAMPLE_TIME) >= (sunvault_update_invertal - 1):
             PREVIOUS_ESS_SAMPLE_TIME = time.time()
             ess_data = sunpower_monitor.energy_storage_system_status()
             PREVIOUS_ESS_SAMPLE = sunpower_data
