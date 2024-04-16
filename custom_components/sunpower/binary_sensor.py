@@ -119,8 +119,16 @@ class SunPowerState(SunPowerEntity, BinarySensorEntity):
 
     @property
     def unique_id(self):
-        """Device Uniqueid."""
-        return f"hass_sunpower.{self._id_code}.{self.base_unique_id}.{self._field}"
+        """Device Uniqueid.
+        https://developers.home-assistant.io/docs/entity_registry_index/#unique-id
+        Should not include the domain, home assistant does that for us
+        base_unique_id is the serial number of the device (Inverter, PVS, Meter etc)
+        "_pvs_" just as a divider - in case we start pulling data from some other source
+        _field is the field within the data that this came from which is a dict so there is only one
+        Updating this format is a breaking change and should be called out if changed in a PR
+        """
+        return f"{self.base_unique_id}_pvs_{self._field}"
+
 
     @property
     def state(self):
