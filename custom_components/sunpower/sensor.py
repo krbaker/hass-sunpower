@@ -12,6 +12,7 @@ from .const import (
     PVS_DEVICE_TYPE,
     SUNPOWER_COORDINATOR,
     SUNPOWER_DESCRIPTIVE_NAMES,
+    SUNPOWER_PRODUCT_NAMES,
     SUNPOWER_ESS,
     SUNPOWER_SENSORS,
     SUNVAULT_SENSORS,
@@ -26,10 +27,17 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     sunpower_state = hass.data[DOMAIN][config_entry.entry_id]
     _LOGGER.debug("Sunpower_state: %s", sunpower_state)
 
-    if SUNPOWER_DESCRIPTIVE_NAMES not in config_entry.data:
-        config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES] = False
-    do_descriptive_names = config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES]
-    do_ess = config_entry.data[SUNPOWER_ESS]
+    do_descriptive_names = False
+    if SUNPOWER_DESCRIPTIVE_NAMES in config_entry.data:
+        do_descriptive_names = config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES]
+
+    do_product_names = False
+    if SUNPOWER_PRODUCT_NAMES in config_entry.data:
+        do_product_names = config_entry.data[SUNPOWER_PRODUCT_NAMES]
+
+    do_ess = False
+    if SUNPOWER_ESS in config_entry.data:
+        do_ess = config_entry.data[SUNPOWER_ESS]
 
     coordinator = sunpower_state[SUNPOWER_COORDINATOR]
     sunpower_data = coordinator.data
@@ -60,9 +68,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     sensor_description = (
                         "" if not do_descriptive_names else f"{sensor_data.get('DESCR', '')} "
                     )
-                    text_sunpower = "" if not do_descriptive_names else "SunPower "
-                    text_sunvault = "" if not do_descriptive_names else "SunVault "
-                    text_pvs = "" if not do_descriptive_names else "PVS "
+                    text_sunpower = "" if not do_product_names else "SunPower "
+                    text_sunvault = "" if not do_product_names else "SunVault "
+                    text_pvs = "" if not do_product_names else "PVS "
                     sensor_index = "" if not do_descriptive_names else f"{index + 1} "
                     sunpower_sensor = SunPowerSensor(
                         coordinator=coordinator,

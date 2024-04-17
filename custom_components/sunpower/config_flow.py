@@ -15,6 +15,7 @@ from .const import (
     DEFAULT_SUNVAULT_UPDATE_INTERVAL,
     DOMAIN,
     SUNPOWER_DESCRIPTIVE_NAMES,
+    SUNPOWER_PRODUCT_NAMES,
     SUNPOWER_ESS,
     SUNPOWER_HOST,
     SUNPOWER_UPDATE_INTERVAL,
@@ -31,6 +32,7 @@ DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
         vol.Required(SUNPOWER_DESCRIPTIVE_NAMES, default=False): bool,
+        vol.Required(SUNPOWER_PRODUCT_NAMES, default=False): bool,
         vol.Required(SUNPOWER_ESS, default=False): bool,
         vol.Required(SUNPOWER_UPDATE_INTERVAL, default=DEFAULT_SUNPOWER_UPDATE_INTERVAL): int,
         vol.Required(SUNVAULT_UPDATE_INTERVAL, default=DEFAULT_SUNVAULT_UPDATE_INTERVAL): int,

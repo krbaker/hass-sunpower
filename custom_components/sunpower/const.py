@@ -21,6 +21,7 @@ from homeassistant.const import (
 DOMAIN = "sunpower"
 
 SUNPOWER_DESCRIPTIVE_NAMES = "use_descriptive_names"
+SUNPOWER_PRODUCT_NAMES = "use_product_names"
 SUNPOWER_ESS = "use_ess"
 SUNPOWER_OBJECT = "sunpower"
 SUNPOWER_HOST = "host"

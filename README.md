@@ -7,6 +7,18 @@ Home Assistant SunPower Integration using the local installer ethernet interface
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 ![Project Maintenance][maintenance-shield]
 
+# *** 🟥 WARNING 🟥 ***
+This integration uses endpoints designed for the provisioning of the PVS system.  
+They were not intended to be called over and over for days/months/years on end.
+I have seen PVS systems eventually failing to push data to Sunpower's
+cloud systems even though everything else (this integration included) were working.
+This happened to my system and I did a bunch of gymnastics some of the errors 
+suggested it might have been due to a partition filling on the PVS.  I would 
+certainly use caution with short polling rates.
+
+YMMV, any damage to your system is your responsability (see also: [LICENSE](LICENSE))
+ 
+
 ## Component to integrate with [sunpower][sunpower-us] PVS 5/6 monitors
 
 **This component will set up the following platforms.**
@@ -45,10 +57,30 @@ descriptor added onto the front of their name.  The device descriptor is a combi
 device type (e.g., Inverter) and serial number.  This guarantees unique entity IDs and names
 at the expense of making said names very long.
 
+## Use product entity names
+
+When selected during installation, entities added for each device will have the "product"
+descriptor added onto the front of their name.  This adds 'sunpower' 'sunvault' and 'pvs'
+to entities making them even more distinct but *very* long.
+
 ## Use energy storage system
 
 If you have a SunVault system along side your solar you can select this option to
-include data from the energy storage system.
+include data from the energy storage system.  (This addition thanks to [@CanisUrsa](https://github.com/CanisUrsa))
+
+## Solar data update interval (seconds)
+
+This sets how fast the integration will try to get updated solar info from the PVS.  
+The lowest "safe" rate looks like about 120 seconds.  I am concerned some PVSs may fail
+to work properly over time and I'm guessing it might be request or error logging filling
+their memory.  I am running with 300 seconds right now as I went through a heck of a time
+with a PVS that began to fail pushing to Sunpower's cloud.
+
+## Energy storage update interval (seconds)
+
+Should evenly divide into Solar data update interval or be an even multiple of it (this is due to the 
+currently silly way polling is handled through one timer).  The original author of the ESS addon 
+[@CanisUrsa](https://github.com/CanisUrsa) had it as low as 20 seconds (see warning above)
 
 ## Network Setup
 
