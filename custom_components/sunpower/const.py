@@ -56,7 +56,7 @@ SUNPOWER_BINARY_SENSORS = {
         "sensors": {
             "METER_STATE": {
                 "field": "STATE",
-                "title": "{SUN_POWER}{TYPE}State",
+                "title": "{SUN_POWER}{DESCR}State",
                 "device": SensorDeviceClass.POWER,
                 "on_value": WORKING_STATE,
             },
@@ -216,7 +216,7 @@ SUNPOWER_SENSORS = {
         "sensors": {
             "METER_FREQUENCY": {
                 "field": "freq_hz",
-                "title": "{SUN_POWER}{TYPE}Frequency",
+                "title": "{SUN_POWER}{DESCR}Frequency",
                 "unit": UnitOfFrequency.HERTZ,
                 "icon": "mdi:flash",
                 "device": None,
@@ -224,7 +224,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_NET_KWH": {
                 "field": "net_ltea_3phsum_kwh",
-                "title": "{SUN_POWER}{TYPE}Lifetime Power",
+                "title": "{SUN_POWER}{DESCR}Lifetime Power",
                 "unit": UnitOfEnergy.KILO_WATT_HOUR,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.ENERGY,
@@ -232,7 +232,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_KW": {
                 "field": "p_3phsum_kw",
-                "title": "{SUN_POWER}{TYPE}Power",
+                "title": "{SUN_POWER}{DESCR}Power",
                 "unit": UnitOfPower.KILO_WATT,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER,
@@ -240,7 +240,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_VAR": {
                 "field": "q_3phsum_kvar",
-                "title": "{SUN_POWER}{TYPE}KVA Reactive",
+                "title": "{SUN_POWER}{DESCR}KVA Reactive",
                 "unit": POWER_VOLT_AMPERE_REACTIVE,
                 "icon": "mdi:flash",
                 "device": None,
@@ -248,7 +248,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_VA": {
                 "field": "s_3phsum_kva",
-                "title": "{SUN_POWER}{TYPE}KVA Apparent",
+                "title": "{SUN_POWER}{DESCR}KVA Apparent",
                 "unit": UnitOfApparentPower.VOLT_AMPERE,
                 "icon": "mdi:flash",
                 "device": None,
@@ -256,7 +256,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_POWER_FACTOR": {
                 "field": "tot_pf_rto",
-                "title": "{SUN_POWER}{TYPE}Power Factor",
+                "title": "{SUN_POWER}{DESCR}Power Factor",
                 "unit": PERCENTAGE,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER_FACTOR,
@@ -264,7 +264,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_L1_A": {
                 "field": "i1_a",
-                "title": "{SUN_POWER}{TYPE}Leg 1 Amps",
+                "title": "{SUN_POWER}{DESCR}Leg 1 Amps",
                 "unit": UnitOfElectricCurrent.AMPERE,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
@@ -272,7 +272,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_A": {
                 "field": "i_a",
-                "title": "SunPower {TYPE}Amps",
+                "title": "{SUN_POWER}{DESCR}Amps",
                 "unit": UnitOfElectricCurrent.AMPERE,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
@@ -280,7 +280,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_L2_A": {
                 "field": "i2_a",
-                "title": "{SUN_POWER}{TYPE}Leg 2 Amps",
+                "title": "{SUN_POWER}{DESCR}Leg 2 Amps",
                 "unit": UnitOfElectricCurrent.AMPERE,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
@@ -288,7 +288,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_L1_KW": {
                 "field": "p1_kw",
-                "title": "{SUN_POWER}{TYPE}Leg 1 KW",
+                "title": "{SUN_POWER}{DESCR}Leg 1 KW",
                 "unit": UnitOfPower.KILO_WATT,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER,
@@ -296,7 +296,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_L2_KW": {
                 "field": "p2_kw",
-                "title": "{SUN_POWER}{TYPE}Leg 2 KW",
+                "title": "{SUN_POWER}{DESCR}Leg 2 KW",
                 "unit": UnitOfPower.KILO_WATT,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER,
@@ -304,7 +304,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_L1_V": {
                 "field": "v1n_v",
-                "title": "{SUN_POWER}{TYPE}Leg 1 Volts",
+                "title": "{SUN_POWER}{DESCR}Leg 1 Volts",
                 "unit": UnitOfElectricPotential.VOLT,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
@@ -312,7 +312,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_L2_V": {
                 "field": "v2n_v",
-                "title": "{SUN_POWER}{TYPE}Leg 2 Volts",
+                "title": "{SUN_POWER}{DESCR}Leg 2 Volts",
                 "unit": UnitOfElectricPotential.VOLT,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
@@ -320,7 +320,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_L12_V": {
                 "field": "v12_v",
-                "title": "{SUN_POWER}{TYPE}Supply Volts",
+                "title": "{SUN_POWER}{DESCR}Supply Volts",
                 "unit": UnitOfElectricPotential.VOLT,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
@@ -328,7 +328,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_TO_GRID": {
                 "field": "neg_ltea_3phsum_kwh",
-                "title": "{SUN_POWER}{TYPE}KWh To Grid",
+                "title": "{SUN_POWER}{DESCR}KWh To Grid",
                 "unit": UnitOfEnergy.KILO_WATT_HOUR,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.ENERGY,
@@ -336,7 +336,7 @@ SUNPOWER_SENSORS = {
             },
             "METER_TO_HOME": {
                 "field": "pos_ltea_3phsum_kwh",
-                "title": "{SUN_POWER}{TYPE}KWh To Home",
+                "title": "{SUN_POWER}{DESCR}KWh To Home",
                 "unit": UnitOfEnergy.KILO_WATT_HOUR,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.ENERGY,
