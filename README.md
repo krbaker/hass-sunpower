@@ -2,6 +2,10 @@
 
 Home Assistant SunPower Integration using the local installer ethernet interface.
 
+Original Integration is [https://github.com/krbaker/hass-sunpower](https://github.com/krbaker/hass-sunpower)
+
+* If this is a fork, please add what's different here and fix up the badges below
+
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
