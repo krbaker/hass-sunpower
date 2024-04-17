@@ -2,6 +2,10 @@
 
 Home Assistant SunPower Integration using the local installer ethernet interface.
 
+Original Integration is [https://github.com/krbaker/hass-sunpower](https://github.com/krbaker/hass-sunpower)
+
+* If this is a fork, please add what's different here and fix up the badges below
+
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
@@ -20,6 +24,14 @@ certainly use caution with short polling rates.
 YMMV, any damage to your system is your responsibility (see also: [LICENSE](LICENSE))
 
 ## Component to integrate with [sunpower][sunpower-us] PVS 5/6 monitors
+
+Notes:
+
+* For PVS < 5 you can try [jcronq](https://github.com/jcronq/)'s fork
+[https://github.com/jcronq/hass-sunpower](https://github.com/jcronq/hass-sunpower)
+* The Original ESS fork by [CanisUrsa](https://github.com/CanisUrsa/) is
+  here
+  [https://github.com/CanisUrsa/hass-sunpower](https://github.com/CanisUrsa/hass-sunpower)
 
 **This component will set up the following platforms.**
 
