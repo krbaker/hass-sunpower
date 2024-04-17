@@ -1,12 +1,30 @@
 """Config flow for sunpower integration."""
-import logging
-from .sunpower import SunPowerMonitor, ConnectionException
-import voluptuous as vol
 
-from homeassistant import config_entries, core, exceptions
+import logging
+
+import voluptuous as vol
+from homeassistant import (
+    config_entries,
+    core,
+    exceptions,
+)
 from homeassistant.const import CONF_HOST
 
-from .const import DOMAIN, SUNPOWER_HOST, SUNPOWER_DESCRIPTIVE_NAMES
+from .const import (
+    DEFAULT_SUNPOWER_UPDATE_INTERVAL,
+    DEFAULT_SUNVAULT_UPDATE_INTERVAL,
+    DOMAIN,
+    SUNPOWER_DESCRIPTIVE_NAMES,
+    SUNPOWER_ESS,
+    SUNPOWER_HOST,
+    SUNPOWER_PRODUCT_NAMES,
+    SUNPOWER_UPDATE_INTERVAL,
+    SUNVAULT_UPDATE_INTERVAL,
+)
+from .sunpower import (
+    ConnectionException,
+    SunPowerMonitor,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -14,7 +32,11 @@ DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
         vol.Required(SUNPOWER_DESCRIPTIVE_NAMES, default=False): bool,
-    }
+        vol.Required(SUNPOWER_PRODUCT_NAMES, default=False): bool,
+        vol.Required(SUNPOWER_ESS, default=False): bool,
+        vol.Required(SUNPOWER_UPDATE_INTERVAL, default=DEFAULT_SUNPOWER_UPDATE_INTERVAL): int,
+        vol.Required(SUNVAULT_UPDATE_INTERVAL, default=DEFAULT_SUNVAULT_UPDATE_INTERVAL): int,
+    },
 )
 
 
@@ -56,7 +78,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "unknown"
 
         return self.async_show_form(
-            step_id="user", data_schema=DATA_SCHEMA, errors=errors
+            step_id="user",
+            data_schema=DATA_SCHEMA,
+            errors=errors,
         )
 
     async def async_step_import(self, user_input):

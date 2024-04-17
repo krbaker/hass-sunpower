@@ -1,22 +1,20 @@
 """Support for Sunpower binary sensors."""
+
 import logging
 
-from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorEntity
 
 from .const import (
     DOMAIN,
+    PVS_DEVICE_TYPE,
+    SUNPOWER_BINARY_SENSORS,
     SUNPOWER_COORDINATOR,
     SUNPOWER_DESCRIPTIVE_NAMES,
-    PVS_DEVICE_TYPE,
-    INVERTER_DEVICE_TYPE,
-    METER_DEVICE_TYPE,
-    PVS_STATE,
-    METER_STATE,
-    INVERTER_STATE,
-    WORKING_STATE,
+    SUNPOWER_ESS,
+    SUNPOWER_PRODUCT_NAMES,
+    SUNVAULT_BINARY_SENSORS,
 )
-from .entity import SunPowerPVSEntity, SunPowerMeterEntity, SunPowerInverterEntity
+from .entity import SunPowerEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -26,9 +24,17 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     sunpower_state = hass.data[DOMAIN][config_entry.entry_id]
     _LOGGER.debug("Sunpower_state: %s", sunpower_state)
 
-    if not SUNPOWER_DESCRIPTIVE_NAMES in config_entry.data:
-        config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES] = False
-    do_descriptive_names = config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES]
+    do_descriptive_names = False
+    if SUNPOWER_DESCRIPTIVE_NAMES in config_entry.data:
+        do_descriptive_names = config_entry.data[SUNPOWER_DESCRIPTIVE_NAMES]
+
+    do_product_names = False
+    if SUNPOWER_PRODUCT_NAMES in config_entry.data:
+        do_product_names = config_entry.data[SUNPOWER_PRODUCT_NAMES]
+
+    do_ess = False
+    if SUNPOWER_ESS in config_entry.data:
+        do_ess = config_entry.data[SUNPOWER_ESS]
 
     coordinator = sunpower_state[SUNPOWER_COORDINATOR]
     sunpower_data = coordinator.data
@@ -36,128 +42,110 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     if PVS_DEVICE_TYPE not in sunpower_data:
         _LOGGER.error("Cannot find PVS Entry")
     else:
+        entities = []
+
         pvs = next(iter(sunpower_data[PVS_DEVICE_TYPE].values()))
 
-        entities = [SunPowerPVSState(coordinator, pvs, do_descriptive_names)]
+        BINARY_SENSORS = SUNPOWER_BINARY_SENSORS
+        if do_ess:
+            BINARY_SENSORS.update(SUNVAULT_BINARY_SENSORS)
 
-        if METER_DEVICE_TYPE not in sunpower_data:
-            _LOGGER.error("Cannot find any power meters")
-        else:
-            for data in sunpower_data[METER_DEVICE_TYPE].values():
-                entities.append(SunPowerMeterState(coordinator, data, pvs, do_descriptive_names))
-
-        if INVERTER_DEVICE_TYPE not in sunpower_data:
-            _LOGGER.error("Cannot find any power inverters")
-        else:
-            for data in sunpower_data[INVERTER_DEVICE_TYPE].values():
-                entities.append(SunPowerInverterState(coordinator, data, pvs, do_descriptive_names))
+        for device_type in BINARY_SENSORS:
+            if device_type not in sunpower_data:
+                _LOGGER.error(f"Cannot find any {device_type}")
+                continue
+            unique_id = BINARY_SENSORS[device_type]["unique_id"]
+            sensors = BINARY_SENSORS[device_type]["sensors"]
+            for index, sensor_data in enumerate(sunpower_data[device_type].values()):
+                for sensor_name in sensors:
+                    sensor = sensors[sensor_name]
+                    sensor_type = (
+                        "" if not do_descriptive_names else f"{sensor_data.get('TYPE', '')} "
+                    )
+                    sensor_description = (
+                        "" if not do_descriptive_names else f"{sensor_data.get('DESCR', '')} "
+                    )
+                    text_sunpower = "" if not do_product_names else "SunPower "
+                    text_sunvault = "" if not do_product_names else "SunVault "
+                    text_pvs = "" if not do_product_names else "PVS "
+                    sensor_index = "" if not do_descriptive_names else f"{index + 1} "
+                    sunpower_sensor = SunPowerState(
+                        coordinator=coordinator,
+                        my_info=sensor_data,
+                        parent_info=pvs if device_type != PVS_DEVICE_TYPE else None,
+                        id_code=unique_id,
+                        device_type=device_type,
+                        field=sensor["field"],
+                        title=sensor["title"].format(
+                            index=sensor_index,
+                            TYPE=sensor_type,
+                            DESCR=sensor_description,
+                            SUN_POWER=text_sunpower,
+                            SUN_VAULT=text_sunvault,
+                            PVS=text_pvs,
+                            SERIAL=sensor_data.get("SERIAL", "Unknown"),
+                            MODEL=sensor_data.get("MODEL", "Unknown"),
+                        ),
+                        device_class=sensor["device"],
+                        on_value=sensor["on_value"],
+                    )
+                    entities.append(sunpower_sensor)
 
     async_add_entities(entities, True)
 
 
-class SunPowerPVSState(SunPowerPVSEntity, BinarySensorEntity):
-    """Representation of SunPower PVS Working State"""
-
-    def __init__(self, coordinator, pvs_info, do_descriptive_names):
-        super().__init__(coordinator, pvs_info)
-        self._do_descriptive_names = do_descriptive_names
-
-    @property
-    def name(self):
-        """Device Name."""
-        if self._do_descriptive_names:
-            return "PVS System State"
-        else:
-            return "System State"
-
-    @property
-    def device_class(self):
-        """Device Class."""
-        return SensorDeviceClass.POWER
-
-    @property
-    def unique_id(self):
-        """Device Uniqueid."""
-        return f"{self.base_unique_id}_pvs_state"
-
-    @property
-    def state(self):
-        """Get the current value"""
-        return self.coordinator.data[PVS_DEVICE_TYPE][self.base_unique_id][PVS_STATE]
-
-    @property
-    def is_on(self):
-        """Return true if the binary sensor is on."""
-        return self.state == WORKING_STATE
-
-
-class SunPowerMeterState(SunPowerMeterEntity, BinarySensorEntity):
+class SunPowerState(SunPowerEntity, BinarySensorEntity):
     """Representation of SunPower Meter Working State"""
 
-    def __init__(self, coordinator, meter_info, pvs_info, do_descriptive_names):
-        super().__init__(coordinator, meter_info, pvs_info)
-        self._do_descriptive_names = do_descriptive_names
+    def __init__(
+        self,
+        coordinator,
+        my_info,
+        parent_info,
+        id_code,
+        device_type,
+        field,
+        title,
+        device_class,
+        on_value,
+    ):
+        super().__init__(coordinator, my_info, parent_info)
+        self._id_code = id_code
+        self._device_type = device_type
+        self._title = title
+        self._field = field
+        self._my_device_class = device_class
+        self._on_value = on_value
 
     @property
     def name(self):
         """Device Name."""
-        if self._do_descriptive_names:
-            return f"{self._meter_info['DESCR']} System State"
-        else:
-            return "System State"
+        return self._title
 
     @property
     def device_class(self):
         """Device Class."""
-        return SensorDeviceClass.POWER
+        return self._my_device_class
 
     @property
     def unique_id(self):
-        """Device Uniqueid."""
-        return f"{self.base_unique_id}_meter_state"
+        """Device Uniqueid.
+        https://developers.home-assistant.io/docs/entity_registry_index/#unique-id
+        Should not include the domain, home assistant does that for us
+        base_unique_id is the serial number of the device (Inverter, PVS, Meter etc)
+        "_pvs_" just as a divider - in case we start pulling data from some other source
+        _field is the field within the data that this came from which is a dict so there
+        is only one.
+        Updating this format is a breaking change and should be called out if changed in a PR
+        """
+        return f"{self.base_unique_id}_pvs_{self._field}"
 
     @property
     def state(self):
         """Get the current value"""
-        return self.coordinator.data[METER_DEVICE_TYPE][self.base_unique_id][METER_STATE]
+        return self.coordinator.data[self._device_type][self.base_unique_id][self._field]
 
     @property
     def is_on(self):
         """Return true if the binary sensor is on."""
-        return self.state == WORKING_STATE
-
-
-class SunPowerInverterState(SunPowerInverterEntity, BinarySensorEntity):
-    """Representation of SunPower Inverter Working State"""
-
-    def __init__(self, coordinator, inverter_info, pvs_info, do_descriptive_names):
-        super().__init__(coordinator, inverter_info, pvs_info)
-        self._do_descriptive_names = do_descriptive_names
-
-    @property
-    def name(self):
-        """Device Name."""
-        if self._do_descriptive_names:
-            return f"{self._inverter_info['DESCR']} System State"
-        else:
-            return "System State"
-
-    @property
-    def device_class(self):
-        """Device Class."""
-        return SensorDeviceClass.POWER
-
-    @property
-    def unique_id(self):
-        """Device Uniqueid."""
-        return f"{self.base_unique_id}_inverter_state"
-
-    @property
-    def state(self):
-        """Get the current value"""
-        return self.coordinator.data[INVERTER_DEVICE_TYPE][self.base_unique_id][INVERTER_STATE]
-
-    @property
-    def is_on(self):
-        """Return true if the binary sensor is on."""
-        return self.state == WORKING_STATE
+        return self.state == self._on_value

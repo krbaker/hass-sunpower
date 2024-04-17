@@ -1,0 +1,43 @@
+[flake8]
+# generous but reasonable line length
+max-line-length = 99
+
+# files to skip
+exclude =
+    .flake8,
+    .pre-commit-config.yaml,
+    .git,
+    .gitignore,
+    .dockerignore,
+    requirements.txt,
+    __pycache__,
+    venv,
+    pip-download-cache,
+    migrations,
+    Dockerfile,
+    docker-entrypoint.sh,
+    docker-compose.yaml,
+    frontend,
+    *.md,
+    *.txt
+
+extend-select =
+    B,    # bugbear extensions
+    C,    # complexity issues
+    D,    # formatting?
+    DJ10, # django rules
+    DJ11, # django rules
+    E,    # “errors” reported by pycodestyle
+    F,    # violationsreported by pyflakes
+    PT,   # pytest rules
+    W,    # “warnings” reported by pycodestyle
+    B9    # bugbear warnings
+
+# specific rules to ignore
+ignore =
+
+# use google style docstrings
+docstring-convention = google
+
+# force use of double quotes
+inline-quotes = "
