@@ -1,12 +1,9 @@
 # hass-sunpower
-Home Assistant SunPower Integration using the local installer ethernet interface.
+Home Assistant SunPower Integration using the local installer ethernet interface.  This is a fork for
+older PVS systems ( < PVS 5 ).  The orignal PVS 5/6 integration is [here](https://github.com/krbaker/hass-sunpower).
+This fork has not been merged in yet.
 
-[![GitHub Release][releases-shield]][releases]
-[![GitHub Activity][commits-shield]][commits]
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
-![Project Maintenance][maintenance-shield]
-
-## Component to integrate with [sunpower][sunpower-us] PVS 5/6 monitors
+## Component to integrate with [sunpower][sunpower-us] Older PVS monitors (< PVS 5)
 
 **This component will set up the following platforms.**
 
