@@ -21,6 +21,14 @@ YMMV, any damage to your system is your responsibility (see also: [LICENSE](LICE
 
 ## Component to integrate with [sunpower][sunpower-us] PVS 5/6 monitors
 
+Notes:
+
+* For PVS < 5 you can try [jcronq](https://github.com/jcronq/)'s fork
+[https://github.com/jcronq/hass-sunpower](https://github.com/jcronq/hass-sunpower)
+* The Original ESS fork by [CanisUrsa](https://github.com/CanisUrsa/) is
+  here
+  [https://github.com/CanisUrsa/hass-sunpower](https://github.com/CanisUrsa/hass-sunpower)
+
 **This component will set up the following platforms.**
 
 | Platform        | Description                                                       |
