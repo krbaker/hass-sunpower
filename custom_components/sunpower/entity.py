@@ -19,13 +19,14 @@ class SunPowerEntity(CoordinatorEntity):
         model = self._my_info.get("MODEL", "UnknownModel")
         name = self._my_info.get("DESCR", f"{model} {serial}")
         hw_version = self._my_info.get("HWVER", self._my_info.get("hw_version", "Unknown"))
-        sw_version = f"{self._my_info.get("SWVER", "Unknown")} Hardware: {hw_version}"
+        sw_version = self._my_info.get("SWVER", "Unknown")
+        version = f"{sw_version} Hardware: {hw_version}"
         device_info = {
             "identifiers": {(DOMAIN, self.base_unique_id)},
             "name": name,
             "manufacturer": "SunPower",
             "model": model,
-            "sw_version": sw_version
+            "sw_version": version,
         }
         if self._parent_info is not None:
             device_info["via_device"] = (
