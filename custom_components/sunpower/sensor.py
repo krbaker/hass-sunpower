@@ -12,8 +12,8 @@ from .const import (
     PVS_DEVICE_TYPE,
     SUNPOWER_COORDINATOR,
     SUNPOWER_DESCRIPTIVE_NAMES,
-    SUNPOWER_PRODUCT_NAMES,
     SUNPOWER_ESS,
+    SUNPOWER_PRODUCT_NAMES,
     SUNPOWER_SENSORS,
     SUNVAULT_SENSORS,
 )
@@ -87,7 +87,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                             SUN_VAULT=text_sunvault,
                             PVS=text_pvs,
                             SERIAL=sensor_data.get("SERIAL", "Unknown"),
-                            MODEL=sensor_data.get("MODEL", "Unknown")
+                            MODEL=sensor_data.get("MODEL", "Unknown"),
                         ),
                         unit=sensor["unit"],
                         icon=sensor["icon"],
@@ -158,7 +158,8 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
         Should not include the domain, home assistant does that for us
         base_unique_id is the serial number of the device (Inverter, PVS, Meter etc)
         "_pvs_" just as a divider - in case we start pulling data from some other source
-        _field is the field within the data that this came from which is a dict so there is only one
+        _field is the field within the data that this came from which is a dict so there
+        is only one.
         Updating this format is a breaking change and should be called out if changed in a PR
         """
         return f"{self.base_unique_id}_pvs_{self._field}"
