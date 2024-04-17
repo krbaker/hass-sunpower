@@ -86,7 +86,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                             SUN_POWER=text_sunpower,
                             SUN_VAULT=text_sunvault,
                             PVS=text_pvs,
-                            SERIAL=sensor_data.get("SERIAL", "Unknown")
+                            SERIAL=sensor_data.get("SERIAL", "Unknown"),
+                            MODEL=sensor_data.get("MODEL", "Unknown")
                         ),
                         unit=sensor["unit"],
                         icon=sensor["icon"],
