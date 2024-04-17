@@ -77,7 +77,7 @@ SUNPOWER_BINARY_SENSORS = {
         "sensors": {
             "PVS_STATE": {
                 "field": "STATE",
-                "title": "{SUN_POWER}{PVS}State",
+                "title": "{SUN_POWER}{PVS} {SERIAL} State",
                 "device": SensorDeviceClass.POWER,
                 "on_value": WORKING_STATE,
             },
@@ -138,7 +138,7 @@ SUNPOWER_SENSORS = {
         "sensors": {
             "PVS_LOAD": {
                 "field": "dl_cpu_load",
-                "title": "{SUN_POWER}{PVS}System Load",
+                "title": "{SUN_POWER}{PVS} {SERIAL} System Load",
                 "unit": "",
                 "icon": "mdi:gauge",
                 "device": None,
@@ -146,7 +146,7 @@ SUNPOWER_SENSORS = {
             },
             "PVS_ERROR_COUNT": {
                 "field": "dl_err_count",
-                "title": "{SUN_POWER}{PVS}Error Count",
+                "title": "{SUN_POWER}{PVS} {SERIAL} Error Count",
                 "unit": "",
                 "icon": "mdi:alert-circle",
                 "device": None,
@@ -154,7 +154,7 @@ SUNPOWER_SENSORS = {
             },
             "PVS_COMMUNICATION_ERRORS": {
                 "field": "dl_comm_err",
-                "title": "{SUN_POWER}{PVS}Communication Errors",
+                "title": "{SUN_POWER}{PVS} {SERIAL} Communication Errors",
                 "unit": "",
                 "icon": "mdi:network-off",
                 "device": None,
@@ -162,7 +162,7 @@ SUNPOWER_SENSORS = {
             },
             "PVS_SKIPPED_SCANS": {
                 "field": "dl_skipped_scans",
-                "title": "{SUN_POWER}{PVS}Skipped Scans",
+                "title": "{SUN_POWER}{PVS} {SERIAL} Skipped Scans",
                 "unit": "",
                 "icon": "mdi:network-strength-off-outline",
                 "device": None,
@@ -170,7 +170,7 @@ SUNPOWER_SENSORS = {
             },
             "PVS_SCAN_TIME": {
                 "field": "dl_scan_time",
-                "title": "{SUN_POWER}{PVS}Scan Time",
+                "title": "{SUN_POWER}{PVS} {SERIAL} Scan Time",
                 "unit": UnitOfTime.SECONDS,
                 "icon": "mdi:timer-outline",
                 "device": None,
@@ -178,7 +178,7 @@ SUNPOWER_SENSORS = {
             },
             "PVS_UNTRANSMITTED": {
                 "field": "dl_untransmitted",
-                "title": "{SUN_POWER}{PVS}Untransmitted Data",
+                "title": "{SUN_POWER}{PVS} {SERIAL} Untransmitted Data",
                 "unit": "",
                 "icon": "mdi:radio-tower",
                 "device": None,
@@ -186,7 +186,7 @@ SUNPOWER_SENSORS = {
             },
             "PVS_UPTIME": {
                 "field": "dl_uptime",
-                "title": "{SUN_POWER}{PVS}Uptime",
+                "title": "{SUN_POWER}{PVS} {SERIAL} Uptime",
                 "unit": UnitOfTime.SECONDS,
                 "icon": "mdi:timer-outline",
                 "device": None,
@@ -194,7 +194,7 @@ SUNPOWER_SENSORS = {
             },
             "PVS_MEMORY_USED": {
                 "field": "dl_mem_used",
-                "title": "{SUN_POWER}{PVS}Memory Used",
+                "title": "{SUN_POWER}{PVS} {SERIAL} Memory Used",
                 "unit": UnitOfInformation.KILOBYTES,
                 "icon": "mdi:memory",
                 "device": None,
@@ -202,7 +202,7 @@ SUNPOWER_SENSORS = {
             },
             "PVS_FLASH_AVAILABLE": {
                 "field": "dl_flash_avail",
-                "title": "{SUN_POWER}{PVS}Flash Available",
+                "title": "{SUN_POWER}{PVS} {SERIAL} Flash Available",
                 "unit": UnitOfInformation.KILOBYTES,
                 "icon": "mdi:memory",
                 "device": None,
