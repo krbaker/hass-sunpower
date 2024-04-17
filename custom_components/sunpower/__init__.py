@@ -59,9 +59,8 @@ def convert_sunpower_data(sunpower_data):
     return data
 
 
-def convert_ess_data(ess_data, pvs_serial):
+def convert_ess_data(ess_data, data):
     """Do all the gymnastics to Integrate ESS data from its unique data source into the PVS data"""
-    data = {}
     sunvault_amperages = []
     sunvault_voltages = []
     sunvault_temperatures = []
@@ -177,6 +176,7 @@ def convert_ess_data(ess_data, pvs_serial):
     if True:
         # Generate a usable serial number for this virtual device, use PVS serial as base
         # since we must be talking through one and it has a serial
+        pvs_serial = next(iter(data[PVS_DEVICE_TYPE]))  # only one PVS
         sunvault_serial = f"sunvault_{pvs_serial}"
         data[SUNVAULT_DEVICE_TYPE] = {sunvault_serial: {}}
         data[SUNVAULT_DEVICE_TYPE][sunvault_serial]["sunvault_amperage"] = sum(
@@ -238,9 +238,11 @@ def sunpower_fetch(sunpower_monitor, use_ess, sunpower_update_invertal, sunvault
 
     try:
         data = convert_sunpower_data(sunpower_data)
-        pvs_serial = next(iter(data[PVS_DEVICE_TYPE]))  # only one PVS
         if use_ess:
-            data.update(convert_ess_data(ess_data, pvs_serial))
+            convert_ess_data(
+                ess_data,
+                data,
+            )  # ess converter appends to items in existing PVS structure
         return data
     except ParseException as error:
         raise UpdateFailed from error
