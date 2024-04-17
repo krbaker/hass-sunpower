@@ -23,12 +23,12 @@ from .const import (
     DOMAIN,
     ESS_DEVICE_TYPE,
     HUBPLUS_DEVICE_TYPE,
+    PVS_DEVICE_TYPE,
     SETUP_TIMEOUT_MIN,
     SUNPOWER_COORDINATOR,
     SUNPOWER_ESS,
     SUNPOWER_HOST,
     SUNPOWER_OBJECT,
-    PVS_DEVICE_TYPE,
     SUNPOWER_UPDATE_INTERVAL,
     SUNVAULT_DEVICE_TYPE,
     SUNVAULT_UPDATE_INTERVAL,
@@ -50,15 +50,17 @@ PREVIOUS_PVS_SAMPLE = {}
 PREVIOUS_ESS_SAMPLE_TIME = 0
 PREVIOUS_ESS_SAMPLE = {}
 
+
 def convert_sunpower_data(sunpower_data):
-    """ Convert PVS data into indexable format data[device_type][serial] """
+    """Convert PVS data into indexable format data[device_type][serial]"""
     data = {}
     for device in sunpower_data["devices"]:
-            data.setdefault(device["DEVICE_TYPE"], {})[device["SERIAL"]] = device
+        data.setdefault(device["DEVICE_TYPE"], {})[device["SERIAL"]] = device
     return data
 
+
 def convert_ess_data(ess_data, pvs_serial):
-    """ Do all the gymnastics to Integrate ESS data from its unique data source into the PVS data """
+    """Do all the gymnastics to Integrate ESS data from its unique data source into the PVS data"""
     data = {}
     sunvault_amperages = []
     sunvault_voltages = []
@@ -76,15 +78,15 @@ def convert_ess_data(ess_data, pvs_serial):
         data[BATTERY_DEVICE_TYPE][device["serial_number"]]["battery_voltage"] = device[
             "battery_voltage"
         ]["value"]
-        data[BATTERY_DEVICE_TYPE][device["serial_number"]]["customer_state_of_charge"] = (
-            device["customer_state_of_charge"]["value"]
-        )
-        data[BATTERY_DEVICE_TYPE][device["serial_number"]]["system_state_of_charge"] = (
-            device["system_state_of_charge"]["value"]
-        )
-        data[BATTERY_DEVICE_TYPE][device["serial_number"]]["temperature"] = device[
-            "temperature"
+        data[BATTERY_DEVICE_TYPE][device["serial_number"]]["customer_state_of_charge"] = device[
+            "customer_state_of_charge"
         ]["value"]
+        data[BATTERY_DEVICE_TYPE][device["serial_number"]]["system_state_of_charge"] = device[
+            "system_state_of_charge"
+        ]["value"]
+        data[BATTERY_DEVICE_TYPE][device["serial_number"]]["temperature"] = device["temperature"][
+            "value"
+        ]
         if data[BATTERY_DEVICE_TYPE][device["serial_number"]]["STATE"] != "working":
             sunvault_state = data[BATTERY_DEVICE_TYPE][device["serial_number"]]["STATE"]
         sunvault_amperages.append(device["battery_amperage"]["value"])
@@ -113,9 +115,9 @@ def convert_ess_data(ess_data, pvs_serial):
         data[ESS_DEVICE_TYPE][device["serial_number"]]["enclosure_temperature"] = device[
             "enclosure_temperature"
         ]["value"]
-        data[ESS_DEVICE_TYPE][device["serial_number"]]["agg_power"] = device[
-            "ess_meter_reading"
-        ]["agg_power"]["value"]
+        data[ESS_DEVICE_TYPE][device["serial_number"]]["agg_power"] = device["ess_meter_reading"][
+            "agg_power"
+        ]["value"]
         data[ESS_DEVICE_TYPE][device["serial_number"]]["meter_a_current"] = device[
             "ess_meter_reading"
         ]["meter_a"]["reading"]["current"]["value"]
@@ -139,9 +141,9 @@ def convert_ess_data(ess_data, pvs_serial):
         data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["contactor_position"] = device[
             "contactor_position"
         ]
-        data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["grid_frequency_state"] = (
-            device["grid_frequency_state"]
-        )
+        data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["grid_frequency_state"] = device[
+            "grid_frequency_state"
+        ]
         data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["grid_phase1_voltage"] = device[
             "grid_phase1_voltage"
         ]["value"]
@@ -157,12 +159,12 @@ def convert_ess_data(ess_data, pvs_serial):
         data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["hub_temperature"] = device[
             "hub_temperature"
         ]["value"]
-        data[HUBPLUS_DEVICE_TYPE][device["serial_number"]][
+        data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["inverter_connection_voltage"] = device[
             "inverter_connection_voltage"
-        ] = device["inverter_connection_voltage"]["value"]
-        data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["load_frequency_state"] = (
-            device["load_frequency_state"]
-        )
+        ]["value"]
+        data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["load_frequency_state"] = device[
+            "load_frequency_state"
+        ]
         data[HUBPLUS_DEVICE_TYPE][device["serial_number"]]["load_phase1_voltage"] = device[
             "load_phase1_voltage"
         ]["value"]
@@ -220,7 +222,7 @@ def sunpower_fetch(sunpower_monitor, use_ess, sunpower_update_invertal, sunvault
     ess_data = PREVIOUS_ESS_SAMPLE
 
     try:
-        if (time.time() - PREVIOUS_PVS_SAMPLE_TIME) >= (sunpower_update_invertal -1):
+        if (time.time() - PREVIOUS_PVS_SAMPLE_TIME) >= (sunpower_update_invertal - 1):
             PREVIOUS_PVS_SAMPLE_TIME = time.time()
             sunpower_data = sunpower_monitor.device_list()
             PREVIOUS_PVS_SAMPLE = sunpower_data
@@ -236,7 +238,7 @@ def sunpower_fetch(sunpower_monitor, use_ess, sunpower_update_invertal, sunvault
 
     try:
         data = convert_sunpower_data(sunpower_data)
-        pvs_serial = next(iter(data[PVS_DEVICE_TYPE])) # only one PVS
+        pvs_serial = next(iter(data[PVS_DEVICE_TYPE]))  # only one PVS
         if use_ess:
             data.update(convert_ess_data(ess_data, pvs_serial))
         return data
