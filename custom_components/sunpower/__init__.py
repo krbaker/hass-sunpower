@@ -78,10 +78,7 @@ def sunpower_fetch(sunpower_monitor, use_ess, sunpower_update_invertal, sunvault
 
         # Convert PVS data into indexable format data[device_type][serial]
         for device in sunpower_data["devices"]:
-            if device["DEVICE_TYPE"] not in data:
-                data[device["DEVICE_TYPE"]] = {device["SERIAL"]: device}
-            else:
-                data[device["DEVICE_TYPE"]][device["SERIAL"]] = device
+            data.setdefault(device["DEVICE_TYPE"], {})[device["SERIAL"]] = device
 
         if use_ess:
             # Integrate ESS data from its unique data source into the PVS data
