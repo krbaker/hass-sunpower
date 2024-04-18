@@ -30,7 +30,7 @@ Notes:
 * For PVS < 5 you can try [jcronq](https://github.com/jcronq/)'s fork
 [https://github.com/jcronq/hass-sunpower](https://github.com/jcronq/hass-sunpower)
 * The Original ESS fork by [CanisUrsa](https://github.com/CanisUrsa/) is
-  here
+  here.  This work has been integrated with some changes.
   [https://github.com/CanisUrsa/hass-sunpower](https://github.com/CanisUrsa/hass-sunpower)
 
 **This component will set up the following platforms.**
@@ -74,6 +74,15 @@ at the expense of making said names very long.
 When selected during installation, entities added for each device will have the "product"
 descriptor added onto the front of their name.  This adds 'sunpower' 'sunvault' and 'pvs'
 to entities making them even more distinct but *very* long.
+
+## Enable virtual production meter
+
+This adds an additional virtual device which sums up the current production and lifetime production
+for all microinverters and then averages the volts and frequency across all readings.
+This is useful for people who don't have a production meter installed but the data is not as
+accurate.
+
+![Virtual Meter Output](virtual_meter.png)
 
 ## Use energy storage system
 

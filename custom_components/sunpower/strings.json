@@ -7,7 +7,7 @@
           "host": "Host",
             "use_descriptive_names": "Use descriptive entity names",
             "use_product_names": "Use products in entity names",
-            "VIRTUAL_PRODUCTION": "Enable virtual production meter summing Micro Inverters",
+            "VIRTUAL_PRODUCTION": "Enable virtual production meter",
             "use_ess": "Use energy storage system",
             "PVS_UPDATE_INTERVAL": "Solar data update interval",
             "ESS_UPDATE_INTERCAL": "Energy storage update interval"
