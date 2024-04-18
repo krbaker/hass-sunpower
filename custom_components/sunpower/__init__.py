@@ -23,6 +23,8 @@ from .const import (
     DOMAIN,
     ESS_DEVICE_TYPE,
     HUBPLUS_DEVICE_TYPE,
+    INVERTER_DEVICE_TYPE,
+    METER_DEVICE_TYPE,
     PVS_DEVICE_TYPE,
     SETUP_TIMEOUT_MIN,
     SUNPOWER_COORDINATOR,
@@ -51,11 +53,58 @@ PREVIOUS_ESS_SAMPLE_TIME = 0
 PREVIOUS_ESS_SAMPLE = {}
 
 
+def create_vmeter(data):
+    # Create a virtual 'METER' that uses the sum of inverters
+    kwh = 0.0
+    kw = 0.0
+    amps = 0.0
+    freq = []
+    volts = []
+    state = "working"
+    for _serial, inverter in data.get(INVERTER_DEVICE_TYPE, {}).items():
+        if "STATE" in inverter and inverter["STATE"] != "working":
+            state = inverter["STATE"]
+        kwh += float(inverter.get("ltea_3phsum_kwh", "0"))
+        kw += float(inverter.get("p_mppt1_kw", "0"))
+        amps += float(inverter.get("i_3phsum_a", "0"))
+        if "freq_hz" in inverter:
+            freq.append(float(inverter["freq_hz"]))
+        if "vln_3phavg_v" in inverter:
+            volts.append(float(inverter["vln_3phavg_v"]))
+
+    freq_avg = sum(freq) / len(freq)
+    volts_avg = sum(volts) / len(volts)
+
+    pvs_serial = next(iter(data[PVS_DEVICE_TYPE]))  # only one PVS
+    vmeter_serial = f"{pvs_serial}pv"
+    data.setdefault(METER_DEVICE_TYPE, {})[vmeter_serial] = {
+        "SERIAL": vmeter_serial,
+        "TYPE": "PVS-METER-P",
+        "STATE": state,
+        "MODEL": "Virtual",
+        "DESCR": f"Power Meter {vmeter_serial}",
+        "DEVICE_TYPE": "Power Meter",
+        "interface": "virtual",
+        "SWVER": "1.0",
+        "HWVER": "Virtual",
+        "origin": "virtual",
+        "net_ltea_3phsum_kwh": kwh,
+        "p_3phsum_kw": kw,
+        "freq_hz": freq_avg,
+        "i_a": amps,
+        "v12_v": volts_avg,
+    }
+    return data
+
+
 def convert_sunpower_data(sunpower_data):
     """Convert PVS data into indexable format data[device_type][serial]"""
     data = {}
     for device in sunpower_data["devices"]:
         data.setdefault(device["DEVICE_TYPE"], {})[device["SERIAL"]] = device
+
+    create_vmeter(data)
+
     return data
 
 
