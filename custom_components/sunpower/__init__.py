@@ -34,6 +34,7 @@ from .const import (
     SUNPOWER_UPDATE_INTERVAL,
     SUNVAULT_DEVICE_TYPE,
     SUNVAULT_UPDATE_INTERVAL,
+    VIRTUAL_PRODUCTION,
 )
 from .sunpower import (
     ConnectionException,
@@ -97,13 +98,14 @@ def create_vmeter(data):
     return data
 
 
-def convert_sunpower_data(sunpower_data):
+def convert_sunpower_data(sunpower_data, virtual_production):
     """Convert PVS data into indexable format data[device_type][serial]"""
     data = {}
     for device in sunpower_data["devices"]:
         data.setdefault(device["DEVICE_TYPE"], {})[device["SERIAL"]] = device
 
-    create_vmeter(data)
+    if virtual_production:
+        create_vmeter(data)
 
     return data
 
@@ -259,7 +261,13 @@ def convert_ess_data(ess_data, data):
     return data
 
 
-def sunpower_fetch(sunpower_monitor, use_ess, sunpower_update_invertal, sunvault_update_invertal):
+def sunpower_fetch(
+    sunpower_monitor,
+    use_ess,
+    sunpower_update_invertal,
+    sunvault_update_invertal,
+    virtual_production,
+):
     """Basic data fetch routine to get and reformat sunpower data to a dict of device
     type and serial #"""
     global PREVIOUS_PVS_SAMPLE_TIME
@@ -286,7 +294,7 @@ def sunpower_fetch(sunpower_monitor, use_ess, sunpower_update_invertal, sunvault
         raise UpdateFailed from error
 
     try:
-        data = convert_sunpower_data(sunpower_data)
+        data = convert_sunpower_data(sunpower_data, virtual_production)
         if use_ess:
             convert_ess_data(
                 ess_data,
@@ -322,6 +330,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     hass.data[DOMAIN].setdefault(entry_id, {})
     sunpower_monitor = SunPowerMonitor(entry.data[SUNPOWER_HOST])
     use_ess = entry.data.get(SUNPOWER_ESS, False)
+    virtual_production = entry.data.get(VIRTUAL_PRODUCTION, True)
     sunpower_update_invertal = entry.data.get(
         SUNPOWER_UPDATE_INTERVAL,
         DEFAULT_SUNPOWER_UPDATE_INTERVAL,
@@ -340,6 +349,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             use_ess,
             sunpower_update_invertal,
             sunvault_update_invertal,
+            virtual_production,
         )
 
     # This could be better, taking the shortest time interval as the coordinator update is fine
