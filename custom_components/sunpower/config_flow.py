@@ -20,6 +20,7 @@ from .const import (
     SUNPOWER_PRODUCT_NAMES,
     SUNPOWER_UPDATE_INTERVAL,
     SUNVAULT_UPDATE_INTERVAL,
+    VIRTUAL_PRODUCTION,
 )
 from .sunpower import (
     ConnectionException,
@@ -34,6 +35,7 @@ DATA_SCHEMA = vol.Schema(
         vol.Required(SUNPOWER_DESCRIPTIVE_NAMES, default=False): bool,
         vol.Required(SUNPOWER_PRODUCT_NAMES, default=False): bool,
         vol.Required(SUNPOWER_ESS, default=False): bool,
+        vol.Required(VIRTUAL_PRODUCTION, default=True): bool,
         vol.Required(SUNPOWER_UPDATE_INTERVAL, default=DEFAULT_SUNPOWER_UPDATE_INTERVAL): int,
         vol.Required(SUNVAULT_UPDATE_INTERVAL, default=DEFAULT_SUNVAULT_UPDATE_INTERVAL): int,
     },
