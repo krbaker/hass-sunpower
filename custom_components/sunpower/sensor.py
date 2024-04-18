@@ -170,12 +170,9 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
         if self._my_device_class == SensorDeviceClass.POWER_FACTOR:
             try:
                 value = float(
-                    self.coordinator.data[self._device_type][self.base_unique_id].get(
-                        self._field,
-                        None,
-                    ),
+                    self.coordinator.data[self._device_type][self.base_unique_id][self._field],
                 )
                 return value * 100.0
-            except ValueError:
+            except (ValueError, KeyError):
                 pass  # sometimes this value might be something like 'unavailable'
         return self.coordinator.data[self._device_type][self.base_unique_id].get(self._field, None)
