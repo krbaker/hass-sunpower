@@ -1,14 +1,15 @@
 {
-  "version": "2024.4.2",
   "domain": "sunpower",
   "name": "sunpower",
+  "codeowners": ["@krbaker"],
   "config_flow": true,
+  "dependencies": [],
   "documentation": "https://github.com/krbaker/hass-sunpower",
+  "homekit": {},
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/krbaker/hass-sunpower/issues",
   "requirements": ["requests"],
   "ssdp": [],
-  "zeroconf": [],
-  "homekit": {},
-  "dependencies": [],
-  "codeowners": ["@krbaker"],
-  "issue_tracker": "https://github.com/krbaker/hass-sunpower/issues"
+  "version": "2024.4.2",
+  "zeroconf": []
 }

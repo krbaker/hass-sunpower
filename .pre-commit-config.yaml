@@ -33,6 +33,8 @@ repos:
 
       - id: check-yaml
 
+      - id: check-json
+
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.39.0
     hooks:
