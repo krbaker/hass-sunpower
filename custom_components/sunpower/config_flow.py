@@ -92,6 +92,25 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return await self.async_step_user(user_input)
 
+    async def async_step_reconfigure(self, user_input):
+        """Add reconfigure step to allow to reconfigure a config entry."""
+        errors = {}
+        try:
+            info = await validate_input(self.hass, user_input)
+            await self.async_set_unique_id(user_input[SUNPOWER_HOST])
+            return self.async_create_entry(title=info["title"], data=user_input)
+        except CannotConnect:
+            errors["base"] = "cannot_connect"
+        except Exception:  # pylint: disable=broad-except
+            _LOGGER.exception("Unexpected exception")
+            errors["base"] = "unknown"
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=DATA_SCHEMA,
+            errors=errors,
+        )
+
 
 class CannotConnect(exceptions.HomeAssistantError):
     """Error to indicate we cannot connect."""
