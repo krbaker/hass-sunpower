@@ -93,6 +93,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         icon=sensor["icon"],
                         device_class=sensor["device"],
                         state_class=sensor["state"],
+                        entity_category=sensor.get("entity_category", None),
                     )
                     if sunpower_sensor.native_value is not None:
                         entities.append(sunpower_sensor)
@@ -114,6 +115,7 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
         icon,
         device_class,
         state_class,
+        entity_category,
     ):
         """Initialize the sensor."""
         super().__init__(coordinator, my_info, parent_info)
@@ -125,6 +127,7 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
         self._icon = icon
         self._my_device_class = device_class
         self._my_state_class = state_class
+        self._entity_category = entity_category
 
     @property
     def native_unit_of_measurement(self):
@@ -135,6 +138,10 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
     def device_class(self):
         """Return device class."""
         return self._my_device_class
+
+    @property
+    def entity_category(self):
+        return self._entity_category
 
     @property
     def state_class(self):

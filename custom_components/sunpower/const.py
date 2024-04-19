@@ -7,6 +7,7 @@ from homeassistant.components.sensor import (
 from homeassistant.const import (
     PERCENTAGE,
     POWER_VOLT_AMPERE_REACTIVE,
+    EntityCategory,
     UnitOfApparentPower,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
@@ -148,6 +149,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:gauge",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "PVS_ERROR_COUNT": {
                 "field": "dl_err_count",
@@ -156,6 +158,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:alert-circle",
                 "device": None,
                 "state": SensorStateClass.TOTAL,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "PVS_COMMUNICATION_ERRORS": {
                 "field": "dl_comm_err",
@@ -164,6 +167,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:network-off",
                 "device": None,
                 "state": SensorStateClass.TOTAL,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "PVS_SKIPPED_SCANS": {
                 "field": "dl_skipped_scans",
@@ -172,6 +176,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:network-strength-off-outline",
                 "device": None,
                 "state": SensorStateClass.TOTAL_INCREASING,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "PVS_SCAN_TIME": {
                 "field": "dl_scan_time",
@@ -180,6 +185,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:timer-outline",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "PVS_UNTRANSMITTED": {
                 "field": "dl_untransmitted",
@@ -188,6 +194,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:radio-tower",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "PVS_UPTIME": {
                 "field": "dl_uptime",
@@ -196,6 +203,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:timer-outline",
                 "device": None,
                 "state": SensorStateClass.TOTAL_INCREASING,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "PVS_MEMORY_USED": {
                 "field": "dl_mem_used",
@@ -204,6 +212,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:memory",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "PVS_FLASH_AVAILABLE": {
                 "field": "dl_flash_avail",
@@ -212,6 +221,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:memory",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
         },
     },
@@ -249,6 +259,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "METER_VA": {
                 "field": "s_3phsum_kva",
@@ -257,6 +268,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "METER_POWER_FACTOR": {
                 "field": "tot_pf_rto",
@@ -265,6 +277,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER_FACTOR,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "METER_L1_A": {
                 "field": "i1_a",
@@ -273,6 +286,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "METER_A": {
                 "field": "i_a",
@@ -281,6 +295,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "METER_L2_A": {
                 "field": "i2_a",
@@ -289,6 +304,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "METER_L1_KW": {
                 "field": "p1_kw",
@@ -297,6 +313,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "METER_L2_KW": {
                 "field": "p2_kw",
@@ -305,6 +322,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "METER_L1_V": {
                 "field": "v1n_v",
@@ -313,6 +331,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "METER_L2_V": {
                 "field": "v2n_v",
@@ -321,6 +340,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "METER_L12_V": {
                 "field": "v12_v",
@@ -374,6 +394,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "INVERTER_AMPS": {
                 "field": "i_3phsum_a",
@@ -382,6 +403,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "INVERTER_MPPT_KW": {
                 "field": "p_mpptsum_kw",
@@ -390,6 +412,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "INVERTER_MPPT1_KW": {
                 "field": "p_mppt1_kw",
@@ -398,6 +421,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "INVERTER_MPPT_V": {
                 "field": "v_mppt1_v",
@@ -406,6 +430,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "INVERTER_MPPT_A": {
                 "field": "i_mppt1_a",
@@ -414,6 +439,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "INVERTER_TEMPERATURE": {
                 "field": "t_htsnk_degc",
@@ -422,6 +448,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:thermometer",
                 "device": SensorDeviceClass.TEMPERATURE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "INVERTER_FREQUENCY": {
                 "field": "freq_hz",
@@ -430,6 +457,7 @@ SUNPOWER_SENSORS = {
                 "icon": "mdi:flash",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
         },
     },
@@ -446,6 +474,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "SUNVAULT_VOLTAGE": {
                 "field": "sunvault_voltage",
@@ -454,6 +483,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "SUNVAULT_TEMPERATURE": {
                 "field": "sunvault_temperature",
@@ -462,6 +492,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:thermometer",
                 "device": SensorDeviceClass.TEMPERATURE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "SUNVAULT_CUSTOMER_STATE_OF_CHARGE": {
                 "field": "sunvault_customer_state_of_charge",
@@ -478,6 +509,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:battery-charging-100",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "SUNVAULT_POWER": {
                 "field": "sunvault_power",
@@ -531,6 +563,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "HUBPLUS_GRID_P2_V": {
                 "field": "grid_phase2_voltage",
@@ -539,6 +572,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             # "HUBPLUS_GRID_VOLTAGE_STATE": [
             #     "grid_voltage_state",
@@ -555,6 +589,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:water-percent",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "HUBPLUS_TEMPERATURE": {
                 "field": "hub_temperature",
@@ -563,6 +598,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:thermometer",
                 "device": SensorDeviceClass.TEMPERATURE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             # "HUBPLUS_LOAD_FREQUENCY_STATE": [
             #     "load_frequency_state",
@@ -579,6 +615,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "HUBPLUS_LOAD_P2_V": {
                 "field": "load_phase2_voltage",
@@ -587,6 +624,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             # "HUBPLUS_LOAD_VOLTAGE_STATE": [
             #     "load_voltage_state",
@@ -632,6 +670,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:thermometer",
                 "device": SensorDeviceClass.TEMPERATURE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "BATTERY_CUSTOMER_STATE_OF_CHARGE": {
                 "field": "customer_state_of_charge",
@@ -648,6 +687,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:battery-charging-100",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
         },
     },
@@ -661,6 +701,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:water-percent",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "ESS_TEMPERATURE": {
                 "field": "enclosure_temperature",
@@ -669,6 +710,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:thermometer",
                 "device": SensorDeviceClass.TEMPERATURE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "ESS_POWER": {
                 "field": "agg_power",
@@ -685,6 +727,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "ESS_METER_A_W": {
                 "field": "meter_a_power",
@@ -693,6 +736,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "ESS_METER_A_V": {
                 "field": "meter_a_voltage",
@@ -701,6 +745,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "ESS_METER_B_A": {
                 "field": "meter_b_current",
@@ -709,6 +754,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.CURRENT,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "ESS_METER_B_W": {
                 "field": "meter_b_power",
@@ -717,6 +763,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.POWER,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
             "ESS_METER_B_V": {
                 "field": "meter_b_voltage",
@@ -725,6 +772,7 @@ SUNVAULT_SENSORS = {
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.VOLTAGE,
                 "state": SensorStateClass.MEASUREMENT,
+                "entity_category": EntityCategory.DIAGNOSTIC,
             },
         },
     },
