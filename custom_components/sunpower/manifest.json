@@ -10,5 +10,6 @@
   "homekit": {},
   "dependencies": [],
   "codeowners": ["@krbaker"],
-  "issue_tracker": "https://github.com/krbaker/hass-sunpower/issues"
+  "issue_tracker": "https://github.com/krbaker/hass-sunpower/issues",
+  "iot_class": "cloud_polling"
 }
