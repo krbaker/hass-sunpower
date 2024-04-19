@@ -88,6 +88,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         ),
                         device_class=sensor["device"],
                         on_value=sensor["on_value"],
+                        entity_category=sensor.get("entity_category", None),
                     )
                     entities.append(sunpower_sensor)
 
@@ -108,6 +109,7 @@ class SunPowerState(SunPowerEntity, BinarySensorEntity):
         title,
         device_class,
         on_value,
+        entity_category,
     ):
         super().__init__(coordinator, my_info, parent_info)
         self._id_code = id_code
@@ -116,6 +118,7 @@ class SunPowerState(SunPowerEntity, BinarySensorEntity):
         self._field = field
         self._my_device_class = device_class
         self._on_value = on_value
+        self._entity_category = entity_category
 
     @property
     def name(self):
@@ -126,6 +129,10 @@ class SunPowerState(SunPowerEntity, BinarySensorEntity):
     def device_class(self):
         """Device Class."""
         return self._my_device_class
+
+    @property
+    def entity_category(self):
+        return self._entity_category
 
     @property
     def unique_id(self):
