@@ -6,10 +6,10 @@
   "dependencies": [],
   "documentation": "https://github.com/krbaker/hass-sunpower",
   "homekit": {},
-  "iot_class": "cloud_polling"
+  "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/krbaker/hass-sunpower/issues",
   "requirements": ["requests"],
   "ssdp": [],
   "version": "2024.4.2",
-  "zeroconf": [],
+  "zeroconf": []
 }
