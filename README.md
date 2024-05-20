@@ -56,8 +56,6 @@ Notes:
    * This network interface has a DHCP server running on it. If you plug it straight into your
    home network it will make probably other systems stop working as they will DHCP to the wrong
    address.
-   * If you have a battery you can enable collecting that data with 'use-ess'
-   * Be careful changing the refresh intervals for ESS or PVS.
    The PVS takes a very long time to return data, I've found 120s is really the lowest safe rate.
    ESS I'm less sure about though I've seen it as low as 10s in other places
    (I have seen home assistant grind to a hault with too many state change entries)
@@ -75,21 +73,14 @@ When selected during installation, entities added for each device will have the 
 descriptor added onto the front of their name.  This adds 'sunpower' 'sunvault' and 'pvs'
 to entities making them even more distinct but *very* long.
 
-## Enable virtual production meter
+## Energy storage system
 
-This adds an additional virtual device which sums up the current production and lifetime production
-for all microinverters and then averages the volts and frequency across all readings.
-This is useful for people who don't have a production meter installed but the data is not as
-accurate.
+This will now auto-detect and the option to enable/disable has been
+removed (This addition thanks to [@CanisUrsa](https://github.com/CanisUrsa))
 
-![Virtual Meter Output](virtual_meter.png)
+## Options (available from 'configure' once integration is setup)
 
-## Use energy storage system
-
-If you have a SunVault system along side your solar you can select this option to
-include data from the energy storage system.  (This addition thanks to [@CanisUrsa](https://github.com/CanisUrsa))
-
-## Solar data update interval (seconds)
+### Solar data update interval (seconds)
 
 This sets how fast the integration will try to get updated solar info from the PVS.
 The lowest "safe" rate looks like about 120 seconds.  I am concerned some PVSs may fail
@@ -97,7 +88,7 @@ to work properly over time and I'm guessing it might be request or error logging
 their memory.  I am running with 300 seconds right now as I went through a heck of a time
 with a PVS that began to fail pushing to Sunpower's cloud.
 
-## Energy storage update interval (seconds)
+### Energy storage update interval (seconds)
 
 Should evenly divide into Solar data update interval or be an even multiple of it (this is due to the
 currently silly way polling is handled through one timer).  The original author of the ESS addon
@@ -172,6 +163,23 @@ You should see one of these for every panel you have, they are listed by serial 
 | `MPPT Volts`     | Volts  | [MPPT][mppt] optimized panel voltage.  This is the actual voltage the panel is driven by inverter to develop currently.                                  |
 | `MPPT Amps`      | Amps   | [MPPT][mppt] optimized panel amperage.  This is the actual amperage the panel is driven by inverter to develop currently.                                |
 | `MPPT KW`        | KW     | [MPPT][mppt] optimized panel output in kw.  This is the actual power the panel developing currently.                                                     |
+
+## Virtual production meter
+
+![Virtual Meter Output](virtual_meter.png)
+This data is a sum of all inverter data to make some things like the energy dashboard easier to
+use for people who might be missing the production CT.
+Note: this data is less accurate than a production CT.
+
+| Entity           | Units  | Description                                                                                                                                              |
+| ---------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `State`   | String | If any inverter has an error this will be an error, in low light expect errors                           |
+| `Frequency`      | Hz     | Average Observed AC Frequency across all inverters.                                               |
+| `Lifetime Power` | kwh    | Lifetime produced across all inverters                                                                                                       |
+| `Power`          | kw     | Current power sum from all inverters                                                                                                                 |
+| `Voltage`        | Volts  | Average voltage across all inverters                                                                                    |
+| `Temperature`    | F      | Average temperature across all inverters                                                                   |
+| `Amps`           | Amps   | Total amperage produced by all inverters |
 
 ### HUB+
 

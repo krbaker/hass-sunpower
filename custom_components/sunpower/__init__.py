@@ -28,13 +28,11 @@ from .const import (
     PVS_DEVICE_TYPE,
     SETUP_TIMEOUT_MIN,
     SUNPOWER_COORDINATOR,
-    SUNPOWER_ESS,
     SUNPOWER_HOST,
     SUNPOWER_OBJECT,
     SUNPOWER_UPDATE_INTERVAL,
     SUNVAULT_DEVICE_TYPE,
     SUNVAULT_UPDATE_INTERVAL,
-    VIRTUAL_PRODUCTION,
 )
 from .sunpower import (
     ConnectionException,
@@ -98,14 +96,13 @@ def create_vmeter(data):
     return data
 
 
-def convert_sunpower_data(sunpower_data, virtual_production):
+def convert_sunpower_data(sunpower_data):
     """Convert PVS data into indexable format data[device_type][serial]"""
     data = {}
     for device in sunpower_data["devices"]:
         data.setdefault(device["DEVICE_TYPE"], {})[device["SERIAL"]] = device
 
-    if virtual_production:
-        create_vmeter(data)
+    create_vmeter(data)
 
     return data
 
@@ -263,10 +260,8 @@ def convert_ess_data(ess_data, data):
 
 def sunpower_fetch(
     sunpower_monitor,
-    use_ess,
     sunpower_update_invertal,
     sunvault_update_invertal,
-    virtual_production,
 ):
     """Basic data fetch routine to get and reformat sunpower data to a dict of device
     type and serial #"""
@@ -277,6 +272,8 @@ def sunpower_fetch(
 
     sunpower_data = PREVIOUS_PVS_SAMPLE
     ess_data = PREVIOUS_ESS_SAMPLE
+    use_ess = False
+    data = None
 
     try:
         if (time.time() - PREVIOUS_PVS_SAMPLE_TIME) >= (sunpower_update_invertal - 1):
@@ -284,17 +281,23 @@ def sunpower_fetch(
             sunpower_data = sunpower_monitor.device_list()
             PREVIOUS_PVS_SAMPLE = sunpower_data
             _LOGGER.debug("got PVS data %s", sunpower_data)
+    except (ParseException, ConnectionException) as error:
+        raise UpdateFailed from error
 
+    data = convert_sunpower_data(sunpower_data)
+    if ESS_DEVICE_TYPE in data:  # Look for an ESS in PVS data
+        use_ess = True
+
+    try:
         if use_ess and (time.time() - PREVIOUS_ESS_SAMPLE_TIME) >= (sunvault_update_invertal - 1):
             PREVIOUS_ESS_SAMPLE_TIME = time.time()
             ess_data = sunpower_monitor.energy_storage_system_status()
-            PREVIOUS_ESS_SAMPLE = sunpower_data
+            PREVIOUS_ESS_SAMPLE = ess_data
             _LOGGER.debug("got ESS data %s", ess_data)
-    except ConnectionException as error:
+    except (ParseException, ConnectionException) as error:
         raise UpdateFailed from error
 
     try:
-        data = convert_sunpower_data(sunpower_data, virtual_production)
         if use_ess:
             convert_ess_data(
                 ess_data,
@@ -325,17 +328,16 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up sunpower from a config entry."""
+    _LOGGER.debug(f"Setting up {entry.entry_id}, Options {entry.options}, Config {entry.data}")
     entry_id = entry.entry_id
 
     hass.data[DOMAIN].setdefault(entry_id, {})
     sunpower_monitor = SunPowerMonitor(entry.data[SUNPOWER_HOST])
-    use_ess = entry.data.get(SUNPOWER_ESS, False)
-    virtual_production = entry.data.get(VIRTUAL_PRODUCTION, True)
-    sunpower_update_invertal = entry.data.get(
+    sunpower_update_invertal = entry.options.get(
         SUNPOWER_UPDATE_INTERVAL,
         DEFAULT_SUNPOWER_UPDATE_INTERVAL,
     )
-    sunvault_update_invertal = entry.data.get(
+    sunvault_update_invertal = entry.options.get(
         SUNVAULT_UPDATE_INTERVAL,
         DEFAULT_SUNVAULT_UPDATE_INTERVAL,
     )
@@ -346,19 +348,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         return await hass.async_add_executor_job(
             sunpower_fetch,
             sunpower_monitor,
-            use_ess,
             sunpower_update_invertal,
             sunvault_update_invertal,
-            virtual_production,
         )
 
     # This could be better, taking the shortest time interval as the coordinator update is fine
     # if the long interval is an even multiple of the short or *much* smaller
     coordinator_interval = (
         sunvault_update_invertal
-        if sunvault_update_invertal < sunpower_update_invertal and use_ess
+        if sunvault_update_invertal < sunpower_update_invertal
         else sunpower_update_invertal
     )
+
+    _LOGGER.debug(
+        f"Intervals: Sunpower {sunpower_update_invertal} Sunvault {sunvault_update_invertal}",
+    )
+    _LOGGER.debug(f"Coordinator update interval set to {coordinator_interval}")
 
     coordinator = DataUpdateCoordinator(
         hass,
@@ -387,7 +392,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             hass.config_entries.async_forward_entry_setup(entry, component),
         )
 
+    entry.async_on_unload(entry.add_update_listener(update_listener))
+
     return True
+
+
+async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Update listener."""
+    _LOGGER.debug(
+        "Updating: %s with data=%s and options=%s",
+        entry.entry_id,
+        entry.data,
+        entry.options,
+    )
+    _LOGGER.debug("Update listener called, reloading")
+    await hass.config_entries.async_reload(entry.entry_id)
+    _LOGGER.debug("Update listener done reloading")
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
