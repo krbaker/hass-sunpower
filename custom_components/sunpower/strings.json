@@ -5,14 +5,10 @@
       "user": {
         "data": {
           "host": "Host",
-            "use_descriptive_names": "Use descriptive entity names",
-            "use_product_names": "Use products in entity names",
-            "VIRTUAL_PRODUCTION": "Enable virtual production meter",
-            "use_ess": "Use energy storage system",
-            "PVS_UPDATE_INTERVAL": "Solar data update interval",
-            "ESS_UPDATE_INTERCAL": "Energy storage update interval"
+          "use_descriptive_names": "Use descriptive entity names (recommended)",
+          "use_product_names": "Use products in entity names (not recommended)"
         },
-        "description": "If 'Use descriptive entity names' is selected, device names\nwill be prepended on all entity names."
+        "description": "Hostname or IP of PVS (usually 172.27.153.1)"
       }
     },
     "error": {
@@ -21,6 +17,20 @@
     },
     "abort": {
       "already_configured": "Already Configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "PVS_UPDATE_INTERVAL": "Solar data update interval (not less than 60)",
+          "ESS_UPDATE_INTERVAL": "Energy storage update interval (not less than 20)"
+        },
+        "description": "Update intervals to change the polling rate, reminder: the PVS is slow"
+      }
+    },
+    "error": {
+      "MIN_INTERVAL": "Interval too small"
     }
   }
 }

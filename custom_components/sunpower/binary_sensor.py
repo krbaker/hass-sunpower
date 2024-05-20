@@ -6,11 +6,11 @@ from homeassistant.components.binary_sensor import BinarySensorEntity
 
 from .const import (
     DOMAIN,
+    ESS_DEVICE_TYPE,
     PVS_DEVICE_TYPE,
     SUNPOWER_BINARY_SENSORS,
     SUNPOWER_COORDINATOR,
     SUNPOWER_DESCRIPTIVE_NAMES,
-    SUNPOWER_ESS,
     SUNPOWER_PRODUCT_NAMES,
     SUNVAULT_BINARY_SENSORS,
 )
@@ -32,12 +32,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     if SUNPOWER_PRODUCT_NAMES in config_entry.data:
         do_product_names = config_entry.data[SUNPOWER_PRODUCT_NAMES]
 
-    do_ess = False
-    if SUNPOWER_ESS in config_entry.data:
-        do_ess = config_entry.data[SUNPOWER_ESS]
-
     coordinator = sunpower_state[SUNPOWER_COORDINATOR]
     sunpower_data = coordinator.data
+
+    do_ess = False
+    if ESS_DEVICE_TYPE in sunpower_data:
+        do_ess = True
+    else:
+        _LOGGER.debug("Found No ESS Data")
 
     if PVS_DEVICE_TYPE not in sunpower_data:
         _LOGGER.error("Cannot find PVS Entry")

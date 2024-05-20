@@ -14,13 +14,13 @@ from .const import (
     DEFAULT_SUNPOWER_UPDATE_INTERVAL,
     DEFAULT_SUNVAULT_UPDATE_INTERVAL,
     DOMAIN,
+    MIN_SUNPOWER_UPDATE_INTERVAL,
+    MIN_SUNVAULT_UPDATE_INTERVAL,
     SUNPOWER_DESCRIPTIVE_NAMES,
-    SUNPOWER_ESS,
     SUNPOWER_HOST,
     SUNPOWER_PRODUCT_NAMES,
     SUNPOWER_UPDATE_INTERVAL,
     SUNVAULT_UPDATE_INTERVAL,
-    VIRTUAL_PRODUCTION,
 )
 from .sunpower import (
     ConnectionException,
@@ -32,12 +32,8 @@ _LOGGER = logging.getLogger(__name__)
 DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
-        vol.Required(SUNPOWER_DESCRIPTIVE_NAMES, default=False): bool,
+        vol.Required(SUNPOWER_DESCRIPTIVE_NAMES, default=True): bool,
         vol.Required(SUNPOWER_PRODUCT_NAMES, default=False): bool,
-        vol.Required(SUNPOWER_ESS, default=False): bool,
-        vol.Required(VIRTUAL_PRODUCTION, default=True): bool,
-        vol.Required(SUNPOWER_UPDATE_INTERVAL, default=DEFAULT_SUNPOWER_UPDATE_INTERVAL): int,
-        vol.Required(SUNVAULT_UPDATE_INTERVAL, default=DEFAULT_SUNVAULT_UPDATE_INTERVAL): int,
     },
 )
 
@@ -48,11 +44,11 @@ async def validate_input(hass: core.HomeAssistant, data):
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
 
-    spm = SunPowerMonitor(data["host"])
-    name = "PVS {}".format(data["host"])
+    spm = SunPowerMonitor(data[SUNPOWER_HOST])
+    name = "PVS {}".format(data[SUNPOWER_HOST])
     try:
         response = await hass.async_add_executor_job(spm.network_status)
-        _LOGGER.debug("Got from %s %s", data["host"], response)
+        _LOGGER.debug("Got from %s %s", data[SUNPOWER_HOST], response)
     except ConnectionException as error:
         raise CannotConnect from error
 
@@ -65,9 +61,18 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
 
-    async def async_step_user(self, user_input=None):
+    @staticmethod
+    @core.callback
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> config_entries.OptionsFlow:
+        """Create the options flow."""
+        return OptionsFlowHandler(config_entry)
+
+    async def async_step_user(self, user_input: dict[str, any] | None = None):
         """Handle the initial step."""
         errors = {}
+        _LOGGER.debug(f"User Setup input {user_input}")
         if user_input is not None:
             try:
                 info = await validate_input(self.hass, user_input)
@@ -85,29 +90,55 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_import(self, user_input):
+    async def async_step_import(self, user_input: dict[str, any] | None = None):
         """Handle import."""
-        await self.async_set_unique_id(user_input["host"])
+        await self.async_set_unique_id(user_input[SUNPOWER_HOST])
         self._abort_if_unique_id_configured()
-
         return await self.async_step_user(user_input)
 
-    async def async_step_reconfigure(self, user_input):
-        """Add reconfigure step to allow to reconfigure a config entry."""
+
+class OptionsFlowHandler(config_entries.OptionsFlow):
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Initialize options flow."""
+        self.config_entry = config_entry
+
+    async def async_step_init(
+        self,
+        user_input: dict[str, any] | None = None,
+    ) -> config_entries.FlowResult:
+        """Manage the options."""
+        _LOGGER.debug(f"Options input {user_input} {self.config_entry}")
+        options = dict(self.config_entry.options)
+
         errors = {}
-        try:
-            info = await validate_input(self.hass, user_input)
-            await self.async_set_unique_id(user_input[SUNPOWER_HOST])
-            return self.async_create_entry(title=info["title"], data=user_input)
-        except CannotConnect:
-            errors["base"] = "cannot_connect"
-        except Exception:  # pylint: disable=broad-except
-            _LOGGER.exception("Unexpected exception")
-            errors["base"] = "unknown"
+
+        if user_input is not None:
+            if user_input[SUNPOWER_UPDATE_INTERVAL] < MIN_SUNPOWER_UPDATE_INTERVAL:
+                errors[SUNPOWER_UPDATE_INTERVAL] = "MIN_INTERVAL"
+            if user_input[SUNVAULT_UPDATE_INTERVAL] < MIN_SUNVAULT_UPDATE_INTERVAL:
+                errors[SUNPOWER_UPDATE_INTERVAL] = "MIN_INTERVAL"
+            if len(errors) == 0:
+                options[SUNPOWER_UPDATE_INTERVAL] = user_input[SUNPOWER_UPDATE_INTERVAL]
+                options[SUNVAULT_UPDATE_INTERVAL] = user_input[SUNVAULT_UPDATE_INTERVAL]
+                return self.async_create_entry(title="", data=user_input)
+
+        current_sunpower_interval = options.get(
+            SUNPOWER_UPDATE_INTERVAL,
+            DEFAULT_SUNPOWER_UPDATE_INTERVAL,
+        )
+        current_sunvault_interval = options.get(
+            SUNVAULT_UPDATE_INTERVAL,
+            DEFAULT_SUNVAULT_UPDATE_INTERVAL,
+        )
 
         return self.async_show_form(
-            step_id="user",
-            data_schema=DATA_SCHEMA,
+            step_id="init",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(SUNPOWER_UPDATE_INTERVAL, default=current_sunpower_interval): int,
+                    vol.Required(SUNVAULT_UPDATE_INTERVAL, default=current_sunvault_interval): int,
+                },
+            ),
             errors=errors,
         )
 
