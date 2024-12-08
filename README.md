@@ -106,6 +106,11 @@ so setup passes pretty reliably.  Sometimes you may see data go blank if the fet
 
 A detailed setup using a Raspberry Pi which fits into the PVS is [available here][pi_setup].
 
+Instead of setting up an `haproxy` server as detailed in the guide, you may want to install a
+`varnish` server and cache the PVS output, reducing the risk of firmware issues described in
+the warning above. `sudo apt-get install varnish`, then use the `default.vcl`
+[available here](contrib/varnish/default.vcl), which will cache PVS output for 10 minutes.
+
 ## Devices
 
 Depending on the version of PVS you may not see all of these devices/attributes.
