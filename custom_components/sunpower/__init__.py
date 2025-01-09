@@ -71,8 +71,8 @@ def create_vmeter(data):
         if "vln_3phavg_v" in inverter:
             volts.append(float(inverter["vln_3phavg_v"]))
 
-    freq_avg = sum(freq) / len(freq)
-    volts_avg = sum(volts) / len(volts)
+    freq_avg = sum(freq) / len(freq) if len(freq) > 0 else None
+    volts_avg = sum(volts) / len(volts) if len(volts) > 0 else None
 
     pvs_serial = next(iter(data[PVS_DEVICE_TYPE]))  # only one PVS
     vmeter_serial = f"{pvs_serial}pv"
