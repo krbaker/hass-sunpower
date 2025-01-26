@@ -6,7 +6,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import (
     PERCENTAGE,
-    POWER_VOLT_AMPERE_REACTIVE,
+    UnitOfReactivePower,
     EntityCategory,
     UnitOfApparentPower,
     UnitOfElectricCurrent,
@@ -255,7 +255,7 @@ SUNPOWER_SENSORS = {
             "METER_VAR": {
                 "field": "q_3phsum_kvar",
                 "title": "{SUN_POWER}{DESCR}KVA Reactive",
-                "unit": POWER_VOLT_AMPERE_REACTIVE,
+                "unit": UnitOfReactivePower.VOLT_AMPERE_REACTIVE,
                 "icon": "mdi:flash",
                 "device": None,
                 "state": SensorStateClass.MEASUREMENT,
@@ -377,7 +377,7 @@ SUNPOWER_SENSORS = {
                 "unit": UnitOfEnergy.KILO_WATT_HOUR,
                 "icon": "mdi:flash",
                 "device": SensorDeviceClass.ENERGY,
-                "state": SensorStateClass.TOTAL_INCREASING,
+                "state": SensorStateClass.TOTAL,
             },
             "INVERTER_KW": {
                 "field": "p_3phsum_kw",
