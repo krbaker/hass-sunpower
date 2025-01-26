@@ -6,7 +6,6 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import (
     PERCENTAGE,
-    UnitOfReactivePower,
     EntityCategory,
     UnitOfApparentPower,
     UnitOfElectricCurrent,
@@ -15,6 +14,7 @@ from homeassistant.const import (
     UnitOfFrequency,
     UnitOfInformation,
     UnitOfPower,
+    UnitOfReactivePower,
     UnitOfTemperature,
     UnitOfTime,
 )
