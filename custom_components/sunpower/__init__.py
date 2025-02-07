@@ -138,11 +138,15 @@ def convert_ess_data(ess_data, data):
         sunvault_amperages.append(device["battery_amperage"]["value"])
         sunvault_voltages.append(device["battery_voltage"]["value"])
         sunvault_temperatures.append(device["temperature"]["value"])
-        sunvault_customer_state_of_charges.append(device["customer_state_of_charge"]["value"])
+        sunvault_customer_state_of_charges.append(
+            device["customer_state_of_charge"]["value"],
+        )
         sunvault_system_state_of_charges.append(device["system_state_of_charge"]["value"])
         sunvault_power.append(sunvault_amperages[-1] * sunvault_voltages[-1])
         if sunvault_amperages[-1] < 0:
-            sunvault_power_outputs.append(abs(sunvault_amperages[-1] * sunvault_voltages[-1]))
+            sunvault_power_outputs.append(
+                abs(sunvault_amperages[-1] * sunvault_voltages[-1]),
+            )
             sunvault_power_inputs.append(0)
         elif sunvault_amperages[-1] > 0:
             sunvault_power_inputs.append(sunvault_amperages[-1] * sunvault_voltages[-1])
@@ -323,8 +327,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up sunpower from a config entry."""
-    _LOGGER.debug(
-        f"Setting up {entry.entry_id}, Options {entry.options}, Config {entry.data}")
+    _LOGGER.debug(f"Setting up {entry.entry_id}, Options {entry.options}, Config {entry.data}")
     entry_id = entry.entry_id
 
     hass.data[DOMAIN].setdefault(entry_id, {})
@@ -356,7 +359,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         else sunpower_update_invertal
     )
 
-    _LOGGER.debug(f"Intervals: Sunpower {sunpower_update_invertal} Sunvault {sunvault_update_invertal}")
+    _LOGGER.debug(
+        f"Intervals: Sunpower {sunpower_update_invertal} Sunvault {sunvault_update_invertal}",
+    )
     _LOGGER.debug(f"Coordinator update interval set to {coordinator_interval}")
 
     coordinator = DataUpdateCoordinator(
@@ -409,3 +414,4 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
+    
