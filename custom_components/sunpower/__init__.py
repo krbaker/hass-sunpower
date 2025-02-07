@@ -138,16 +138,12 @@ def convert_ess_data(ess_data, data):
         sunvault_amperages.append(device["battery_amperage"]["value"])
         sunvault_voltages.append(device["battery_voltage"]["value"])
         sunvault_temperatures.append(device["temperature"]["value"])
-        sunvault_customer_state_of_charges.append(
-            device["customer_state_of_charge"]["value"],
-        )
-        sunvault_system_state_of_charges.append(
-            device["system_state_of_charge"]["value"])
+        sunvault_customer_state_of_charges.append(device["customer_state_of_charge"]["value"])
+        sunvault_system_state_of_charges.append(device["system_state_of_charge"]["value"])
         sunvault_power.append(sunvault_amperages[-1] * sunvault_voltages[-1])
         if sunvault_amperages[-1] < 0:
             sunvault_power_outputs.append(
-                abs(sunvault_amperages[-1] * sunvault_voltages[-1]),
-            )
+                abs(sunvault_amperages[-1] * sunvault_voltages[-1]))
             sunvault_power_inputs.append(0)
         elif sunvault_amperages[-1] > 0:
             sunvault_power_inputs.append(
