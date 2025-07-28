@@ -109,7 +109,9 @@ A detailed setup using a Raspberry Pi which fits into the PVS is [available here
 Instead of setting up an `haproxy` server as detailed in the guide, you may want to install a
 `varnish` server and cache the PVS output, reducing the risk of firmware issues described in
 the warning above. `sudo apt-get install varnish`, then use the `default.vcl`
-[available here](contrib/varnish/default.vcl), which will cache PVS output for 10 minutes.
+[available here](contrib/varnish/default.vcl), along with
+`override.conf` [available here](contrib/varnish/override.conf) which will cache PVS output for
+10 minutes.
 
 ## Devices
 
