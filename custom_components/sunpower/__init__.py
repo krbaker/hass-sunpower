@@ -32,6 +32,7 @@ from .const import (
     SUNPOWER_UPDATE_INTERVAL,
     SUNVAULT_DEVICE_TYPE,
     SUNVAULT_UPDATE_INTERVAL,
+    SUNLIGHT_HOURS_ONLY,
 )
 from .sunpower import (
     ConnectionException,
@@ -340,9 +341,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         SUNVAULT_UPDATE_INTERVAL,
         DEFAULT_SUNVAULT_UPDATE_INTERVAL,
     )
+    
+    # Get sunlight hours configuration
+    sunlight_hours_only = entry.data.get(SUNLIGHT_HOURS_ONLY, True)
 
     async def async_update_data():
         """Fetch data from API endpoint, used by coordinator to get mass data updates"""
+        # Check if we should update based on sunlight hours
+        if sunlight_hours_only and not await _is_sunlight_hours(hass):
+            _LOGGER.debug("Outside sunlight hours, skipping update")
+            # Return existing data if available, otherwise empty dict
+            if coordinator.data:
+                return coordinator.data
+            return {}
+        
         _LOGGER.debug("Updating SunPower data")
         return await hass.async_add_executor_job(
             sunpower_fetch,
@@ -377,20 +389,34 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         SUNPOWER_COORDINATOR: coordinator,
     }
 
-    start = time.time()
-    # Need to make sure this data loads on setup, be aggressive about retries
-    while not coordinator.data:
-        _LOGGER.debug("Config Update Attempt")
-        await coordinator.async_refresh()
-        if (time.time() - start) > (SETUP_TIMEOUT_MIN * 60):
-            _LOGGER.error("Failed to update data")
-            break
+    # Remove blocking startup - let HA start immediately
+    # The coordinator will attempt to fetch data in the background
+    _LOGGER.debug("SunPower integration setup complete - data will be fetched in background")
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     entry.async_on_unload(entry.add_update_listener(update_listener))
 
     return True
+
+
+async def _is_sunlight_hours(hass: HomeAssistant) -> bool:
+    """Check if current time is during sunlight hours."""
+    try:
+        # Try to get sun elevation from HA
+        sun_state = hass.states.get("sun.sun")
+        if sun_state and sun_state.state == "above_horizon":
+            return True
+        
+        # Fallback: check if it's between 6 AM and 8 PM
+        from datetime import datetime
+        now = datetime.now()
+        return 6 <= now.hour < 20
+        
+    except Exception as e:
+        _LOGGER.debug(f"Error checking sunlight hours: {e}")
+        # Default to allowing updates if we can't determine
+        return True
 
 
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:

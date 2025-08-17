@@ -21,6 +21,7 @@ from .const import (
     SUNPOWER_PRODUCT_NAMES,
     SUNPOWER_UPDATE_INTERVAL,
     SUNVAULT_UPDATE_INTERVAL,
+    SUNLIGHT_HOURS_ONLY,
 )
 from .sunpower import (
     ConnectionException,
@@ -34,6 +35,7 @@ DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_HOST): str,
         vol.Required(SUNPOWER_DESCRIPTIVE_NAMES, default=True): bool,
         vol.Required(SUNPOWER_PRODUCT_NAMES, default=False): bool,
+        vol.Required(SUNLIGHT_HOURS_ONLY, default=True): bool,
     },
 )
 

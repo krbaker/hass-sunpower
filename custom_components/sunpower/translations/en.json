@@ -12,7 +12,8 @@
         "data": {
             "host": "Host",
             "use_descriptive_names": "Use descriptive entity names (recommended)",
-            "use_product_names": "Use products in entity names (not recommended)"
+            "use_product_names": "Use products in entity names (not recommended)",
+            "sunlight_hours_only": "Only update during sunlight hours (recommended)"
         },
         "description": "Hostname or IP of PVS (usually 172.27.153.1)"
         }
