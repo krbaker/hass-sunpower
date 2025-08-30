@@ -19,6 +19,7 @@ exclude =
     docker-compose.yaml,
     frontend,
     *.md,
+    */*.md,
     *.txt
 
 extend-select =

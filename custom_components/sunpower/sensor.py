@@ -13,6 +13,7 @@ from .const import (
     PVS_DEVICE_TYPE,
     SUNPOWER_COORDINATOR,
     SUNPOWER_DESCRIPTIVE_NAMES,
+    SUNPOWER_ENTRY_ID,
     SUNPOWER_PRODUCT_NAMES,
     SUNPOWER_SENSORS,
     SUNVAULT_SENSORS,
@@ -36,6 +37,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         do_product_names = config_entry.data[SUNPOWER_PRODUCT_NAMES]
 
     coordinator = sunpower_state[SUNPOWER_COORDINATOR]
+    entry_id = sunpower_state[SUNPOWER_ENTRY_ID]
     sunpower_data = coordinator.data
 
     do_ess = False
@@ -78,6 +80,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         coordinator=coordinator,
                         my_info=sensor_data,
                         parent_info=pvs if device_type != PVS_DEVICE_TYPE else None,
+                        entry_id=entry_id,
                         id_code=unique_id,
                         device_type=device_type,
                         field=sensor["field"],
@@ -109,6 +112,7 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
         coordinator,
         my_info,
         parent_info,
+        entry_id,
         id_code,
         device_type,
         field,
@@ -120,7 +124,7 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
         entity_category,
     ):
         """Initialize the sensor."""
-        super().__init__(coordinator, my_info, parent_info)
+        super().__init__(coordinator, my_info, parent_info, entry_id)
         self._id_code = id_code
         self._device_type = device_type
         self._title = title
@@ -165,12 +169,15 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
         """Device Uniqueid.
         https://developers.home-assistant.io/docs/entity_registry_index/#unique-id
         Should not include the domain, home assistant does that for us
+        Include entry_id to prevent conflicts between multiple accounts/locations
         base_unique_id is the serial number of the device (Inverter, PVS, Meter etc)
         "_pvs_" just as a divider - in case we start pulling data from some other source
         _field is the field within the data that this came from which is a dict so there
         is only one.
         Updating this format is a breaking change and should be called out if changed in a PR
         """
+        if self._entry_id:
+            return f"{self._entry_id}_{self.base_unique_id}_pvs_{self._field}"
         return f"{self.base_unique_id}_pvs_{self._field}"
 
     @property
