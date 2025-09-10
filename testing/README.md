@@ -1,10 +1,12 @@
 # SunPower Integration Testing Suite
 
-This directory contains comprehensive testing tools and documentation for the SunPower Home Assistant integration.
+This directory contains comprehensive testing tools
+and documentation for the SunPower Home Assistant
+integration.
 
 ## 📁 **Directory Structure**
 
-```
+```console
 testing/
 ├── samples/
 │   └── device_list.json          # Sample PVS data for testing

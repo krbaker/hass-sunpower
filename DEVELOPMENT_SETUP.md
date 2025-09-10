@@ -1,10 +1,13 @@
 # SunPower Integration Development Setup
 
-This guide will help you set up a complete development environment for the SunPower Home Assistant integration, including debugging capabilities and import stepping.
+This guide will help you set up a complete development environment
+for the SunPower Home Assistant integration, including debugging capabilities and import stepping.
 
 ## 🏗️ **Project Overview**
 
-This is a **Home Assistant custom integration** for monitoring SunPower solar systems via local PVS (Photovoltaic Supervisor) interface. The integration provides real-time data for:
+This is a **Home Assistant custom integration** for monitoring SunPower
+solar systems via local PVS (Photovoltaic Supervisor) interface. The
+integration provides real-time data for:
 
 - Solar panel production (per-panel data)
 - Power consumption and grid interaction

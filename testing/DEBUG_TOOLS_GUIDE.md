@@ -1,6 +1,7 @@
 # SunPower Integration Debug Tools Guide
 
-This document explains all the debug tools available for developing and testing the SunPower Home Assistant integration.
+This document explains all the debug tools available for
+developing and testing the SunPower Home Assistant integration.
 
 ## 🛠️ **Available Debug Tools**
 
@@ -23,7 +24,7 @@ python test_api.py
 
 **Example Output**:
 
-```
+```console
 Testing SunPower API connection to 192.168.1.100
 --------------------------------------------------
 1. Testing network status...
@@ -54,7 +55,7 @@ python test_with_sample_data.py
 
 **Example Output**:
 
-```
+```console
 🧪 Testing SunPower Integration with Sample Data
 ✅ Data conversion successful
 📊 Device types found: ['PVS', 'Power Meter', 'Inverter']
@@ -85,7 +86,7 @@ python debug_runner.py
 
 **Example Output**:
 
-```
+```console
 🔧 Starting SunPower Integration Debug
 1. Testing SunPower API client...
 ✅ PVS connectivity successful
@@ -303,4 +304,5 @@ python test_ha_integration.py
 pytest tests/ --cov=custom_components/sunpower
 ```
 
-This comprehensive debug tool suite ensures you can develop, test, and debug the SunPower integration efficiently at every stage of development.
+This comprehensive debug tool suite ensures you can develop, test, and
+debug the SunPower integration efficiently at every stage of development.
