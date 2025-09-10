@@ -1,0 +1,190 @@
+{
+  "errors": [
+    {
+      "device_sn": "111111111111",
+      "error_code": "12001",
+      "error_message": "storage_inv_over_temperature_warning",
+      "error_name": "storage_inv_over_temperature_warning",
+      "last_occurence": "2024-04-17 18:01:22",
+      "value": {
+        "unit": "",
+        "value": 51.15
+      }
+    }
+  ],
+  "ess_report": {
+    "battery_status": [
+      {
+        "battery_amperage": {
+          "unit": "A",
+          "value": 8.4
+        },
+        "battery_voltage": {
+          "unit": "V",
+          "value": 53.2
+        },
+        "customer_state_of_charge": {
+          "unit": "%",
+          "value": 55.000000000000007
+        },
+        "last_updated": "2024-04-17 18:01:13",
+        "serial_number": "BC1111111111111111111",
+        "system_state_of_charge": {
+          "unit": "%",
+          "value": 62
+        },
+        "temperature": {
+          "unit": "C",
+          "value": 29.8
+        }
+      }
+    ],
+    "ess_state": [
+      {
+        "operational_mode": "SELF_CONSUMPTION",
+        "permission_to_operate": true,
+        "storage_controller_status": "RUNNING"
+      }
+    ],
+    "ess_status": [
+      {
+        "enclosure_humidity": {
+          "unit": "%",
+          "value": 17
+        },
+        "enclosure_temperature": {
+          "unit": "C",
+          "value": 41
+        },
+        "ess_meter_reading": {
+          "agg_power": {
+            "unit": "kW",
+            "value": -4.962
+          },
+          "last_updated": "2024-04-17 18:01:22",
+          "meter_a": {
+            "reading": {
+              "current": {
+                "unit": "A",
+                "value": 17.78
+              },
+              "last_updated": "2024-04-17 18:01:22",
+              "power": {
+                "unit": "W",
+                "value": 2164.3594000000003
+              },
+              "voltage": {
+                "unit": "V",
+                "value": 121.73
+              }
+            }
+          },
+          "meter_b": {
+            "reading": {
+              "current": {
+                "unit": "A",
+                "value": 17.82
+              },
+              "last_updated": "2024-04-17 18:01:22",
+              "power": {
+                "unit": "W",
+                "value": 2169.2286
+              },
+              "voltage": {
+                "unit": "V",
+                "value": 121.73
+              }
+            }
+          }
+        },
+        "last_updated": "2024-04-17 18:01:13",
+        "serial_number": "11111111111_M1111111111F_M1111111111111111E_M1111111111111F_M111111111111D"
+      }
+    ],
+    "hub_plus_status": {
+      "aux_port_voltage": {
+        "unit": "V",
+        "value": 11.276
+      },
+      "contactor_error": "NONE",
+      "contactor_position": "CLOSED",
+      "grid_frequency_state": "METER_FREQ_IN_RANGE",
+      "grid_phase1_voltage": {
+        "unit": "V",
+        "value": 123.30000000000001
+      },
+      "grid_phase2_voltage": {
+        "unit": "V",
+        "value": 123.2
+      },
+      "grid_voltage_state": "METER_VOLTAGE_IN_RANGE",
+      "hub_humidity": {
+        "unit": "%",
+        "value": 33
+      },
+      "hub_temperature": {
+        "unit": "C",
+        "value": 26
+      },
+      "inverter_connection_voltage": {
+        "unit": "V",
+        "value": 0.277
+      },
+      "jump_start_voltage": {
+        "unit": "V",
+        "value": 1.177
+      },
+      "last_updated": "2024-04-17 18:01:20",
+      "load_frequency_state": "METER_FREQ_IN_RANGE",
+      "load_phase1_voltage": {
+        "unit": "V",
+        "value": 123.2
+      },
+      "load_phase2_voltage": {
+        "unit": "V",
+        "value": 123.30000000000001
+      },
+      "load_voltage_state": "METER_VOLTAGE_IN_RANGE",
+      "main_voltage": {
+        "unit": "V",
+        "value": 11.364
+      },
+      "serial_number": "SY1234567-11111111.111111"
+    },
+    "inverter_status": [
+      {
+        "a_n_voltage": {
+          "unit": "V",
+          "value": 121.73
+        },
+        "ac_current": {
+          "unit": "A",
+          "value": 17.8
+        },
+        "ac_power": {
+          "unit": "kW",
+          "value": -4.962
+        },
+        "b_n_voltage": {
+          "unit": "V",
+          "value": 121.73
+        },
+        "last_updated": "2024-04-17 18:01:22",
+        "phase_a_current": {
+          "unit": "A",
+          "value": 17.78
+        },
+        "phase_b_current": {
+          "unit": "A",
+          "value": 17.82
+        },
+        "serial_number": "111111111111",
+        "temperature": {
+          "unit": "C",
+          "value": 52.550000000000004
+        }
+      }
+    ],
+    "last_updated": "2024-04-17 18:01:22"
+  }
+}

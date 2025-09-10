@@ -4,14 +4,12 @@ This directory contains comprehensive testing tools
 and documentation for the SunPower Home Assistant
 integration.
 
-## 📁 **Directory Structure**
+## 📁 **Tests Directory Structure**
 
 ```console
-testing/
+tests/
 ├── samples/
 │   └── device_list.json          # Sample PVS data for testing
-├── docs/
-│   ├── DEVELOPMENT_SETUP.md      # Complete development setup guide
 │   └── DEBUG_TOOLS_GUIDE.md      # Detailed debug tools documentation
 ├── test_api.py                   # Test PVS API connectivity
 ├── test_with_sample_data.py      # Test integration logic (no hardware)
