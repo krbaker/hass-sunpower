@@ -1,4 +1,4 @@
-""" Basic Sunpower PVS Tool """
+"""Basic Sunpower PVS Tool"""
 
 import requests
 import simplejson
@@ -25,12 +25,13 @@ class SunPowerMonitor:
 
     def generic_command(self, command):
         """All 'commands' to the PVS module use this url pattern and return json
-        The PVS system can take a very long time to respond so timeout is at 2 minutes"""
+        The PVS system can take a very long time to respond so timeout is at 2 minutes
+        """
         try:
             return requests.get(self.command_url + command, timeout=120).json()
         except requests.exceptions.RequestException as error:
             raise ConnectionException from error
-        except simplejson.errors.JSONDecodeError as error:
+        except simplejson.JSONDecodeError as error:
             raise ParseException from error
 
     def device_list(self):
@@ -41,12 +42,14 @@ class SunPowerMonitor:
         """Get the status of the energy storage system"""
         try:
             return requests.get(
-                "http://{0}/cgi-bin/dl_cgi/energy-storage-system/status".format(self.host),
+                "http://{0}/cgi-bin/dl_cgi/energy-storage-system/status".format(
+                    self.host,
+                ),
                 timeout=120,
             ).json()
         except requests.exceptions.RequestException as error:
             raise ConnectionException from error
-        except simplejson.errors.JSONDecodeError as error:
+        except simplejson.JSONDecodeError as error:
             raise ParseException from error
 
     def network_status(self):
