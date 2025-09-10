@@ -5,11 +5,10 @@
       "user": {
         "data": {
           "host": "Host",
-          "name": "Location Name (optional)",
           "use_descriptive_names": "Use descriptive entity names (recommended)",
           "use_product_names": "Use products in entity names (not recommended)"
         },
-        "description": "Hostname or IP of PVS (usually 172.27.153.1). Use location name for multiple accounts."
+        "description": "Hostname or IP of PVS (usually 172.27.153.1)"
       }
     },
     "error": {
