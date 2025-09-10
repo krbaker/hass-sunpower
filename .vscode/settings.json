@@ -13,7 +13,10 @@
     "--profile",
     "black"
   ],
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
   "editor.formatOnSave": true,
+  "editor.detectIndentation": false,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },

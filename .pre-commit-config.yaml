@@ -34,6 +34,7 @@ repos:
       - id: check-yaml
 
       - id: check-json
+        exclude: ^.devcontainer/devcontainer.json$
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.39.0

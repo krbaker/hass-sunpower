@@ -16,7 +16,7 @@ integration provides real-time data for:
 
 ## 📋 **Prerequisites**
 
-- **Python 3.11+** (tested with 3.13.5)
+- **Python 3.12+** (tested with 3.12.11, 3.13.5)
 - **VS Code** (recommended) or PyCharm
 - **Git** for version control
 - Access to a **SunPower PVS system** (for testing)
@@ -31,27 +31,7 @@ git clone https://github.com/krbaker/hass-sunpower.git
 cd hass-sunpower
 ```
 
-### 2. **Create Virtual Environment**
-
-```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-### 3. **Install Dependencies**
-
-```bash
-pip install --upgrade pip
-pip install -r requirements-dev.txt
-```
-
-### 4. **Setup Pre-commit Hooks**
-
-```bash
-pre-commit install
-```
-
-### 5. **Configure Environment**
+### 3. **Configure Environment**
 
 ```bash
 cp env.example .env
@@ -60,14 +40,36 @@ cp env.example .env
 
 ## 🔧 **VS Code Setup**
 
-The project includes pre-configured VS Code settings for optimal development:
+The project includes pre-configured VS Code settings for optimal development.
+The devcontainer should setup all of the following:
 
-### **Extensions (Install these):**
+### **Python Virtual Environment (DEVCONTAINER DOES THIS FOR YOU)**
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### 3. **Install Dependencies (DEVCONTAINER DOES THIS FOR YOU)**
+
+```bash
+pip install --upgrade pip
+pip install -r requirements-dev.txt
+```
+
+### 2. **Setup Pre-commit Hooks (DEVCONTAINER DOES THIS FOR YOU)**
+
+```bash
+pre-commit install
+```
+
+### **Extensions:**
 
 - Python (ms-python.python)
 - Pylance (ms-python.vscode-pylance)
 - Black Formatter (ms-python.black-formatter)
 - isort (ms-python.isort)
+- flake8 (ms-python.flake8)
 - GitLens (eamodio.gitlens)
 
 ### **Key Features Configured:**
