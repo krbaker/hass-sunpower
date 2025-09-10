@@ -8,7 +8,10 @@ from homeassistant import (
     core,
     exceptions,
 )
-from homeassistant.const import CONF_HOST
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_NAME,
+)
 
 from .const import (
     DEFAULT_SUNPOWER_UPDATE_INTERVAL,
@@ -32,6 +35,7 @@ _LOGGER = logging.getLogger(__name__)
 DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
+        vol.Optional(CONF_NAME, default=""): str,
         vol.Required(SUNPOWER_DESCRIPTIVE_NAMES, default=True): bool,
         vol.Required(SUNPOWER_PRODUCT_NAMES, default=False): bool,
     },
@@ -45,7 +49,11 @@ async def validate_input(hass: core.HomeAssistant, data):
     """
 
     spm = SunPowerMonitor(data[SUNPOWER_HOST])
-    name = "PVS {}".format(data[SUNPOWER_HOST])
+    # Use custom name if provided, otherwise use host IP
+    if data.get(CONF_NAME):
+        name = data[CONF_NAME]
+    else:
+        name = "PVS {}".format(data[SUNPOWER_HOST])
     try:
         response = await hass.async_add_executor_job(spm.network_status)
         _LOGGER.debug("Got from %s %s", data[SUNPOWER_HOST], response)
@@ -76,7 +84,15 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 info = await validate_input(self.hass, user_input)
-                await self.async_set_unique_id(user_input[SUNPOWER_HOST])
+                # Create unique_id combining host and name for better uniqueness
+                # across multiple accounts
+                unique_id = user_input[SUNPOWER_HOST]
+                if user_input.get(CONF_NAME):
+                    host = user_input[SUNPOWER_HOST]
+                    name = user_input[CONF_NAME]
+                    unique_id = f"{host}_{name}"
+                await self.async_set_unique_id(unique_id)
+                self._abort_if_unique_id_configured()
                 return self.async_create_entry(title=info["title"], data=user_input)
             except CannotConnect:
                 errors["base"] = "cannot_connect"
@@ -92,7 +108,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_import(self, user_input: dict[str, any] | None = None):
         """Handle import."""
-        await self.async_set_unique_id(user_input[SUNPOWER_HOST])
+        # Create unique_id combining host and name for better uniqueness
+        # across multiple accounts
+        unique_id = user_input[SUNPOWER_HOST]
+        if user_input.get(CONF_NAME):
+            host = user_input[SUNPOWER_HOST]
+            name = user_input[CONF_NAME]
+            unique_id = f"{host}_{name}"
+        await self.async_set_unique_id(unique_id)
         self._abort_if_unique_id_configured()
         return await self.async_step_user(user_input)
 

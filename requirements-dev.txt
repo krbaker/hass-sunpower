@@ -1,0 +1,22 @@
+
+# Development dependencies
+black>=24.3.0
+flake8>=7.0.0
+flake8-bugbear>=24.2.6
+flake8-pytest>=1.4
+flake8-quotes>=3.4.0
+# Core dependencies
+homeassistant>=2025.1.0
+isort>=5.13.2
+
+# Type checking
+mypy>=1.0.0
+pre-commit>=3.0.0
+
+# Testing
+pytest>=7.0.0
+pytest-cov
+pytest-homeassistant-custom-component
+requests
+simplejson
+types-requests

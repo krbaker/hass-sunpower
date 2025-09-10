@@ -1,36 +1,37 @@
 {
-    "config": {
-        "abort": {
-            "already_configured": "Already Configured"
-        },
-        "error": {
-            "cannot_connect": "Cannot Connect",
-            "unknown": "Unknown Error"
-        },
-        "step": {
-            "user": {
+  "config": {
+    "abort": {
+      "already_configured": "Already Configured"
+    },
+    "error": {
+      "cannot_connect": "Cannot Connect",
+      "unknown": "Unknown Error"
+    },
+    "step": {
+      "user": {
         "data": {
-            "host": "Host",
-            "use_descriptive_names": "Use descriptive entity names (recommended)",
-            "use_product_names": "Use products in entity names (not recommended)"
+          "host": "Host",
+          "name": "Location Name (optional)",
+          "use_descriptive_names": "Use descriptive entity names (recommended)",
+          "use_product_names": "Use products in entity names (not recommended)"
         },
-        "description": "Hostname or IP of PVS (usually 172.27.153.1)"
-        }
+        "description": "Hostname or IP of PVS (usually 172.27.153.1). Use location name for multiple accounts."
+      }
     }
-    },
-    "options":{
-        "step": {
-            "init": {
-            "data": {
-                "PVS_UPDATE_INTERVAL": "Solar data update interval (not less than 60)",
-                "ESS_UPDATE_INTERVAL": "Energy storage update interval (not less than 20)"
-            },
-            "description": "Update intervals to change the polling rate, note: the PVS is slow"
-            }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "PVS_UPDATE_INTERVAL": "Solar data update interval (not less than 60)",
+          "ESS_UPDATE_INTERVAL": "Energy storage update interval (not less than 20)"
         },
-        "error": {
-            "MIN_INTERVAL": "Interval too small"
-        }
+        "description": "Update intervals to change the polling rate, note: the PVS is slow"
+      }
     },
-    "title": "SunPower"
+    "error": {
+      "MIN_INTERVAL": "Interval too small"
+    }
+  },
+  "title": "SunPower"
 }

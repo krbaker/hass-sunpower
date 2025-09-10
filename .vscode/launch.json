@@ -1,0 +1,91 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug SunPower Integration",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/testing/debug_runner.py",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/custom_components"
+      },
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "stopOnEntry": false
+    },
+    {
+      "name": "Test with Sample Data",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/testing/test_with_sample_data.py",
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/custom_components"
+      },
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "stopOnEntry": false
+    },
+    {
+      "name": "Debug HA Integration",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/testing/test_ha_integration.py",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/custom_components"
+      },
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "stopOnEntry": false
+    },
+    {
+      "name": "Debug SunPower API Client",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/testing/test_api.py",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/custom_components"
+      },
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "stopOnEntry": false
+    },
+    {
+      "name": "Debug Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/custom_components"
+      },
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false
+    },
+    {
+      "name": "Run Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "tests/",
+        "-v",
+        "--tb=short"
+      ],
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/custom_components"
+      },
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false
+    }
+  ]
+}
