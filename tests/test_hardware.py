@@ -57,8 +57,8 @@ def test_pvs_parse(sunpowermonitor):
     _LOGGER.debug("Converted data: %s", data)
     assert len(data["PVS"]) > 0
     assert len(data["Inverter"]) > 0
-    counts = [(x, len(data[x])) for x in ["PVS", "Inverter", "Power Meter"]]
-    _LOGGER.warning(f"Found {counts} devices")
+    for type, count in [(x, len(data[x])) for x in data.keys()]:
+        _LOGGER.warning(f"Found {count} devices of type {type}")
 
 
 @pytest.mark.ess()
