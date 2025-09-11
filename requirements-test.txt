@@ -1,0 +1,17 @@
+# Testing requirements for SunPower Home Assistant Integration
+
+
+# Home Assistant testing dependencies
+homeassistant>=2024.1.0
+# Core testing framework
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.0.0
+pytest-homeassistant-custom-component>=0.13.0
+
+# Additional testing utilities
+pytest-mock>=3.10.0
+
+# Core integration dependencies
+requests>=2.28.0
+voluptuous>=0.13.0

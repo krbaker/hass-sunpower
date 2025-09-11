@@ -27,6 +27,7 @@ from .const import (
     PVS_DEVICE_TYPE,
     SETUP_TIMEOUT_MIN,
     SUNPOWER_COORDINATOR,
+    SUNPOWER_ENTRY_ID,
     SUNPOWER_HOST,
     SUNPOWER_OBJECT,
     SUNPOWER_UPDATE_INTERVAL,
@@ -45,10 +46,8 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
 PLATFORMS = ["sensor", "binary_sensor"]
 
-PREVIOUS_PVS_SAMPLE_TIME = 0
-PREVIOUS_PVS_SAMPLE = {}
-PREVIOUS_ESS_SAMPLE_TIME = 0
-PREVIOUS_ESS_SAMPLE = {}
+# Use entry-specific data storage to avoid conflicts between multiple accounts
+ENTRY_DATA_CACHE = {}
 
 
 def create_vmeter(data):
@@ -261,24 +260,30 @@ def sunpower_fetch(
     sunpower_monitor,
     sunpower_update_invertal,
     sunvault_update_invertal,
+    entry_id,
 ):
     """Basic data fetch routine to get and reformat sunpower data to a dict of device
     type and serial #"""
-    global PREVIOUS_PVS_SAMPLE_TIME
-    global PREVIOUS_PVS_SAMPLE
-    global PREVIOUS_ESS_SAMPLE_TIME
-    global PREVIOUS_ESS_SAMPLE
+    # Use entry-specific cache to avoid conflicts between multiple accounts
+    if entry_id not in ENTRY_DATA_CACHE:
+        ENTRY_DATA_CACHE[entry_id] = {
+            "pvs_sample_time": 0,
+            "pvs_sample": {},
+            "ess_sample_time": 0,
+            "ess_sample": {},
+        }
 
-    sunpower_data = PREVIOUS_PVS_SAMPLE
-    ess_data = PREVIOUS_ESS_SAMPLE
+    cache = ENTRY_DATA_CACHE[entry_id]
+    sunpower_data = cache["pvs_sample"]
+    ess_data = cache["ess_sample"]
     use_ess = False
     data = None
 
     try:
-        if (time.time() - PREVIOUS_PVS_SAMPLE_TIME) >= (sunpower_update_invertal - 1):
-            PREVIOUS_PVS_SAMPLE_TIME = time.time()
+        if (time.time() - cache["pvs_sample_time"]) >= (sunpower_update_invertal - 1):
+            cache["pvs_sample_time"] = time.time()
             sunpower_data = sunpower_monitor.device_list()
-            PREVIOUS_PVS_SAMPLE = sunpower_data
+            cache["pvs_sample"] = sunpower_data
             _LOGGER.debug("got PVS data %s", sunpower_data)
     except (ParseException, ConnectionException) as error:
         raise UpdateFailed from error
@@ -288,10 +293,10 @@ def sunpower_fetch(
         use_ess = True
 
     try:
-        if use_ess and (time.time() - PREVIOUS_ESS_SAMPLE_TIME) >= (sunvault_update_invertal - 1):
-            PREVIOUS_ESS_SAMPLE_TIME = time.time()
+        if use_ess and (time.time() - cache["ess_sample_time"]) >= (sunvault_update_invertal - 1):
+            cache["ess_sample_time"] = time.time()
             ess_data = sunpower_monitor.energy_storage_system_status()
-            PREVIOUS_ESS_SAMPLE = ess_data
+            cache["ess_sample"] = ess_data
             _LOGGER.debug("got ESS data %s", ess_data)
     except (ParseException, ConnectionException) as error:
         raise UpdateFailed from error
@@ -349,6 +354,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             sunpower_monitor,
             sunpower_update_invertal,
             sunvault_update_invertal,
+            entry_id,
         )
 
     # This could be better, taking the shortest time interval as the coordinator update is fine
@@ -375,6 +381,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     hass.data[DOMAIN][entry.entry_id] = {
         SUNPOWER_OBJECT: sunpower_monitor,
         SUNPOWER_COORDINATOR: coordinator,
+        SUNPOWER_ENTRY_ID: entry_id,
     }
 
     start = time.time()
@@ -412,5 +419,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
+        # Clean up entry-specific cache to avoid memory leaks
+        if entry.entry_id in ENTRY_DATA_CACHE:
+            ENTRY_DATA_CACHE.pop(entry.entry_id)
 
     return unload_ok
