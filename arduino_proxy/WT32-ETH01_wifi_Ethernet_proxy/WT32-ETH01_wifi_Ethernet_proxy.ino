@@ -212,7 +212,7 @@ void handleProxyRequest()
   }
 
   // Debug: Print current network status
-  Serial.printf("ETH Status - IP: %s, Gateway: %s, Connected: %s\n", 
+  Serial.printf("ETH Status - IP: %s, Gateway: %s, Connected: %s\n",
                 ETH.localIP().toString().c_str(), 
                 ETH.gatewayIP().toString().c_str(),
                 ethConnected ? "true" : "false");
@@ -272,7 +272,7 @@ void handleProxyRequest()
     String response = http.getString();
     String cType = http.header("Content-Type");
     
-    Serial.printf("Proxy response: %d, size: %d, content-type: %s\n", 
+    Serial.printf("Proxy response: %d, size: %d, content-type: %s\n",
                   code, response.length(), cType.c_str());
     
     // Only set content-type if it was provided by the upstream server
