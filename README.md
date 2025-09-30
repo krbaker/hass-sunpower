@@ -1,5 +1,3 @@
-
-
 # hass-sunpower
 
 ## SunStrong seems to be supporting Home Assistant in the near future
