@@ -1,6 +1,6 @@
 # SunStrong seems to be supporting Home Assistant in the near future
 
-I was just starting to pickup changes given some of the testing others contributed 
+I was just starting to pickup changes given some of the testing others contributed
 but Sunstrong seems to be making real progress (and breaking this integration
 due to authentication - which is really an improvement...)
 [https://github.com/SunStrong-Management/pypvs/blob/main/doc/LocalAPI.md](https://github.com/SunStrong-Management/pypvs/blob/main/doc/LocalAPI.md)
