@@ -1,4 +1,8 @@
-# SunStrong seems to be supporting Home Assistant in the near future
+
+
+# hass-sunpower
+
+## SunStrong seems to be supporting Home Assistant in the near future
 
 I was just starting to pickup changes given some of the testing others contributed
 but Sunstrong seems to be making real progress (and breaking this integration
@@ -6,9 +10,7 @@ due to authentication - which is really an improvement...)
 [https://github.com/SunStrong-Management/pypvs/blob/main/doc/LocalAPI.md](https://github.com/SunStrong-Management/pypvs/blob/main/doc/LocalAPI.md)
 
 
-# hass-sunpower
-
-Home Assistant SunPower Integration using the local installer ethernet interface.
+## Home Assistant SunPower Integration using the local installer ethernet interface.
 
 Original Integration is [https://github.com/krbaker/hass-sunpower](https://github.com/krbaker/hass-sunpower)
 
