@@ -12,7 +12,7 @@ However, a Raspberry Pi consumes around 5 W, which turns into heat. If your PVS 
 
 ## Hardware
 
-No soldering is required. 
+No soldering is required.
 
 
 Get WT32-ETH01 development board
@@ -63,10 +63,10 @@ After first upload, you can update firmware over-the-air (OTA).
 
 
 
-Once upload finishes go to: 
+Once upload finishes go to:
 http://ESP32-SUN-GATEWAY.local/gatewaystatus
 
-It should return: 
+It should return:
 ```JSON
 {
   "wifi_connected": true,
@@ -78,16 +78,16 @@ It should return:
 }
 ```
 
-Now remove wires from EN and IO0. Tape up the rest of wires to make sure they sit firmly. 
+Now remove wires from EN and IO0. Tape up the rest of wires to make sure they sit firmly.
 
-Now plug the Serial-to-USB adapter into any USB port inside the SunPower PVS enclosure. 
-Use a short Ethernet cable to connect the WT32-ETH01 to the PVS. 
+Now plug the Serial-to-USB adapter into any USB port inside the SunPower PVS enclosure.
+Use a short Ethernet cable to connect the WT32-ETH01 to the PVS.
 
-Recheck the status: 
+Recheck the status:
 http://ESP32-SUN-GATEWAY.local/gatewaystatus
 
 
-It should return: 
+It should return:
 ```JSON
 {
   "wifi_connected": true,
@@ -100,7 +100,7 @@ It should return:
 ```
 
 
-Finally, test the device list endpoint: 
+Finally, test the device list endpoint:
 http://ESP32-SUN-GATEWAY.local/cgi-bin/dl_cgi?Command=DeviceList
 
 After a short delay, you should see a JSON response containing your solar panel data.
