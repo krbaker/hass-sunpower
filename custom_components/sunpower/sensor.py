@@ -44,8 +44,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     else:
         _LOGGER.debug("Found No ESS Data")
 
-    if PVS_DEVICE_TYPE not in sunpower_data:
-        _LOGGER.error("Cannot find PVS Entry")
+    if PVS_DEVICE_TYPE not in sunpower_data or not sunpower_data[PVS_DEVICE_TYPE]:
+        _LOGGER.error("Cannot find PVS Entry or PVS data is empty")
     else:
         entities = []
 
@@ -176,6 +176,13 @@ class SunPowerSensor(SunPowerEntity, SensorEntity):
     @property
     def native_value(self):
         """Get the current value"""
+        # Check if device type and device exist in coordinator data
+        if (
+            self._device_type not in self.coordinator.data
+            or self.base_unique_id not in self.coordinator.data[self._device_type]
+        ):
+            return None
+        
         if self._my_device_class == SensorDeviceClass.POWER_FACTOR:
             try:
                 value = float(

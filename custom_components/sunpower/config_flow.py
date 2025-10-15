@@ -72,7 +72,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input: dict[str, any] | None = None):
         """Handle the initial step."""
         errors = {}
-        _LOGGER.debug(f"User Setup input {user_input}")
+        if user_input:
+            _LOGGER.debug(f"User Setup: host={user_input.get(CONF_HOST)}")
+        else:
+            _LOGGER.debug("User Setup: initial form display")
         if user_input is not None:
             try:
                 info = await validate_input(self.hass, user_input)
@@ -80,6 +83,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=info["title"], data=user_input)
             except CannotConnect:
                 errors["base"] = "cannot_connect"
+            except InvalidHost:
+                errors["base"] = "invalid_host"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -107,7 +112,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         user_input: dict[str, any] | None = None,
     ) -> config_entries.FlowResult:
         """Manage the options."""
-        _LOGGER.debug(f"Options input {user_input} {self.config_entry}")
+        if user_input:
+            _LOGGER.debug(f"Options input: intervals={user_input.get(SUNPOWER_UPDATE_INTERVAL)}/{user_input.get(SUNVAULT_UPDATE_INTERVAL)}")
+        else:
+            _LOGGER.debug("Options: initial form display")
         options = dict(self.config_entry.options)
 
         errors = {}

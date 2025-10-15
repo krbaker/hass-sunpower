@@ -8,11 +8,12 @@
           "use_descriptive_names": "Use descriptive entity names (recommended)",
           "use_product_names": "Use products in entity names (not recommended)"
         },
-        "description": "Hostname or IP of PVS (usually 172.27.153.1)"
+        "description": "Hostname or IP of PVS (usually 172.27.153.1). Serial suffix will be auto-detected from the PVS."
       }
     },
     "error": {
       "cannot_connect": "Cannot Connect",
+      "invalid_host": "Invalid IP address or hostname format",
       "unknown": "Unknown Error"
     },
     "abort": {

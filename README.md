@@ -4,7 +4,43 @@ Home Assistant SunPower Integration using the local installer ethernet interface
 
 Original Integration is [https://github.com/krbaker/hass-sunpower](https://github.com/krbaker/hass-sunpower)
 
-* If this is a fork, please add what's different here and fix up the badges below
+## 🆕 What's Different in This Fork
+
+This fork adds automatic LocalAPI support for newer PVS firmware (build >= 61840) while maintaining full backwards compatibility with legacy CGI endpoints.
+
+### Key Enhancements
+- Automatic API Detection: Queries firmware version and automatically selects the appropriate API
+- LocalAPI for Newer Firmware: Uses the more efficient Varserver FCGI endpoints with authentication
+- Direct LAN Access: LocalAPI works via the standard LAN IP - no proxy or special network setup required
+- Legacy CGI Fallback: Maintains support for older firmware using traditional CGI endpoints
+- Improved Performance: Caching mechanism reduces API calls and improves response times
+- Automatic Credential Management: Serial suffix auto-fetched from PVS, no manual configuration needed
+
+### How It Works
+1. During setup, the integration queries `/cgi-bin/dl_cgi/supervisor/info` to check firmware version
+2. If firmware build >= 61840: Uses LocalAPI with session-based authentication
+3. If older firmware: Uses legacy CGI endpoints (same as before)
+4. Serial suffix (last 5 characters of PVS serial) is auto-fetched when possible
+5. Field name mapping: LocalAPI returns camelCase field names (e.g., `pMppt1Kw`), which are automatically converted to snake_case (e.g., `p_mppt1_kw`) to match legacy CGI format, ensuring identical data structures for backwards compatibility
+6. No configuration changes needed - it just works!
+
+### Benefits
+- Faster response times with caching (caches variable paths, not values - data is always fresh)
+- More reliable session management
+- Better error handling and retry logic
+- Reduced load on PVS system
+- Cache resets on Home Assistant restart to ensure optimal performance
+
+### Recent Bug Fixes
+- **Fixed LocalAPI reliability issues**: Simplified /vars endpoint calls by removing cache parameter. While LocalAPI supports caching, it adds complexity and the performance benefit is negligible at 120-second polling intervals. This change improves reliability and eliminates potential cache state issues.
+- **Fixed KeyError crashes**: Added defensive checks to prevent crashes when device data is temporarily unavailable
+- **Improved error logging**: Added detailed diagnostics to help troubleshoot connection issues
+- **Better resilience**: Integration now gracefully handles missing PVS, inverter, or meter data
+
+### LocalAPI Documentation
+For technical details on the LocalAPI implementation, see:
+- [LocalAPI Documentation](https://github.com/SunStrong-Management/pypvs/blob/main/doc/LocalAPI.md) - Comprehensive guide to Varserver FCGI endpoints
+- [pypvs Project](https://github.com/SunStrong-Management/pypvs) - Python library for PVS LocalAPI access
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
@@ -80,19 +116,23 @@ removed (This addition thanks to [@CanisUrsa](https://github.com/CanisUrsa))
 
 ## Options (available from 'configure' once integration is setup)
 
+**To change polling intervals:** Settings → Devices & Services → SunPower → Configure
+
 ### Solar data update interval (seconds)
 
+**Default: 120 seconds** | **Minimum: 60 seconds**
+
 This sets how fast the integration will try to get updated solar info from the PVS.
-The lowest "safe" rate looks like about 120 seconds.  I am concerned some PVSs may fail
-to work properly over time and I'm guessing it might be request or error logging filling
-their memory.  I am running with 300 seconds right now as I went through a heck of a time
-with a PVS that began to fail pushing to Sunpower's cloud.
+
+**For LocalAPI (firmware >= 61840):** The official documentation recommends polling "once every few seconds" to avoid overloading the PVS CPU. The default 120 seconds is conservative and safe for long-term reliability.
+
+**For Legacy CGI (older firmware):** The PVS takes a very long time to return data. The lowest "safe" rate is about 120 seconds. Some PVSs may fail to work properly over time with aggressive polling, possibly due to request or error logging filling their memory.
 
 ### Energy storage update interval (seconds)
 
-Should evenly divide into Solar data update interval or be an even multiple of it (this is due to the
-currently silly way polling is handled through one timer).  The original author of the ESS addon
-[@CanisUrsa](https://github.com/CanisUrsa) had it as low as 20 seconds (see warning above)
+**Default: 60 seconds** | **Minimum: 20 seconds**
+
+Should evenly divide into Solar data update interval or be an even multiple of it (this is due to the currently silly way polling is handled through one timer). The original author of the ESS addon [@CanisUrsa](https://github.com/CanisUrsa) had it as low as 20 seconds (see warning above)
 
 ## Network Setup
 
@@ -259,6 +299,29 @@ Power Output.
 
 If you file a bug one of the most useful things to include is the output of
 > curl <http://172.27.153.1/cgi-bin/dl_cgi?Command=DeviceList>
+
+### LocalAPI Authentication Issues
+
+If you have newer firmware (build >= 61840) and see authentication errors:
+
+1. Check firmware version: 
+   ```bash
+   curl http://172.27.153.1/cgi-bin/dl_cgi/supervisor/info
+   ```
+   Look for the `BUILD` number in the response.
+
+2. Verify serial suffix: The integration automatically fetches the serial suffix (last 5 characters of PVS serial) from the PVS during initialization. If auto-fetch fails, the integration will raise an error. The serial suffix is used as the password for LocalAPI authentication.
+
+3. Check logs: Look in Home Assistant logs for connection errors or authentication failures during integration setup.
+
+### API Type Detection
+
+The integration automatically detects and uses the appropriate API based on firmware version:
+- Firmware build >= 61840: Uses LocalAPI automatically
+- Older firmware: Uses legacy CGI endpoints automatically
+- No configuration needed - the integration handles this transparently
+
+Note on Firmware Upgrades: API detection occurs when Home Assistant starts or when the integration reloads. If SunPower remotely upgrades your PVS firmware while Home Assistant is running, the integration will continue using the current API until you restart Home Assistant. After restart, it will automatically detect the new firmware and switch to LocalAPI if supported.
 
 ### Missing solar production. Appears that the Sunpower meter has disappeared from the device list
 
